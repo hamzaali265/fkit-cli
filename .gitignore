@@ -1,0 +1,10 @@
+# https://dart.dev/tools/private-files
+# Created by `dart pub`
+.dart_tool/
+build/
+.packages
+pubspec_overrides.yaml
+*.iml
+.idea/
+.vscode/
+.DS_Store
