@@ -1,35 +1,76 @@
 # Changelog
 
-All notable changes to **FKIT CLI** are documented here.
+All notable changes to **FKIT CLI** are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.4] - 2026-09-15
+
+### 📖 Documentation & Polish
+- **Comprehensive Documentation Overhaul**: Completely redesigned `README.md` with modern badges, ASCII terminal preview, clean architecture deep-dives with tree diagrams, features matrix, and GitHub Actions CI workflow.
+- **Automated Native Permissions Guide**: Detailed breakdown of automated Android `AndroidManifest.xml`, iOS `Info.plist`/`Podfile`, and macOS `Entitlements` configuration.
+- **Enhanced Contributing Guide**: Expanded `CONTRIBUTING.md` with full project architecture breakdown, template extension instructions, and conventional commit rules.
+
+---
 
 ## [1.0.3] - 2026-09-15
 
-### Fixed
-- Home/folder menus no longer duplicate or blink (cursor-up redraw)
-- Folder browser stays visible while navigating
+### 🐛 Fixed
+- **Terminal Redraw Stability**: Resolved double-render and cursor-up blinking artifacts in the interactive home menu and directory picker.
+- **Folder Browser Rendering**: Fixed an issue where child directories could blank out during active folder traversal on macOS/Linux terminal sessions.
+
+---
 
 ## [1.0.2] - 2026-09-15
 
-### Fixed
-- Folder browser no longer blinks or blanks out while navigating
-- Wizard choosers clear stale rows on ↑/↓ redraw
+### 🐛 Fixed
+- **Cursor State in Choosers**: Wizard choosers now cleanly clear and overwrite stale rows on `↑`/`↓` redraws.
+- **Terminal Viewport**: Stabilized full-screen terminal height calculations during directory tree navigation.
+
+---
 
 ## [1.0.1] - 2026-09-15
 
-### Fixed
-- Home menu no longer stacks duplicate rows when moving with ↑/↓
+### 🐛 Fixed
+- **Menu Row Stacking**: Fixed an ANSI redraw issue where moving the selection cursor created duplicate stacked rows on certain terminal emulators.
+
+---
 
 ## [1.0.0] - 2026-09-15
 
-### Added
-- Interactive home screen with FKIT ASCII wordmark and arrow-key menu
-- Full create wizard: architecture, state, routing, networking, storage, utilities
-- Non-interactive flags for CI / scripted scaffolding
-- `fkit list` catalog of stacks and packages
-- Project generator with templates for screens, themes, assets, l10n, flavors
-- Image/file picker services, permissions wiring, and shared extensions
-- Directory picker for choosing the output parent folder
-- Unit and end-to-end generation tests
+### 🚀 Initial Public Release
 
-### Docs
-- Open-source README, MIT license, and contributing guide
+### 🌟 Added
+- **Interactive Home Screen**: Modern terminal landing screen featuring ASCII wordmark, release version badge, and keyboard-driven action menu.
+- **Interactive 6-Step Wizard**:
+  - Interactive directory picker with parent traversal and path autocomplete.
+  - Architecture selector (`feature-first`, `layer-first`, `mvvm`, `simple-mvc`).
+  - State management selector (`bloc`, `riverpod`, `provider`, `getx`, `none`).
+  - Routing strategy selector (`go_router`, `auto_route`, `standard`).
+  - Networking client selector (`dio`, `http`, `none`).
+  - Local database selector (`hive_flutter`, `shared_preferences`, `none`).
+  - Optional utility package checkboxes.
+- **Automated Native Platform Permissions**:
+  - Automatic updates to Android `AndroidManifest.xml` (internet, media, camera permissions, URL schemes).
+  - Automatic updates to iOS `Info.plist` (photo library, camera, microphone descriptions, query schemes) and `Podfile` macros.
+  - Automatic updates to macOS `Entitlements` (network client, user-selected file read/write, camera).
+- **Production-Ready Templates & Boilerplate**:
+  - Modular clean architecture feature templates.
+  - Pre-wired Dio HTTP client with interceptors and typed error handlers.
+  - Pre-configured Hive NoSQL database and SharedPreferences services.
+  - Theme system with dark/light themes, custom colors, typography, and context extensions.
+  - `ImagePickerService` and `FilePickerService` helper wrappers.
+  - Localization setup with `l10n.yaml` and starter ARB templates.
+  - Environment flavor configuration (`AppConfig`) with `--dart-define` support.
+  - Strict linting setup powered by `very_good_analysis`.
+- **Headless & Scripting Support**:
+  - Full CLI flag support for every option (`--architecture`, `--state`, `--routing`, `--networking`, `--storage`, `--org`, `--no-interactive`).
+- **Catalog Command**:
+  - `fkit list` to explore all supported architectural blueprints, state managers, and utility packages from the terminal.
+- **Test Suite**:
+  - Comprehensive unit test coverage and end-to-end project generation and static analysis verification tests.
+
+### 📖 Documentation
+- Published complete README documentation with architectural breakdowns, CLI options table, usage recipes, and GitHub Actions CI workflow.
+- Created `CONTRIBUTING.md` and MIT `LICENSE`.
