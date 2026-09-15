@@ -2,6 +2,12 @@
 
 All notable changes to **FKIT CLI** are documented here.
 
+## [1.0.2] - 2026-09-15
+
+### Fixed
+- Folder browser no longer blinks or blanks out while navigating
+- Wizard choosers clear stale rows on ↑/↓ redraw
+
 ## [1.0.1] - 2026-09-15
 
 ### Fixed

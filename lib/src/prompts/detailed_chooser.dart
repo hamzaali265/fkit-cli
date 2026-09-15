@@ -103,6 +103,8 @@ class DetailedChooser {
           index = (index + 1) % options.length;
         } else if (key == _Key.info) {
           _showDetailDialog(options[index]);
+          writeMenu();
+          continue;
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
@@ -113,6 +115,7 @@ class DetailedChooser {
         }
 
         stdout.write('\x1b8');
+        stdout.write('\x1b[J');
         writeMenu();
       }
     } finally {
@@ -196,6 +199,8 @@ class DetailedChooser {
           }
         } else if (key == _Key.info) {
           _showDetailDialog(options[index]);
+          writeMenu();
+          continue;
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
@@ -206,6 +211,7 @@ class DetailedChooser {
         }
 
         stdout.write('\x1b8');
+        stdout.write('\x1b[J');
         writeMenu();
       }
     } finally {
