@@ -108,10 +108,7 @@ class HomeScreen {
     }
   }
 
-  /// Interactive home menu with stable redraw (save/restore + clear-to-end).
-  ///
-  /// mason_logger's [Logger.chooseOne] leaves previous frames on screen when
-  /// ANSI-styled rows are used, so the home menu stacks duplicates on ↑/↓.
+  /// Interactive home menu with stable redraw (paint then clear leftovers).
   HomeAction _chooseHomeAction(List<HomeAction> menu) {
     if (!stdout.hasTerminal || !stdin.hasTerminal) {
       return menu.firstWhere((a) => a.enabled, orElse: () => menu.first);
@@ -119,11 +116,7 @@ class HomeScreen {
 
     var index = 0;
 
-    void writeMenu() {
-      stdout
-        ..write('\x1b7') // save cursor
-        ..write('\x1b[?25l'); // hide cursor
-
+    void paint() {
       for (var i = 0; i < menu.length; i++) {
         final action = menu[i];
         final isCurrent = i == index;
@@ -146,16 +139,20 @@ class HomeScreen {
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c')}',
-        );
+        )
+        ..write('\x1b[J');
     }
 
-    void restoreAndClear() {
+    void redraw() {
+      stdout.write('\x1b8');
+      paint();
+    }
+
+    void finishInteractive() {
       stdout
-        ..write('\x1b8') // restore cursor
-        ..write('\x1b[J'); // clear from cursor to end of screen
-    }
-
-    void restoreTerminal() {
+        ..write('\x1b8')
+        ..write('\x1b[J')
+        ..write('\x1b[?25h');
       try {
         stdin
           ..lineMode = true
@@ -163,14 +160,16 @@ class HomeScreen {
       } on Object {
         // Ignore when stdin is not a terminal.
       }
-      stdout.write('\x1b[?25h');
     }
 
     stdin
       ..echoMode = false
       ..lineMode = false;
 
-    writeMenu();
+    stdout
+      ..write('\x1b7')
+      ..write('\x1b[?25l');
+    paint();
 
     try {
       while (true) {
@@ -182,19 +181,16 @@ class HomeScreen {
         } else if (key == _HomeKey.enter) {
           break;
         } else if (key == _HomeKey.quit) {
-          restoreAndClear();
-          restoreTerminal();
+          finishInteractive();
           exit(130);
         } else {
           continue;
         }
 
-        restoreAndClear();
-        writeMenu();
+        redraw();
       }
     } finally {
-      restoreAndClear();
-      restoreTerminal();
+      finishInteractive();
     }
 
     final selected = menu[index];

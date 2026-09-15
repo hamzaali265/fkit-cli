@@ -61,11 +61,7 @@ class DetailedChooser {
         : options.indexWhere((o) => o.value == defaultValue);
     if (index < 0) index = 0;
 
-    void writeMenu() {
-      stdout
-        ..write('\x1b7')
-        ..write('\x1b[?25l');
-
+    void paint() {
       for (var i = 0; i < options.length; i++) {
         final option = options[i];
         final isCurrent = i == index;
@@ -80,19 +76,29 @@ class DetailedChooser {
         stdout.writeln('  $prefix $radio  $label $short');
       }
 
-      stdout.writeln();
-      stdout.writeln(
-        '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
-        '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
-        '${CliTheme.muted('i details')}',
-      );
+      stdout
+        ..writeln()
+        ..writeln(
+          '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('i details')}',
+        )
+        ..write('\x1b[J');
+    }
+
+    void redraw() {
+      stdout.write('\x1b8');
+      paint();
     }
 
     stdin
       ..echoMode = false
       ..lineMode = false;
 
-    writeMenu();
+    stdout
+      ..write('\x1b7')
+      ..write('\x1b[?25l');
+    paint();
 
     try {
       while (true) {
@@ -103,7 +109,10 @@ class DetailedChooser {
           index = (index + 1) % options.length;
         } else if (key == _Key.info) {
           _showDetailDialog(options[index]);
-          writeMenu();
+          stdout
+            ..write('\x1b7')
+            ..write('\x1b[?25l');
+          paint();
           continue;
         } else if (key == _Key.enter) {
           break;
@@ -114,9 +123,7 @@ class DetailedChooser {
           continue;
         }
 
-        stdout.write('\x1b8');
-        stdout.write('\x1b[J');
-        writeMenu();
+        redraw();
       }
     } finally {
       _restoreTerminal();
@@ -149,11 +156,7 @@ class DetailedChooser {
     }
     var index = 0;
 
-    void writeMenu() {
-      stdout
-        ..write('\x1b7')
-        ..write('\x1b[?25l');
-
+    void paint() {
       for (var i = 0; i < options.length; i++) {
         final option = options[i];
         final isCurrent = i == index;
@@ -169,20 +172,30 @@ class DetailedChooser {
         stdout.writeln('  $prefix $radio  $label $short');
       }
 
-      stdout.writeln();
-      stdout.writeln(
-        '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
-        '${CliTheme.muted('space toggle')} ${CliTheme.muted(CliTheme.midDot)} '
-        '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
-        '${CliTheme.muted('i details')}',
-      );
+      stdout
+        ..writeln()
+        ..writeln(
+          '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('space toggle')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('i details')}',
+        )
+        ..write('\x1b[J');
+    }
+
+    void redraw() {
+      stdout.write('\x1b8');
+      paint();
     }
 
     stdin
       ..echoMode = false
       ..lineMode = false;
 
-    writeMenu();
+    stdout
+      ..write('\x1b7')
+      ..write('\x1b[?25l');
+    paint();
 
     try {
       while (true) {
@@ -199,7 +212,10 @@ class DetailedChooser {
           }
         } else if (key == _Key.info) {
           _showDetailDialog(options[index]);
-          writeMenu();
+          stdout
+            ..write('\x1b7')
+            ..write('\x1b[?25l');
+          paint();
           continue;
         } else if (key == _Key.enter) {
           break;
@@ -210,9 +226,7 @@ class DetailedChooser {
           continue;
         }
 
-        stdout.write('\x1b8');
-        stdout.write('\x1b[J');
-        writeMenu();
+        redraw();
       }
     } finally {
       _restoreTerminal();

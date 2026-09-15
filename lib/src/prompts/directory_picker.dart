@@ -104,14 +104,13 @@ class DirectoryPicker {
       ),
     ];
 
-    void writeFrame(List<_DirChoice> choices) {
+    /// Paint only — cursor must already be at the frame origin.
+    void paint(List<_DirChoice> choices) {
       final pathLabel = displayPath(current.path);
       final inner = _panelWidth - 6;
       final window = _visibleWindow(choices.length, index, _maxVisibleRows);
 
       stdout
-        ..write('\x1b7')
-        ..write('\x1b[?25l')
         ..writeln()
         ..writeln('  ${CliTheme.topBorder(_panelWidth, title: 'Folder')}')
         ..writeln('  ${CliTheme.boxLine(CliTheme.accent(pathLabel), inner)}')
@@ -135,15 +134,20 @@ class DirectoryPicker {
           '${CliTheme.muted('enter open / select')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c quit')}',
         );
+      // Clear leftovers from a taller previous frame *after* painting (no blank flash).
+      stdout.write('\x1b[J');
     }
 
-    void restoreAndClear() {
+    void redraw(List<_DirChoice> choices) {
+      stdout.write('\x1b8'); // restore to frame origin
+      paint(choices);
+    }
+
+    void finishInteractive() {
       stdout
         ..write('\x1b8')
-        ..write('\x1b[J');
-    }
-
-    void restoreTerminal() {
+        ..write('\x1b[J')
+        ..write('\x1b[?25h');
       try {
         stdin
           ..lineMode = true
@@ -151,7 +155,6 @@ class DirectoryPicker {
       } on Object {
         // Ignore when stdin is not a terminal.
       }
-      stdout.write('\x1b[?25h');
     }
 
     stdin
@@ -159,7 +162,10 @@ class DirectoryPicker {
       ..lineMode = false;
 
     var choices = buildChoices();
-    writeFrame(choices);
+    stdout
+      ..write('\x1b7') // save frame origin once
+      ..write('\x1b[?25l');
+    paint(choices);
 
     try {
       while (true) {
@@ -172,8 +178,7 @@ class DirectoryPicker {
           final selected = choices[index];
           switch (selected.id) {
             case 'use':
-              restoreAndClear();
-              restoreTerminal();
+              finishInteractive();
               _logger.info(
                 '  ${CliTheme.muted('Folder')} '
                 '${CliTheme.label(displayPath(current.path))}',
@@ -189,18 +194,15 @@ class DirectoryPicker {
               choices = buildChoices();
           }
         } else if (key == _Key.quit) {
-          restoreAndClear();
-          restoreTerminal();
+          finishInteractive();
           exit(130);
         } else {
           continue;
         }
 
-        restoreAndClear();
-        writeFrame(choices);
+        redraw(choices);
       }
     } finally {
-      // Ensure cursor is restored if we exit via return in the loop.
       try {
         stdin
           ..lineMode = true
@@ -222,10 +224,8 @@ class DirectoryPicker {
     final display = displayPath(target);
     final inner = _panelWidth - 6;
 
-    void writeFrame() {
+    void paint() {
       stdout
-        ..write('\x1b7')
-        ..write('\x1b[?25l')
         ..writeln()
         ..writeln('  ${CliTheme.topBorder(_panelWidth, title: 'Confirm')}')
         ..writeln(
@@ -253,16 +253,20 @@ class DirectoryPicker {
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c')}',
-        );
-    }
-
-    void restoreAndClear() {
-      stdout
-        ..write('\x1b8')
+        )
         ..write('\x1b[J');
     }
 
-    void restoreTerminal() {
+    void redraw() {
+      stdout.write('\x1b8');
+      paint();
+    }
+
+    void finishInteractive() {
+      stdout
+        ..write('\x1b8')
+        ..write('\x1b[J')
+        ..write('\x1b[?25h');
       try {
         stdin
           ..lineMode = true
@@ -270,14 +274,16 @@ class DirectoryPicker {
       } on Object {
         // Ignore.
       }
-      stdout.write('\x1b[?25h');
     }
 
     stdin
       ..echoMode = false
       ..lineMode = false;
 
-    writeFrame();
+    stdout
+      ..write('\x1b7')
+      ..write('\x1b[?25l');
+    paint();
 
     try {
       while (true) {
@@ -289,19 +295,16 @@ class DirectoryPicker {
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
-          restoreAndClear();
-          restoreTerminal();
+          finishInteractive();
           exit(130);
         } else {
           continue;
         }
 
-        restoreAndClear();
-        writeFrame();
+        redraw();
       }
     } finally {
-      restoreAndClear();
-      restoreTerminal();
+      finishInteractive();
     }
 
     final selected = choices[index];

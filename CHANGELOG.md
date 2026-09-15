@@ -2,6 +2,11 @@
 
 All notable changes to **FKIT CLI** are documented here.
 
+## [1.0.3] - 2026-09-15
+
+### Fixed
+- Remove UI blink by painting menus before clearing leftover lines
+
 ## [1.0.2] - 2026-09-15
 
 ### Fixed
