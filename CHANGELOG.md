@@ -2,15 +2,11 @@
 
 All notable changes to **FKIT CLI** are documented here.
 
-## [1.0.4] - 2026-09-15
-
-### Fixed
-- Home/folder menus no longer duplicate rows (cursor-up redraw, not DECSC)
-
 ## [1.0.3] - 2026-09-15
 
 ### Fixed
-- Remove UI blink by painting menus before clearing leftover lines
+- Home/folder menus no longer duplicate or blink (cursor-up redraw)
+- Folder browser stays visible while navigating
 
 ## [1.0.2] - 2026-09-15
 
