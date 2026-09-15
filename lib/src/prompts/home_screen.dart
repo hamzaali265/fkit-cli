@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mason_logger/mason_logger.dart';
 
 import 'cli_theme.dart';
@@ -74,14 +76,9 @@ class HomeScreen {
       _ui.printHeroBanner(version: version);
       _ui.printHairline();
       _logger.info('  ${CliTheme.boldText('What do you want to do?')}');
-      _ui.printKeyHints(forHome: true);
       _logger.info('');
 
-      final selected = _logger.chooseOne<HomeAction>(
-        '  ',
-        choices: menu,
-        display: _formatAction,
-      );
+      final selected = _chooseHomeAction(menu);
 
       switch (selected.id) {
         case 'create':
@@ -111,11 +108,118 @@ class HomeScreen {
     }
   }
 
-  String _formatAction(HomeAction action) {
-    final title = action.enabled
-        ? CliTheme.boldText(action.title.padRight(28))
-        : CliTheme.muted(action.title.padRight(28));
-    final desc = CliTheme.muted(action.description);
-    return '$title $desc';
+  /// Interactive home menu with stable redraw (save/restore + clear-to-end).
+  ///
+  /// mason_logger's [Logger.chooseOne] leaves previous frames on screen when
+  /// ANSI-styled rows are used, so the home menu stacks duplicates on ↑/↓.
+  HomeAction _chooseHomeAction(List<HomeAction> menu) {
+    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+      return menu.firstWhere((a) => a.enabled, orElse: () => menu.first);
+    }
+
+    var index = 0;
+
+    void writeMenu() {
+      stdout
+        ..write('\x1b7') // save cursor
+        ..write('\x1b[?25l'); // hide cursor
+
+      for (var i = 0; i < menu.length; i++) {
+        final action = menu[i];
+        final isCurrent = i == index;
+        final radio = isCurrent
+            ? CliTheme.accent(CliTheme.radioOn)
+            : CliTheme.muted(CliTheme.radioOff);
+        final prefix = isCurrent ? CliTheme.accent(CliTheme.arrow) : ' ';
+        final title = action.enabled
+            ? (isCurrent
+                ? CliTheme.boldText(action.title.padRight(28))
+                : action.title.padRight(28))
+            : CliTheme.muted(action.title.padRight(28));
+        final desc = CliTheme.muted(action.description);
+        stdout.writeln('  $prefix $radio  $title $desc');
+      }
+
+      stdout
+        ..writeln()
+        ..writeln(
+          '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
+          '${CliTheme.muted('ctrl+c')}',
+        );
+    }
+
+    void restoreAndClear() {
+      stdout
+        ..write('\x1b8') // restore cursor
+        ..write('\x1b[J'); // clear from cursor to end of screen
+    }
+
+    void restoreTerminal() {
+      try {
+        stdin
+          ..lineMode = true
+          ..echoMode = true;
+      } on Object {
+        // Ignore when stdin is not a terminal.
+      }
+      stdout.write('\x1b[?25h');
+    }
+
+    stdin
+      ..echoMode = false
+      ..lineMode = false;
+
+    writeMenu();
+
+    try {
+      while (true) {
+        final key = _readHomeKey();
+        if (key == _HomeKey.up) {
+          index = (index - 1) % menu.length;
+        } else if (key == _HomeKey.down) {
+          index = (index + 1) % menu.length;
+        } else if (key == _HomeKey.enter) {
+          break;
+        } else if (key == _HomeKey.quit) {
+          restoreAndClear();
+          restoreTerminal();
+          exit(130);
+        } else {
+          continue;
+        }
+
+        restoreAndClear();
+        writeMenu();
+      }
+    } finally {
+      restoreAndClear();
+      restoreTerminal();
+    }
+
+    final selected = menu[index];
+    _logger.info(
+      '  ${CliTheme.muted('Selected')} ${CliTheme.label(selected.title)}',
+    );
+    return selected;
+  }
+
+  static _HomeKey _readHomeKey() {
+    final first = stdin.readByteSync();
+    if (first == 3) return _HomeKey.quit;
+    if (first == 10 || first == 13) return _HomeKey.enter;
+    if (first == 107 || first == 75) return _HomeKey.up;
+    if (first == 106 || first == 74) return _HomeKey.down;
+    if (first == 27) {
+      if (stdin.readByteSync() == 91) {
+        final code = stdin.readByteSync();
+        if (code == 65) return _HomeKey.up;
+        if (code == 66) return _HomeKey.down;
+      }
+      return _HomeKey.other;
+    }
+    return _HomeKey.other;
   }
 }
+
+enum _HomeKey { up, down, enter, quit, other }

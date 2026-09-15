@@ -2,6 +2,11 @@
 
 All notable changes to **FKIT CLI** are documented here.
 
+## [1.0.1] - 2026-09-15
+
+### Fixed
+- Home menu no longer stacks duplicate rows when moving with ↑/↓
+
 ## [1.0.0] - 2026-09-15
 
 ### Added
