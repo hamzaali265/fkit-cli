@@ -3,6 +3,7 @@
 **Scaffold production-ready Flutter apps from your terminal — architecture, state, routing, and packages in one interactive flow.**
 
 [![Dart](https://img.shields.io/badge/Dart-3.12+-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![pub package](https://img.shields.io/pub/v/fkit.svg)](https://pub.dev/packages/fkit)
 [![Flutter](https://img.shields.io/badge/Flutter-ready-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=social)](https://github.com/hamzaali265/fkit-cli)
@@ -50,18 +51,28 @@ Setting up a Flutter app the “right” way still means the same busywork every
 
 ## Install
 
-### From source (recommended while the package is early)
+### From pub.dev (recommended)
+
+```bash
+dart pub global activate fkit
+fkit
+```
+
+Make sure Pub’s bin directory is on your `PATH` (Dart prints it after activate if needed).
+
+### From GitHub
+
+```bash
+dart pub global activate --source git https://github.com/hamzaali265/fkit-cli.git
+fkit
+```
+
+### From source
 
 ```bash
 git clone https://github.com/hamzaali265/fkit-cli.git
 cd fkit-cli
 dart pub get
-dart run bin/fkit.dart
-```
-
-### Global activate (after clone)
-
-```bash
 dart pub global activate --source path .
 fkit
 ```
@@ -166,7 +177,7 @@ dart analyze
 
 ## Roadmap
 
-- [ ] Pub.dev publish (`fkit`)
+- [x] Pub.dev publish (`fkit`)
 - [ ] Homebrew / scoop install snippets
 - [ ] More architecture presets and template packs
 - [ ] Plugin hooks for custom generators
