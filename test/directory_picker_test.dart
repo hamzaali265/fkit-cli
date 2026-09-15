@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fkit_cli/fkit.dart';
+import 'package:fkit_cli/fkit_cli.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
