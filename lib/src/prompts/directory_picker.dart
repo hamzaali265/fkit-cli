@@ -5,6 +5,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as p;
 
 import 'cli_theme.dart';
+import 'terminal_redraw.dart';
 
 /// Menu row used while browsing parent directories.
 class _DirChoice {
@@ -86,7 +87,7 @@ class DirectoryPicker {
   }
 
   Directory _browseParent(Directory start) {
-    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+    if (!TerminalRedraw.isInteractive) {
       _logger.info(
         '  ${CliTheme.muted('Using')} ${CliTheme.label(displayPath(start.path))}',
       );
@@ -104,68 +105,41 @@ class DirectoryPicker {
       ),
     ];
 
-    /// Paint only — cursor must already be at the frame origin.
-    void paint(List<_DirChoice> choices) {
+    List<String> frame(List<_DirChoice> choices) {
       final pathLabel = displayPath(current.path);
       final inner = _panelWidth - 6;
       final window = _visibleWindow(choices.length, index, _maxVisibleRows);
-
-      stdout
-        ..writeln()
-        ..writeln('  ${CliTheme.topBorder(_panelWidth, title: 'Folder')}')
-        ..writeln('  ${CliTheme.boxLine(CliTheme.accent(pathLabel), inner)}')
-        ..writeln('  ${CliTheme.bottomBorder(_panelWidth)}')
-        ..writeln();
+      final lines = <String>[
+        '',
+        '  ${CliTheme.topBorder(_panelWidth, title: 'Folder')}',
+        '  ${CliTheme.boxLine(CliTheme.accent(pathLabel), inner)}',
+        '  ${CliTheme.bottomBorder(_panelWidth)}',
+        '',
+      ];
 
       for (var i = window.start; i < window.end; i++) {
-        stdout.writeln('  ${_formatChoice(choices[i], isCurrent: i == index)}');
+        lines.add('  ${_formatChoice(choices[i], isCurrent: i == index)}');
       }
 
       if (choices.length > _maxVisibleRows) {
-        stdout.writeln(
+        lines.add(
           '  ${CliTheme.muted('  … ${index + 1}/${choices.length}')}',
         );
       }
 
-      stdout
-        ..writeln()
-        ..writeln(
+      lines
+        ..add('')
+        ..add(
           '  ${CliTheme.muted('↑/↓ move')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter open / select')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c quit')}',
         );
-      // Clear leftovers from a taller previous frame *after* painting (no blank flash).
-      stdout.write('\x1b[J');
+      return lines;
     }
-
-    void redraw(List<_DirChoice> choices) {
-      stdout.write('\x1b8'); // restore to frame origin
-      paint(choices);
-    }
-
-    void finishInteractive() {
-      stdout
-        ..write('\x1b8')
-        ..write('\x1b[J')
-        ..write('\x1b[?25h');
-      try {
-        stdin
-          ..lineMode = true
-          ..echoMode = true;
-      } on Object {
-        // Ignore when stdin is not a terminal.
-      }
-    }
-
-    stdin
-      ..echoMode = false
-      ..lineMode = false;
 
     var choices = buildChoices();
-    stdout
-      ..write('\x1b7') // save frame origin once
-      ..write('\x1b[?25l');
-    paint(choices);
+    TerminalRedraw.begin();
+    TerminalRedraw.paint(frame(choices));
 
     try {
       while (true) {
@@ -178,7 +152,7 @@ class DirectoryPicker {
           final selected = choices[index];
           switch (selected.id) {
             case 'use':
-              finishInteractive();
+              TerminalRedraw.end();
               _logger.info(
                 '  ${CliTheme.muted('Folder')} '
                 '${CliTheme.label(displayPath(current.path))}',
@@ -194,28 +168,21 @@ class DirectoryPicker {
               choices = buildChoices();
           }
         } else if (key == _Key.quit) {
-          finishInteractive();
+          TerminalRedraw.end();
           exit(130);
         } else {
           continue;
         }
 
-        redraw(choices);
+        TerminalRedraw.paint(frame(choices));
       }
     } finally {
-      try {
-        stdin
-          ..lineMode = true
-          ..echoMode = true;
-      } on Object {
-        // Ignore.
-      }
-      stdout.write('\x1b[?25h');
+      TerminalRedraw.end(clearFrame: false);
     }
   }
 
   bool _confirmTarget(String target) {
-    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+    if (!TerminalRedraw.isInteractive) {
       return true;
     }
 
@@ -224,16 +191,15 @@ class DirectoryPicker {
     final display = displayPath(target);
     final inner = _panelWidth - 6;
 
-    void paint() {
-      stdout
-        ..writeln()
-        ..writeln('  ${CliTheme.topBorder(_panelWidth, title: 'Confirm')}')
-        ..writeln(
-          '  ${CliTheme.boxLine(CliTheme.muted('Project will be created at'), inner)}',
-        )
-        ..writeln('  ${CliTheme.boxLine(CliTheme.boldText(display), inner)}')
-        ..writeln('  ${CliTheme.bottomBorder(_panelWidth)}')
-        ..writeln();
+    List<String> frame() {
+      final lines = <String>[
+        '',
+        '  ${CliTheme.topBorder(_panelWidth, title: 'Confirm')}',
+        '  ${CliTheme.boxLine(CliTheme.muted('Project will be created at'), inner)}',
+        '  ${CliTheme.boxLine(CliTheme.boldText(display), inner)}',
+        '  ${CliTheme.bottomBorder(_panelWidth)}',
+        '',
+      ];
 
       for (var i = 0; i < choices.length; i++) {
         final isCurrent = i == index;
@@ -244,46 +210,21 @@ class DirectoryPicker {
         final label = isCurrent
             ? CliTheme.label(choices[i])
             : CliTheme.muted(choices[i]);
-        stdout.writeln('  $prefix $radio  $label');
+        lines.add('  $prefix $radio  $label');
       }
 
-      stdout
-        ..writeln()
-        ..writeln(
+      lines
+        ..add('')
+        ..add(
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c')}',
-        )
-        ..write('\x1b[J');
+        );
+      return lines;
     }
 
-    void redraw() {
-      stdout.write('\x1b8');
-      paint();
-    }
-
-    void finishInteractive() {
-      stdout
-        ..write('\x1b8')
-        ..write('\x1b[J')
-        ..write('\x1b[?25h');
-      try {
-        stdin
-          ..lineMode = true
-          ..echoMode = true;
-      } on Object {
-        // Ignore.
-      }
-    }
-
-    stdin
-      ..echoMode = false
-      ..lineMode = false;
-
-    stdout
-      ..write('\x1b7')
-      ..write('\x1b[?25l');
-    paint();
+    TerminalRedraw.begin();
+    TerminalRedraw.paint(frame());
 
     try {
       while (true) {
@@ -295,16 +236,16 @@ class DirectoryPicker {
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
-          finishInteractive();
+          TerminalRedraw.end();
           exit(130);
         } else {
           continue;
         }
 
-        redraw();
+        TerminalRedraw.paint(frame());
       }
     } finally {
-      finishInteractive();
+      TerminalRedraw.end();
     }
 
     final selected = choices[index];

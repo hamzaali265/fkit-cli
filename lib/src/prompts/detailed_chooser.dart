@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:mason_logger/mason_logger.dart';
 
 import 'cli_theme.dart';
+import 'terminal_redraw.dart';
 
 /// A selectable option with short and full descriptions.
 class ChoiceOption<T> {
@@ -48,7 +49,7 @@ class DetailedChooser {
       throw ArgumentError('options must not be empty');
     }
 
-    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+    if (!TerminalRedraw.isInteractive) {
       final fallback = defaultValue ?? options.first.value;
       _logger.info(
         '  ${CliTheme.muted('Selected')} ${CliTheme.label('$fallback')}',
@@ -61,7 +62,8 @@ class DetailedChooser {
         : options.indexWhere((o) => o.value == defaultValue);
     if (index < 0) index = 0;
 
-    void paint() {
+    List<String> frame() {
+      final lines = <String>[];
       for (var i = 0; i < options.length; i++) {
         final option = options[i];
         final isCurrent = i == index;
@@ -73,32 +75,20 @@ class DetailedChooser {
             : option.label.padRight(14);
         final short = CliTheme.muted(option.shortDescription);
         final prefix = isCurrent ? CliTheme.accent(CliTheme.arrow) : ' ';
-        stdout.writeln('  $prefix $radio  $label $short');
+        lines.add('  $prefix $radio  $label $short');
       }
-
-      stdout
-        ..writeln()
-        ..writeln(
+      lines
+        ..add('')
+        ..add(
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('i details')}',
-        )
-        ..write('\x1b[J');
+        );
+      return lines;
     }
 
-    void redraw() {
-      stdout.write('\x1b8');
-      paint();
-    }
-
-    stdin
-      ..echoMode = false
-      ..lineMode = false;
-
-    stdout
-      ..write('\x1b7')
-      ..write('\x1b[?25l');
-    paint();
+    TerminalRedraw.begin();
+    TerminalRedraw.paint(frame());
 
     try {
       while (true) {
@@ -108,25 +98,24 @@ class DetailedChooser {
         } else if (key == _Key.down) {
           index = (index + 1) % options.length;
         } else if (key == _Key.info) {
+          TerminalRedraw.end();
           _showDetailDialog(options[index]);
-          stdout
-            ..write('\x1b7')
-            ..write('\x1b[?25l');
-          paint();
+          TerminalRedraw.begin();
+          TerminalRedraw.paint(frame());
           continue;
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
-          _restoreTerminal();
+          TerminalRedraw.end();
           exit(130);
         } else {
           continue;
         }
 
-        redraw();
+        TerminalRedraw.paint(frame());
       }
     } finally {
-      _restoreTerminal();
+      TerminalRedraw.end();
     }
 
     final selected = options[index];
@@ -143,7 +132,7 @@ class DetailedChooser {
   }) {
     if (options.isEmpty) return <T>[];
 
-    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+    if (!TerminalRedraw.isInteractive) {
       return defaultValues ?? options.map((o) => o.value).toList();
     }
 
@@ -156,7 +145,8 @@ class DetailedChooser {
     }
     var index = 0;
 
-    void paint() {
+    List<String> frame() {
+      final lines = <String>[];
       for (var i = 0; i < options.length; i++) {
         final option = options[i];
         final isCurrent = i == index;
@@ -169,33 +159,21 @@ class DetailedChooser {
             : option.label.padRight(22);
         final short = CliTheme.muted(option.shortDescription);
         final prefix = isCurrent ? CliTheme.accent(CliTheme.arrow) : ' ';
-        stdout.writeln('  $prefix $radio  $label $short');
+        lines.add('  $prefix $radio  $label $short');
       }
-
-      stdout
-        ..writeln()
-        ..writeln(
+      lines
+        ..add('')
+        ..add(
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('space toggle')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('i details')}',
-        )
-        ..write('\x1b[J');
+        );
+      return lines;
     }
 
-    void redraw() {
-      stdout.write('\x1b8');
-      paint();
-    }
-
-    stdin
-      ..echoMode = false
-      ..lineMode = false;
-
-    stdout
-      ..write('\x1b7')
-      ..write('\x1b[?25l');
-    paint();
+    TerminalRedraw.begin();
+    TerminalRedraw.paint(frame());
 
     try {
       while (true) {
@@ -211,25 +189,24 @@ class DetailedChooser {
             selected.add(index);
           }
         } else if (key == _Key.info) {
+          TerminalRedraw.end();
           _showDetailDialog(options[index]);
-          stdout
-            ..write('\x1b7')
-            ..write('\x1b[?25l');
-          paint();
+          TerminalRedraw.begin();
+          TerminalRedraw.paint(frame());
           continue;
         } else if (key == _Key.enter) {
           break;
         } else if (key == _Key.quit) {
-          _restoreTerminal();
+          TerminalRedraw.end();
           exit(130);
         } else {
           continue;
         }
 
-        redraw();
+        TerminalRedraw.paint(frame());
       }
     } finally {
-      _restoreTerminal();
+      TerminalRedraw.end();
     }
 
     final values = selected.map((i) => options[i].value).toList();
@@ -358,17 +335,7 @@ class DetailedChooser {
   }
 
   void _restoreTerminal() {
-    try {
-      stdin
-        ..lineMode = true
-        ..echoMode = true;
-    } on Object {
-      // Ignore when stdin is not a terminal.
-    }
-    stdout
-      ..write('\x1b8')
-      ..write('\x1b[J')
-      ..write('\x1b[?25h');
+    TerminalRedraw.end();
   }
 
   static int _terminalColumns() {

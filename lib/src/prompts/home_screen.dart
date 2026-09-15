@@ -4,6 +4,7 @@ import 'package:mason_logger/mason_logger.dart';
 
 import 'cli_theme.dart';
 import 'cli_ui.dart';
+import 'terminal_redraw.dart';
 
 /// Extensible home-menu action shown after the FKIT CLI hero.
 class HomeAction {
@@ -108,15 +109,15 @@ class HomeScreen {
     }
   }
 
-  /// Interactive home menu with stable redraw (paint then clear leftovers).
   HomeAction _chooseHomeAction(List<HomeAction> menu) {
-    if (!stdout.hasTerminal || !stdin.hasTerminal) {
+    if (!TerminalRedraw.isInteractive) {
       return menu.firstWhere((a) => a.enabled, orElse: () => menu.first);
     }
 
     var index = 0;
 
-    void paint() {
+    List<String> frame() {
+      final lines = <String>[];
       for (var i = 0; i < menu.length; i++) {
         final action = menu[i];
         final isCurrent = i == index;
@@ -130,46 +131,20 @@ class HomeScreen {
                 : action.title.padRight(28))
             : CliTheme.muted(action.title.padRight(28));
         final desc = CliTheme.muted(action.description);
-        stdout.writeln('  $prefix $radio  $title $desc');
+        lines.add('  $prefix $radio  $title $desc');
       }
-
-      stdout
-        ..writeln()
-        ..writeln(
+      lines
+        ..add('')
+        ..add(
           '  ${CliTheme.muted('↑/↓')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('enter')} ${CliTheme.muted(CliTheme.midDot)} '
           '${CliTheme.muted('ctrl+c')}',
-        )
-        ..write('\x1b[J');
+        );
+      return lines;
     }
 
-    void redraw() {
-      stdout.write('\x1b8');
-      paint();
-    }
-
-    void finishInteractive() {
-      stdout
-        ..write('\x1b8')
-        ..write('\x1b[J')
-        ..write('\x1b[?25h');
-      try {
-        stdin
-          ..lineMode = true
-          ..echoMode = true;
-      } on Object {
-        // Ignore when stdin is not a terminal.
-      }
-    }
-
-    stdin
-      ..echoMode = false
-      ..lineMode = false;
-
-    stdout
-      ..write('\x1b7')
-      ..write('\x1b[?25l');
-    paint();
+    TerminalRedraw.begin();
+    TerminalRedraw.paint(frame());
 
     try {
       while (true) {
@@ -181,16 +156,15 @@ class HomeScreen {
         } else if (key == _HomeKey.enter) {
           break;
         } else if (key == _HomeKey.quit) {
-          finishInteractive();
+          TerminalRedraw.end();
           exit(130);
         } else {
           continue;
         }
-
-        redraw();
+        TerminalRedraw.paint(frame());
       }
     } finally {
-      finishInteractive();
+      TerminalRedraw.end();
     }
 
     final selected = menu[index];

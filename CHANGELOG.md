@@ -2,6 +2,11 @@
 
 All notable changes to **FKIT CLI** are documented here.
 
+## [1.0.4] - 2026-09-15
+
+### Fixed
+- Home/folder menus no longer duplicate rows (cursor-up redraw, not DECSC)
+
 ## [1.0.3] - 2026-09-15
 
 ### Fixed
