@@ -5,8 +5,8 @@ Thanks for helping improve FKIT CLI.
 ## Development setup
 
 ```bash
-git clone https://github.com/hamzaali265/FKIT-CLI.git
-cd FKIT-CLI
+git clone https://github.com/hamzaali265/fkit-cli.git
+cd fkit-cli
 dart pub get
 dart test
 ```

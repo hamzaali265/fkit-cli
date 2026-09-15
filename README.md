@@ -5,7 +5,7 @@
 [![Dart](https://img.shields.io/badge/Dart-3.12+-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![Flutter](https://img.shields.io/badge/Flutter-ready-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/hamzaali265/FKIT-CLI?style=social)](https://github.com/hamzaali265/FKIT-CLI)
+[![GitHub stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=social)](https://github.com/hamzaali265/fkit-cli)
 
 <p align="center">
   <code>fkit</code> · interactive home · wizard scaffolding · CI-friendly flags
@@ -53,8 +53,8 @@ Setting up a Flutter app the “right” way still means the same busywork every
 ### From source (recommended while the package is early)
 
 ```bash
-git clone https://github.com/hamzaali265/FKIT-CLI.git
-cd FKIT-CLI
+git clone https://github.com/hamzaali265/fkit-cli.git
+cd fkit-cli
 dart pub get
 dart run bin/fkit.dart
 ```
