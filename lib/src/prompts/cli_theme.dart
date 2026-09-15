@@ -74,9 +74,7 @@ class CliTheme {
 
   /// Full FKIT ASCII wordmark lines.
   static List<String> get fkitAsciiLogo {
-    return [
-      for (final row in fkitLogoRows) '${row.$1}  ${row.$2}',
-    ];
+    return [for (final row in fkitLogoRows) '${row.$1}  ${row.$2}'];
   }
 
   /// Rows of `(fLine, kitLine)` for colored hero rendering.

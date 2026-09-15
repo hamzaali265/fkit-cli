@@ -326,6 +326,8 @@ Scaffolds a new Flutter application.
 | `--[no-]file-picker` | | `boolean` | `false` | Include `file_picker` + `FilePickerService`. |
 | `--[no-]secure-storage` | | `boolean` | `false` | Include `flutter_secure_storage` encrypted vault. |
 | `--[no-]url-launcher` | | `boolean` | `false` | Include `url_launcher` package. |
+| `--[no-]uuid` | | `boolean` | `false` | Include `uuid` package for RFC-compliant UUID generation. |
+| `--[no-]intl` | | `boolean` | `true` | Include `intl` package with Date, Time, & Currency `AppFormatters`. |
 
 ---
 

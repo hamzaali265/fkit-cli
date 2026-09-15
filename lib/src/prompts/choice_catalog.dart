@@ -134,6 +134,8 @@ abstract final class ChoiceCatalog {
         return 'links';
       case UtilityPackage.uuid:
         return 'ids';
+      case UtilityPackage.intl:
+        return 'i18n';
     }
   }
 }

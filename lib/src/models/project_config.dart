@@ -45,10 +45,7 @@ enum ArchitecturePattern {
 
 /// State management options supported by fkit.
 enum StateManagement {
-  bloc(
-    'BLoC',
-    'State management library following the BLoC design pattern',
-  ),
+  bloc('BLoC', 'State management library following the BLoC design pattern'),
   riverpod(
     'Riverpod',
     'Compile-safe and flexible state management provider system',
@@ -99,10 +96,7 @@ enum Routing {
     'auto_route',
     'Strongly-typed declarative routing with code generation',
   ),
-  standard(
-    'Navigator',
-    'Standard Flutter Navigator 2.0 / imperative routes',
-  );
+  standard('Navigator', 'Standard Flutter Navigator 2.0 / imperative routes');
 
   const Routing(this.label, this.description);
   final String label;
@@ -253,7 +247,12 @@ enum UtilityPackage {
     '^6.3.1',
     'Launch web URLs, phone calls, and email client',
   ),
-  uuid('uuid', '^4.5.1', 'RFC-compliant UUID generator');
+  uuid('uuid', '^4.5.1', 'RFC-compliant UUID generator'),
+  intl(
+    'intl',
+    '^0.20.2',
+    'Internationalization, date/number formatting, and bidirectional text',
+  );
 
   const UtilityPackage(this.packageName, this.version, this.description);
   final String packageName;
@@ -300,6 +299,10 @@ enum UtilityPackage {
         return UtilityPackage.urlLauncher;
       case 'uuid':
         return UtilityPackage.uuid;
+      case 'intl':
+      case 'internationalization':
+      case 'i18n':
+        return UtilityPackage.intl;
       default:
         throw ArgumentError('Unknown utility package: $key');
     }
@@ -357,6 +360,8 @@ class ProjectConfig {
       utilities.contains(UtilityPackage.flutterSecureStorage);
   bool get hasUrlLauncher => utilities.contains(UtilityPackage.urlLauncher);
   bool get hasUuid => utilities.contains(UtilityPackage.uuid);
+  bool get hasIntl =>
+      utilities.contains(UtilityPackage.intl) || hasLocalization;
 
   /// Computes the list of production dependencies with tested versions.
   Map<String, String> get dependencies {
@@ -421,12 +426,16 @@ class ProjectConfig {
     // Localization
     if (hasLocalization) {
       deps['flutter_localizations'] = 'sdk: flutter';
-      deps['intl'] = '^0.20.2';
     }
 
-    // Utility packages (flutter_svg, cached_network_image, gap, etc.)
+    // Utility packages (flutter_svg, cached_network_image, gap, intl, etc.)
     for (final util in utilities) {
       deps[util.packageName] = util.version;
+    }
+
+    // Ensure intl is present if localization is enabled
+    if (hasLocalization && !deps.containsKey('intl')) {
+      deps['intl'] = '^0.20.2';
     }
 
     return deps;

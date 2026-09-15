@@ -75,8 +75,7 @@ void main() {
   }
 
   final usesRouterWidget =
-      config.routing == Routing.goRouter ||
-      config.routing == Routing.autoRoute;
+      config.routing == Routing.goRouter || config.routing == Routing.autoRoute;
 
   final appWidgetClass = config.stateManagement == StateManagement.getx
       ? (usesRouterWidget ? 'GetMaterialApp.router' : 'GetMaterialApp')

@@ -41,10 +41,7 @@ class DetailedChooser {
   final Logger _logger;
 
   /// Choose one option. Press `i` to open a detail dialog for the cursor row.
-  T chooseOne<T>({
-    required List<ChoiceOption<T>> options,
-    T? defaultValue,
-  }) {
+  T chooseOne<T>({required List<ChoiceOption<T>> options, T? defaultValue}) {
     if (options.isEmpty) {
       throw ArgumentError('options must not be empty');
     }
@@ -253,10 +250,7 @@ class DetailedChooser {
       for (final line in visibleBody) _doubleRow(dialogWidth, line),
       _doubleRow(dialogWidth, ''),
       _doubleMid(dialogWidth),
-      _doubleRow(
-        dialogWidth,
-        CliTheme.muted('i / enter  close'),
-      ),
+      _doubleRow(dialogWidth, CliTheme.muted('i / enter  close')),
       _doubleBottom(dialogWidth),
     ];
 
@@ -272,9 +266,7 @@ class DetailedChooser {
       stdout.writeln('$pad$line$shadow');
     }
     // Bottom shadow strip (offset).
-    stdout.writeln(
-      '$pad ${CliTheme.muted('█' * dialogWidth)}',
-    );
+    stdout.writeln('$pad ${CliTheme.muted('█' * dialogWidth)}');
     stdout.writeln();
 
     while (true) {
@@ -305,8 +297,7 @@ class DetailedChooser {
     return '${CliTheme.accent('╔${'═' * left}')}$titleStr${CliTheme.accent('${'═' * right}╗')}';
   }
 
-  String _doubleBottom(int width) =>
-      CliTheme.accent('╚${'═' * (width - 2)}╝');
+  String _doubleBottom(int width) => CliTheme.accent('╚${'═' * (width - 2)}╝');
 
   String _doubleMid(int width) => CliTheme.accent('╟${'─' * (width - 2)}╢');
 
@@ -318,9 +309,7 @@ class DetailedChooser {
     }
     final pad = (inner - CliTheme.visibleLength(text)).clamp(0, 1000);
     final filled = '$text${' ' * pad}';
-    final body = _looksLikeDiagram(content)
-        ? CliTheme.accent(filled)
-        : filled;
+    final body = _looksLikeDiagram(content) ? CliTheme.accent(filled) : filled;
     return '${CliTheme.accent('║')} $body ${CliTheme.accent('║')}';
   }
 

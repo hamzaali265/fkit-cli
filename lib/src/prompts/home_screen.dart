@@ -127,8 +127,8 @@ class HomeScreen {
         final prefix = isCurrent ? CliTheme.accent(CliTheme.arrow) : ' ';
         final title = action.enabled
             ? (isCurrent
-                ? CliTheme.boldText(action.title.padRight(28))
-                : action.title.padRight(28))
+                  ? CliTheme.boldText(action.title.padRight(28))
+                  : action.title.padRight(28))
             : CliTheme.muted(action.title.padRight(28));
         final desc = CliTheme.muted(action.description);
         lines.add('  $prefix $radio  $title $desc');

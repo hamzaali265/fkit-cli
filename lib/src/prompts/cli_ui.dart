@@ -21,9 +21,7 @@ class CliUi {
 
     if (CliTheme.canShowAsciiLogo(columns: columns)) {
       for (final row in CliTheme.fkitLogoRows) {
-        _logger.info(
-          '  ${CliTheme.colorFkitLogoRow(row.$1, row.$2)}',
-        );
+        _logger.info('  ${CliTheme.colorFkitLogoRow(row.$1, row.$2)}');
       }
     } else {
       _logger.info(
@@ -127,9 +125,7 @@ class CliUi {
         final labelPart = i == 0
             ? CliTheme.muted(label.padRight(labelWidth))
             : ' ' * labelWidth;
-        _logger.info(
-          '  ${CliTheme.boxLine('$labelPart ${lines[i]}', inner)}',
-        );
+        _logger.info('  ${CliTheme.boxLine('$labelPart ${lines[i]}', inner)}');
       }
     }
 
@@ -142,19 +138,19 @@ class CliUi {
     printRow('Name', config.projectName);
     printRow('Org', config.orgName);
     printRow('Path', config.targetDirectory);
-    printRow('Architecture', CliTheme.pill(config.architecture.label, active: true));
-    printRow('State', CliTheme.pill(config.stateManagement.label, active: true));
+    printRow(
+      'Architecture',
+      CliTheme.pill(config.architecture.label, active: true),
+    );
+    printRow(
+      'State',
+      CliTheme.pill(config.stateManagement.label, active: true),
+    );
     printRow('Routing', CliTheme.pill(config.routing.label, active: true));
     printRow('Network', CliTheme.pill(config.networking.label, active: true));
     printRow('Storage', CliTheme.pill(config.storage.label, active: true));
-    printRow(
-      'Utilities',
-      pills(config.utilities.map((u) => u.packageName)),
-    );
-    printRow(
-      'Features',
-      pills(config.features.map((f) => f.label)),
-    );
+    printRow('Utilities', pills(config.utilities.map((u) => u.packageName)));
+    printRow('Features', pills(config.features.map((f) => f.label)));
 
     _logger.info('  ${CliTheme.bottomBorder(width)}');
     _logger.info('');
@@ -177,7 +173,10 @@ class CliUi {
     _logger.info(
       '  ${CliTheme.boxLine(CliTheme.muted('Get started:'), inner)}',
     );
-    for (final line in CliTheme.wrap(CliTheme.accent('cd $relativePath'), inner)) {
+    for (final line in CliTheme.wrap(
+      CliTheme.accent('cd $relativePath'),
+      inner,
+    )) {
       _logger.info('  ${CliTheme.boxLine(line, inner)}');
     }
     if (config.offline) {

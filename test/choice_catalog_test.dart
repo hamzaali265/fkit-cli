@@ -16,10 +16,15 @@ void main() {
     test('state options stay compact', () {
       final options = ChoiceCatalog.state();
       expect(options.map((o) => o.label), containsAll(['BLoC', 'Riverpod']));
-      expect(
-        options.every((o) => o.shortDescription.isNotEmpty),
-        isTrue,
-      );
+      expect(options.every((o) => o.shortDescription.isNotEmpty), isTrue);
+    });
+
+    test('utilities catalog includes intl and uuid', () {
+      final options = ChoiceCatalog.utilities();
+      expect(options.map((o) => o.label), containsAll(['intl', 'uuid']));
+      final intlOption = options.firstWhere((o) => o.label == 'intl');
+      expect(intlOption.shortDescription, equals('i18n'));
+      expect(intlOption.detail, contains('Internationalization'));
     });
   });
 }

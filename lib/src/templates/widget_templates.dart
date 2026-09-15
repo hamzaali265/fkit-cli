@@ -280,7 +280,75 @@ extension NullableStringExtensions on String? {
 }
 
 /// Generates `lib/shared/utils/app_formatters.dart`.
-String renderAppFormatters() {
+String renderAppFormatters({bool hasIntl = false}) {
+  if (hasIntl) {
+    return '''
+import 'package:intl/intl.dart';
+
+/// Shared formatters and utility string functions.
+class AppFormatters {
+  AppFormatters._();
+
+  /// Formats date into readable string (e.g. "MMM d, yyyy").
+  static String formatDate(
+    DateTime date, {
+    String format = 'MMM d, yyyy',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(date);
+  }
+
+  /// Formats time into readable string (e.g. "hh:mm a").
+  static String formatTime(
+    DateTime date, {
+    String format = 'hh:mm a',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(date);
+  }
+
+  /// Formats full date and time (e.g. "MMM d, yyyy hh:mm a").
+  static String formatDateTime(
+    DateTime date, {
+    String format = 'MMM d, yyyy hh:mm a',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(date);
+  }
+
+  /// Formats currency (e.g. "\$1,234.56").
+  static String formatCurrency(
+    num amount, {
+    String symbol = r'\$',
+    int decimalDigits = 2,
+    String? locale,
+  }) {
+    return NumberFormat.currency(
+      symbol: symbol,
+      decimalDigits: decimalDigits,
+      locale: locale,
+    ).format(amount);
+  }
+
+  /// Formats compact numbers (e.g. "1.2K", "3.4M").
+  static String formatCompact(num number, {String? locale}) {
+    return NumberFormat.compact(locale: locale).format(number);
+  }
+
+  /// Formats a number with thousands separators (e.g. 1,000,000).
+  static String formatNumber(num number, {String? locale}) {
+    return NumberFormat.decimalPattern(locale).format(number);
+  }
+
+  /// Capitalizes the first letter of a string.
+  static String capitalize(String text) {
+    if (text.isEmpty) return text;
+    return '\${text[0].toUpperCase()}\${text.substring(1)}';
+  }
+}
+''';
+  }
+
   return '''
 /// Shared formatters and utility string functions.
 class AppFormatters {

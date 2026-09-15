@@ -18,7 +18,10 @@ void main() {
 
       expect(output, contains('Welcome to FKIT CLI!'));
       expect(output, contains('v1.2.3'));
-      expect(output, contains('Modern Flutter scaffolding for production apps.'));
+      expect(
+        output,
+        contains('Modern Flutter scaffolding for production apps.'),
+      );
       expect(output, contains('██'));
     });
 
@@ -49,8 +52,7 @@ void main() {
       final config = ProjectConfig(
         projectName: 'demo_app',
         orgName: 'com.demo',
-        targetDirectory:
-            '/Users/hamza/Work/very/long/path/to/project/demo_app',
+        targetDirectory: '/Users/hamza/Work/very/long/path/to/project/demo_app',
         architecture: ArchitecturePattern.featureFirst,
         stateManagement: StateManagement.bloc,
         routing: Routing.goRouter,

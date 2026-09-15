@@ -173,5 +173,34 @@ void main() {
         expect(config.dependencies.containsKey('file_picker'), isTrue);
       },
     );
+
+    test('supports intl as explicit utility package without full l10n', () {
+      final config = ProjectConfig(
+        projectName: 'intl_app',
+        orgName: 'com.intl',
+        targetDirectory: '/tmp/intl_app',
+        architecture: ArchitecturePattern.mvvm,
+        stateManagement: StateManagement.provider,
+        routing: Routing.standard,
+        networking: Networking.none,
+        storage: Storage.none,
+        features: const {},
+        utilities: {UtilityPackage.intl},
+      );
+
+      expect(config.hasIntl, isTrue);
+      expect(config.hasLocalization, isFalse);
+      expect(config.dependencies.containsKey('intl'), isTrue);
+      expect(config.dependencies.containsKey('flutter_localizations'), isFalse);
+    });
+
+    test('fromKey parses intl variants', () {
+      expect(UtilityPackage.fromKey('intl'), equals(UtilityPackage.intl));
+      expect(UtilityPackage.fromKey('i18n'), equals(UtilityPackage.intl));
+      expect(
+        UtilityPackage.fromKey('internationalization'),
+        equals(UtilityPackage.intl),
+      );
+    });
   });
 }

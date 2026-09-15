@@ -11,8 +11,7 @@ import 'terminal_redraw.dart';
 class _DirChoice {
   const _DirChoice._(this.id, this.label, {this.path});
 
-  factory _DirChoice.useThis() =>
-      const _DirChoice._('use', 'Use this folder');
+  factory _DirChoice.useThis() => const _DirChoice._('use', 'Use this folder');
 
   factory _DirChoice.parent() => const _DirChoice._('parent', '..');
 
@@ -100,9 +99,9 @@ class DirectoryPicker {
     List<_DirChoice> buildChoices() => [
       _DirChoice.useThis(),
       _DirChoice.parent(),
-      ...listChildDirectories(current).map(
-        (name) => _DirChoice.directory(name, p.join(current.path, name)),
-      ),
+      ...listChildDirectories(
+        current,
+      ).map((name) => _DirChoice.directory(name, p.join(current.path, name))),
     ];
 
     List<String> frame(List<_DirChoice> choices) {
@@ -122,9 +121,7 @@ class DirectoryPicker {
       }
 
       if (choices.length > _maxVisibleRows) {
-        lines.add(
-          '  ${CliTheme.muted('  … ${index + 1}/${choices.length}')}',
-        );
+        lines.add('  ${CliTheme.muted('  … ${index + 1}/${choices.length}')}');
       }
 
       lines
@@ -249,9 +246,7 @@ class DirectoryPicker {
     }
 
     final selected = choices[index];
-    _logger.info(
-      '  ${CliTheme.muted('Selected')} ${CliTheme.label(selected)}',
-    );
+    _logger.info('  ${CliTheme.muted('Selected')} ${CliTheme.label(selected)}');
     return selected == 'Continue';
   }
 
@@ -263,9 +258,7 @@ class DirectoryPicker {
 
     switch (choice.id) {
       case 'use':
-        final label = isCurrent
-            ? CliTheme.label(choice.label)
-            : choice.label;
+        final label = isCurrent ? CliTheme.label(choice.label) : choice.label;
         return '$prefix $radio  ${CliTheme.accent(CliTheme.tick)} $label';
       case 'parent':
         return '$prefix $radio  ${CliTheme.muted(CliTheme.folder)} '

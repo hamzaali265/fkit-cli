@@ -84,7 +84,9 @@ class TemplateEngine {
     files['lib/shared/extensions/string_extensions.dart'] =
         renderStringExtensions();
     files['lib/shared/extensions/extensions.dart'] = renderExtensionsBarrel();
-    files['lib/shared/utils/app_formatters.dart'] = renderAppFormatters();
+    files['lib/shared/utils/app_formatters.dart'] = renderAppFormatters(
+      hasIntl: config.hasIntl,
+    );
     files['lib/shared/utils/utils.dart'] = renderUtilsBarrel();
 
     // Asset folder placeholders (directories created on disk in generator too)

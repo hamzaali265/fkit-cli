@@ -139,6 +139,12 @@ class CreateCommand extends Command<int> {
         help: 'Include url_launcher package.',
         defaultsTo: false,
       )
+      ..addFlag('uuid', help: 'Include uuid package.', defaultsTo: false)
+      ..addFlag(
+        'intl',
+        help: 'Include intl package for date/number formatting and i18n.',
+        defaultsTo: true,
+      )
       ..addFlag(
         'hero',
         help: 'Show the FKIT CLI hero banner before the wizard.',
@@ -239,6 +245,12 @@ class CreateCommand extends Command<int> {
       }
       if (args['url-launcher'] as bool) {
         utilities.add(UtilityPackage.urlLauncher);
+      }
+      if (args['uuid'] as bool) {
+        utilities.add(UtilityPackage.uuid);
+      }
+      if (args['intl'] as bool) {
+        utilities.add(UtilityPackage.intl);
       }
 
       config = ProjectConfig(

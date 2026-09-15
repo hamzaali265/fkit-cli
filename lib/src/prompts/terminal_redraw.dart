@@ -61,6 +61,5 @@ class TerminalRedraw {
   }
 
   /// Whether stdin/stdout support interactive redraw.
-  static bool get isInteractive =>
-      stdout.hasTerminal && stdin.hasTerminal;
+  static bool get isInteractive => stdout.hasTerminal && stdin.hasTerminal;
 }

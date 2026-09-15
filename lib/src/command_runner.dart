@@ -13,11 +13,9 @@ const String packageDescription =
 
 /// Command runner for fkit.
 class FkitCommandRunner extends CommandRunner<int> {
-  FkitCommandRunner({
-    Logger? logger,
-    this._homeScreen,
-  }) : _logger = logger ?? Logger(),
-       super(packageName, packageDescription) {
+  FkitCommandRunner({Logger? logger, this._homeScreen})
+    : _logger = logger ?? Logger(),
+      super(packageName, packageDescription) {
     argParser.addFlag(
       'version',
       abbr: 'v',

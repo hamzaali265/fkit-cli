@@ -57,9 +57,7 @@ class InteractiveWizard {
           .trim();
 
       if (!_isValidProjectName(projectName)) {
-        _logger.err(
-          '  Invalid name. Use lowercase snake_case (e.g. my_app).',
-        );
+        _logger.err('  Invalid name. Use lowercase snake_case (e.g. my_app).');
         projectName = '';
       }
     }

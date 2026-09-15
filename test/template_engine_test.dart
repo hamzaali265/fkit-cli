@@ -100,18 +100,12 @@ void main() {
             contains("export 'widget_extensions.dart';"),
           ),
         );
-        expect(
-          files.containsKey('lib/shared/widgets/widgets.dart'),
-          isTrue,
-        );
+        expect(files.containsKey('lib/shared/widgets/widgets.dart'), isTrue);
         expect(
           files['lib/shared/widgets/widgets.dart'],
           contains("export 'app_button.dart';"),
         );
-        expect(
-          files.containsKey('lib/shared/utils/utils.dart'),
-          isTrue,
-        );
+        expect(files.containsKey('lib/shared/utils/utils.dart'), isTrue);
         expect(
           files.containsKey('lib/shared/utils/app_formatters.dart'),
           isTrue,
@@ -334,7 +328,10 @@ void main() {
             expect(router, contains('static Future<T?> push'));
             expect(router, contains('static void pop'));
             expect(mainDart, contains('navigatorKey: AppRouter.key'));
-            expect(mainDart, contains('onGenerateRoute: AppRouter.generateRoutes'));
+            expect(
+              mainDart,
+              contains('onGenerateRoute: AppRouter.generateRoutes'),
+            );
           case Routing.goRouter:
             expect(router, contains('static final GoRouter router'));
             expect(router, contains('static void go'));
@@ -342,7 +339,10 @@ void main() {
           case Routing.autoRoute:
             expect(router, contains('@AutoRouterConfig'));
             expect(router, contains('static final AppRouter instance'));
-            expect(files['lib/screens/counter_screen.dart'], contains('@RoutePage()'));
+            expect(
+              files['lib/screens/counter_screen.dart'],
+              contains('@RoutePage()'),
+            );
             expect(mainDart, contains('AppRouter.instance.config()'));
         }
       }
@@ -603,5 +603,27 @@ void main() {
         );
       },
     );
+
+    test('generates AppFormatters with DateFormat when intl is enabled', () {
+      final config = ProjectConfig(
+        projectName: 'intl_app',
+        orgName: 'com.example',
+        targetDirectory: '/tmp/intl_app',
+        architecture: ArchitecturePattern.mvvm,
+        stateManagement: StateManagement.none,
+        routing: Routing.standard,
+        networking: Networking.none,
+        storage: Storage.none,
+        features: const {},
+        utilities: {UtilityPackage.intl},
+      );
+
+      final files = engine.generateFiles(config);
+      final formatters = files['lib/shared/utils/app_formatters.dart']!;
+      expect(formatters, contains("import 'package:intl/intl.dart';"));
+      expect(formatters, contains('static String formatDate('));
+      expect(formatters, contains('static String formatCurrency('));
+      expect(formatters, contains('DateFormat(format, locale).format(date)'));
+    });
   });
 }

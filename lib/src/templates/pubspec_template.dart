@@ -58,7 +58,9 @@ String renderPubspecYaml(ProjectConfig config) {
   if (config.hasAssetsStructure) {
     buffer
       ..writeln()
-      ..writeln('  # To add assets to your application, add an assets section, like this:')
+      ..writeln(
+        '  # To add assets to your application, add an assets section, like this:',
+      )
       ..writeln('  assets:')
       ..writeln('    - assets/images/')
       ..writeln('    - assets/icons/')

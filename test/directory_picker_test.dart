@@ -11,7 +11,10 @@ void main() {
         '/Users/hamza/Work',
         'my_app',
       );
-      expect(target, equals(p.normalize(p.absolute('/Users/hamza/Work/my_app'))));
+      expect(
+        target,
+        equals(p.normalize(p.absolute('/Users/hamza/Work/my_app'))),
+      );
     });
 
     test('listChildDirectories returns sorted non-hidden dirs', () {
