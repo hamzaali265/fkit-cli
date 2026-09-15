@@ -3,7 +3,7 @@
 **Scaffold production-ready Flutter apps from your terminal — architecture, state, routing, and packages in one interactive flow.**
 
 [![Dart](https://img.shields.io/badge/Dart-3.12+-0175C2?logo=dart&logoColor=white)](https://dart.dev)
-[![pub package](https://img.shields.io/pub/v/fkit.svg)](https://pub.dev/packages/fkit)
+[![pub package](https://img.shields.io/pub/v/fkit_cli.svg)](https://pub.dev/packages/fkit_cli)
 [![Flutter](https://img.shields.io/badge/Flutter-ready-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=social)](https://github.com/hamzaali265/fkit-cli)
@@ -54,11 +54,11 @@ Setting up a Flutter app the “right” way still means the same busywork every
 ### From pub.dev (recommended)
 
 ```bash
-dart pub global activate fkit
+dart pub global activate fkit_cli
 fkit
 ```
 
-Make sure Pub’s bin directory is on your `PATH` (Dart prints it after activate if needed).
+After activate, the command is still **`fkit`**.
 
 ### From GitHub
 
@@ -177,7 +177,7 @@ dart analyze
 
 ## Roadmap
 
-- [x] Pub.dev publish (`fkit`)
+- [x] Pub.dev publish (`fkit_cli`)
 - [ ] Homebrew / scoop install snippets
 - [ ] More architecture presets and template packs
 - [ ] Plugin hooks for custom generators

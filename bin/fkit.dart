@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fkit/fkit.dart';
+import 'package:fkit_cli/fkit.dart';
 
 Future<void> main(List<String> args) async {
   final runner = FkitCommandRunner();

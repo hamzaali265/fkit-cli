@@ -1,4 +1,4 @@
-import 'package:fkit/fkit.dart';
+import 'package:fkit_cli/fkit.dart';
 import 'package:test/test.dart';
 
 void main() {

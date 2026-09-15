@@ -1,4 +1,4 @@
-name: fkit
+name: fkit_cli
 description: FKIT CLI — interactive tool for bootstrapping production-ready Flutter applications.
 version: 1.0.0
 repository: https://github.com/hamzaali265/fkit-cli
