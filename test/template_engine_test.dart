@@ -747,5 +747,97 @@ void main() {
         );
       },
     );
+
+    test(
+      'generates funsai network architecture suite without store folder',
+      () {
+        final config = ProjectConfig(
+          projectName: 'network_app',
+          orgName: 'com.example',
+          targetDirectory: '/tmp/network_app',
+          architecture: ArchitecturePattern.featureFirst,
+          stateManagement: StateManagement.riverpod,
+          routing: Routing.goRouter,
+          networking: Networking.dio,
+          storage: Storage.none,
+          features: {ProjectFeature.envFlavors},
+        );
+
+        final files = engine.generateFiles(config);
+
+        // Network folder files (funsai style)
+        expect(files.containsKey('lib/core/network/api_contract.dart'), isTrue);
+        expect(files.containsKey('lib/core/network/api_endpoint.dart'), isTrue);
+        expect(files.containsKey('lib/core/network/api_response.dart'), isTrue);
+        expect(
+          files.containsKey('lib/core/network/app_exception.dart'),
+          isTrue,
+        );
+        expect(
+          files.containsKey('lib/core/network/api_interceptor.dart'),
+          isTrue,
+        );
+        expect(files.containsKey('lib/core/network/api_service.dart'), isTrue);
+        expect(files.containsKey('lib/core/network/api_client.dart'), isTrue);
+        expect(
+          files.containsKey('lib/core/network/network_event_provider.dart'),
+          isTrue,
+        );
+        expect(
+          files.containsKey('lib/core/network/failures/failure.dart'),
+          isTrue,
+        );
+        expect(
+          files.containsKey('lib/core/network/failures/exception.dart'),
+          isTrue,
+        );
+        expect(files.containsKey('lib/core/network/network.dart'), isTrue);
+
+        // Verify NO store/ folder files
+        final storeFiles = files.keys.where((k) => k.contains('network/store'));
+        expect(storeFiles, isEmpty);
+
+        // Content checks
+        final apiContract = files['lib/core/network/api_contract.dart']!;
+        expect(apiContract, contains('abstract interface class ApiContract'));
+        expect(apiContract, contains('Future<String?> get('));
+        expect(apiContract, contains('Future<String?> post('));
+        expect(apiContract, contains('Future<String?> patch('));
+        expect(apiContract, contains('Future<String?> delete('));
+        expect(apiContract, contains('Future<String?> put('));
+
+        final apiEndpoint = files['lib/core/network/api_endpoint.dart']!;
+        expect(apiEndpoint, contains('class ApiEndpoint'));
+        expect(apiEndpoint, contains('static const String login'));
+
+        final apiResponse = files['lib/core/network/api_response.dart']!;
+        expect(apiResponse, contains('class ApiResponse<T>'));
+        expect(apiResponse, contains('enum LoadStatus'));
+
+        final appException = files['lib/core/network/app_exception.dart']!;
+        expect(appException, contains('class AppException'));
+        expect(appException, contains('class FetchDataException'));
+        expect(appException, contains('class UnauthorizedException'));
+        expect(appException, contains('class ExceptionHandler'));
+
+        final apiInterceptor = files['lib/core/network/api_interceptor.dart']!;
+        expect(
+          apiInterceptor,
+          contains('class ApiInterceptor extends Interceptor'),
+        );
+
+        final apiService = files['lib/core/network/api_service.dart']!;
+        expect(apiService, contains('class ApiService implements ApiContract'));
+        expect(apiService, contains('typedef ApiClient = ApiService;'));
+
+        final barrel = files['lib/core/network/network.dart']!;
+        expect(barrel, contains("export 'api_contract.dart';"));
+        expect(barrel, contains("export 'api_endpoint.dart';"));
+        expect(barrel, contains("export 'api_service.dart';"));
+        expect(barrel, contains("export 'app_exception.dart';"));
+        expect(barrel, contains("export 'failures/failure.dart';"));
+        expect(barrel, contains("export 'failures/exception.dart';"));
+      },
+    );
   });
 }

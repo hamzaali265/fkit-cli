@@ -282,74 +282,783 @@ class AppConfig {
 ''';
 }
 
-/// Generates `lib/core/network/api_client.dart`.
-String renderApiClient(ProjectConfig config) {
-  if (config.networking == Networking.dio) {
-    final baseConfig = config.hasEnvFlavors
-        ? 'baseUrl: AppConfig.apiBaseUrl,'
-        : "baseUrl: 'https://api.example.com/v1',";
-    final importConfig = config.hasEnvFlavors
-        ? "import '../config/app_config.dart';"
-        : '';
-
-    return '''
+/// Generates `lib/core/network/api_contract.dart`.
+String renderApiContract() {
+  return '''
+import 'dart:io';
 import 'package:dio/dio.dart';
-$importConfig
 
-/// Base network client powered by Dio.
-class ApiClient {
-  ApiClient([Dio? dio])
-      : _dio = dio ??
-            Dio(
-              BaseOptions(
-                $baseConfig
-                connectTimeout: const Duration(seconds: 15),
-                receiveTimeout: const Duration(seconds: 15),
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                },
-              ),
-            ) {
-    _dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-      ),
-    );
+abstract interface class ApiContract {
+  Future<String?> get(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  });
+  Future<String?> post(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? header,
+    String? contentType,
+    CancelToken? cancelToken,
+  });
+  Future<String?> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  });
+  Future<String?> update(
+    String path,
+    Map<String, dynamic>? data, {
+    CancelToken? cancelToken,
+  });
+  Future<String?> create(
+    String path,
+    Map<String, dynamic>? data, {
+    CancelToken? cancelToken,
+  });
+  Future<String?> delete(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  });
+  Future<String?> put(
+    String url, {
+    Map<String, dynamic>? body,
+    File? file,
+    String? mime,
+    ProgressCallback? onSendProgress,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  });
+}
+''';
+}
+
+/// Generates `lib/core/network/api_endpoint.dart`.
+String renderApiEndpoint([ProjectConfig? config]) {
+  return '''
+/// Centralized API endpoint constants.
+class ApiEndpoint {
+  ApiEndpoint._();
+
+  // Auth
+  static const String login = '/auth/login';
+  static const String register = '/auth/register';
+  static const String refresh = '/auth/refresh';
+  static const String logout = '/auth/logout';
+
+  // User
+  static const String currentUser = '/users/me';
+  static const String updateProfile = '/users/profile';
+
+  // Sample Resources
+  static const String posts = '/posts';
+  static const String counter = '/counter';
+}
+''';
+}
+
+/// Generates `lib/core/network/api_response.dart`.
+String renderApiResponse() {
+  return '''
+/// Generic API response wrapper tracking request lifecycle status.
+class ApiResponse<T> {
+  ApiResponse.idle(this.message) : status = LoadStatus.idle;
+  ApiResponse.loading(this.message) : status = LoadStatus.loading;
+  ApiResponse.loadingNextPage(this.message)
+      : status = LoadStatus.loadingNextPage;
+  ApiResponse.completed(this.data) : status = LoadStatus.completed;
+  ApiResponse.error(this.message) : status = LoadStatus.error;
+  ApiResponse.isSuccessful(this.isSuccessful)
+      : status = LoadStatus.isSuccessful;
+
+  LoadStatus? status;
+  T? data;
+  String? message;
+  bool? isSuccessful;
+}
+
+enum LoadStatus {
+  idle,
+  loading,
+  loadingNextPage,
+  completed,
+  error,
+  isSuccessful,
+}
+''';
+}
+
+/// Generates `lib/core/network/app_exception.dart`.
+String renderAppException() {
+  return '''
+import 'dart:convert';
+import 'package:dio/dio.dart';
+
+/// Base class for all application specific exceptions.
+class AppException implements Exception {
+  const AppException({
+    required this.message,
+    this.prefix,
+    this.statusCode,
+  });
+
+  final String message;
+  final String? prefix;
+  final int? statusCode;
+
+  @override
+  String toString() => message;
+}
+
+/// Generic data fetching exception.
+class FetchDataException extends AppException {
+  FetchDataException([String? message])
+      : super(
+          message: message ??
+              'Oops! We encountered an issue while loading data. Please try again.',
+          prefix: 'Connection Error',
+        );
+}
+
+/// 400 Bad Request
+class BadRequestException extends AppException {
+  BadRequestException([String? message])
+      : super(
+          message: message ??
+              'Oops! Something went wrong with your request. Please try again.',
+          statusCode: 400,
+        );
+}
+
+/// 401 Unauthorized
+class UnauthorizedException extends AppException {
+  UnauthorizedException([String? message])
+      : super(
+          message: message ?? 'Session expired. Log in again.',
+          statusCode: 401,
+        );
+}
+
+/// 403 Forbidden
+class ForbiddenException extends AppException {
+  ForbiddenException([String? message])
+      : super(
+          message: message ??
+              "Access denied. You don't have permission for this action.",
+          statusCode: 403,
+        );
+}
+
+/// 404 Not Found
+class NotFoundException extends AppException {
+  NotFoundException([String? message])
+      : super(
+          message: message ?? "Oops! We couldn't find what you were looking for.",
+          statusCode: 404,
+        );
+}
+
+/// 409 Conflict
+class ConflictException extends AppException {
+  ConflictException([String? message])
+      : super(
+          message: message ?? 'This already exists! Try something else.',
+          statusCode: 409,
+        );
+}
+
+/// 429 Too Many Requests
+class RateLimitException extends AppException {
+  RateLimitException([String? message])
+      : super(
+          message: message ??
+              'Rate limit exceeded. Please wait a moment before trying again.',
+          statusCode: 429,
+        );
+}
+
+/// 500+ Internal Server Error
+class ServerException extends AppException {
+  ServerException([String? message])
+      : super(
+          message: message ?? 'The server is busy, please try again later.',
+          statusCode: 500,
+        );
+}
+
+/// Internet Connectivity Exceptions
+class NoInternetException extends AppException {
+  NoInternetException()
+      : super(
+          message: 'No signal! Please check your internet connection.',
+          prefix: 'Internet Connection Error',
+        );
+}
+
+class TimeoutException extends AppException {
+  TimeoutException()
+      : super(
+          message: 'The connection timed out. Please try again later.',
+          prefix: 'Connection Timeout',
+        );
+}
+
+/// Utility class to handle and map Dio responses to AppExceptions.
+class ExceptionHandler {
+  static AppException handleResponse(Response<dynamic>? response) {
+    if (response == null) {
+      return NoInternetException();
+    }
+
+    final statusCode = response.statusCode;
+    final responseData = response.data;
+    String? errorMessage;
+
+    try {
+      if (responseData != null) {
+        final data = responseData is String
+            ? jsonDecode(responseData)
+            : responseData;
+
+        if (data is Map) {
+          errorMessage = data['message'] as String? ??
+              (data['errors'] is Map
+                  ? (data['errors'] as Map)['detail'] as String?
+                  : null) ??
+              (data['error'] is Map
+                  ? (data['error'] as Map)['message'] as String?
+                  : null);
+        }
+      }
+    } on Exception {
+      // Ignore parsing errors and use default messages
+    }
+
+    switch (statusCode) {
+      case 400:
+        return BadRequestException(errorMessage);
+      case 401:
+        return UnauthorizedException(errorMessage);
+      case 403:
+        return ForbiddenException(errorMessage);
+      case 404:
+        return NotFoundException(errorMessage);
+      case 409:
+        return ConflictException(errorMessage);
+      case 422:
+        return BadRequestException(
+          errorMessage ?? 'Check your details and try again.',
+        );
+      case 429:
+        return RateLimitException();
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        return ServerException();
+      default:
+        return FetchDataException();
+    }
   }
 
-  final Dio _dio;
-
-  Dio get client => _dio;
-
-  Future<Response<T>> get<T>(
-    String path, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return _dio.get<T>(
-      path,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
-
-  Future<Response<T>> post<T>(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) async {
-    return _dio.post<T>(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
+  static AppException handleDioException(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return TimeoutException();
+      case DioExceptionType.connectionError:
+        return NoInternetException();
+      case DioExceptionType.badResponse:
+        return handleResponse(e.response);
+      case DioExceptionType.cancel:
+        return const AppException(message: 'Request was cancelled.');
+      case DioExceptionType.badCertificate:
+      case DioExceptionType.unknown:
+      case DioExceptionType.transformTimeout:
+        return FetchDataException();
+    }
   }
 }
 ''';
+}
+
+/// Generates `lib/core/network/api_interceptor.dart`.
+String renderApiInterceptor() {
+  return '''
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+
+/// Production-ready network interceptor with headers, logging, and error tracking.
+class ApiInterceptor extends Interceptor {
+  ApiInterceptor([this._tokenProvider]);
+
+  final String? Function()? _tokenProvider;
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    options.headers['x-client-platform'] = 'mobile';
+    options.headers['x-client-device'] = Platform.isIOS ? 'ios' : 'android';
+    if (options.contentType == null ||
+        options.contentType == Headers.jsonContentType) {
+      options.headers['Content-Type'] = 'application/json';
+    }
+    final token = _tokenProvider?.call();
+    if (token != null &&
+        token.isNotEmpty &&
+        !options.headers.containsKey('Authorization')) {
+      options.headers['Authorization'] = 'Bearer \$token';
+    }
+    log('REQUEST[\${options.method}] => PATH: \${options.path}');
+    return super.onRequest(options, handler);
+  }
+
+  @override
+  void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
+    log('RESPONSE[\${response.statusCode}] => PATH: \${response.requestOptions.path}');
+    return super.onResponse(response, handler);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    log('ERROR[\${err.response?.statusCode}] => PATH: \${err.requestOptions.path}');
+    return super.onError(err, handler);
+  }
+}
+''';
+}
+
+/// Generates `lib/core/network/api_service.dart`.
+String renderApiService(ProjectConfig config) {
+  final baseUrlVal = config.hasEnvFlavors
+      ? 'AppConfig.apiBaseUrl'
+      : "'https://api.example.com/v1'";
+  final configImport = config.hasEnvFlavors
+      ? "import '../config/app_config.dart';\n"
+      : '';
+
+  return '''
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+
+$configImport import 'api_contract.dart';
+import 'api_interceptor.dart';
+import 'app_exception.dart';
+
+/// Primary API service implementation powered by Dio.
+class ApiService implements ApiContract {
+  ApiService({
+    Dio? dio,
+    String? baseUrl,
+    String? Function()? tokenProvider,
+  })  : _baseUrl = baseUrl ?? $baseUrlVal,
+        _tokenProvider = tokenProvider,
+        _dio = dio ?? Dio() {
+    _dio.options.connectTimeout = const Duration(seconds: 15);
+    _dio.options.receiveTimeout = const Duration(seconds: 15);
+    _dio.interceptors.add(ApiInterceptor(_tokenProvider));
+  }
+
+  final Dio _dio;
+  final String _baseUrl;
+  final String? Function()? _tokenProvider;
+
+  Dio get client => _dio;
+  String get baseUrl => _baseUrl;
+  String get baseURL => _baseUrl;
+
+  String? _token;
+  String? get token => _token ?? _tokenProvider?.call();
+  set token(String? value) => _token = value;
+
+  @override
+  Future<String?> get(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('GET => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.get<String>(
+        fullUrl,
+        queryParameters: query,
+        cancelToken: cancelToken,
+        options: Options(
+          headers: header ??
+              {
+                if (token != null && token!.isNotEmpty)
+                  'Authorization': 'Bearer \$token',
+              },
+        ),
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 304) {
+        return response.data;
+      }
+
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) return null;
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> post(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? header,
+    String? contentType,
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('POST => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.post<String>(
+        fullUrl,
+        data: body,
+        queryParameters: query,
+        cancelToken: cancelToken,
+        options: Options(
+          headers: header ??
+              {
+                if (token != null && token!.isNotEmpty)
+                  'Authorization': 'Bearer \$token',
+              },
+          contentType: contentType ?? 'application/json',
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      }
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) return null;
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> patch(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('PATCH => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.patch<String>(
+        fullUrl,
+        data: body,
+        cancelToken: cancelToken,
+        options: Options(
+          headers: header ??
+              {
+                if (token != null && token!.isNotEmpty)
+                  'Authorization': 'Bearer \$token',
+              },
+          contentType: 'application/json',
+        ),
+      );
+      if (response.statusCode == 200) return response.data;
+      throw ExceptionHandler.handleResponse(response);
+    } on DioException catch (e) {
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> update(
+    String path,
+    Map<String, dynamic>? data, {
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('UPDATE => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.patch<String>(
+        fullUrl,
+        data: data,
+        cancelToken: cancelToken,
+      );
+      if (response.statusCode == 200) return response.data;
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> create(
+    String path,
+    Map<String, dynamic>? data, {
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('POST (create) => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.post<String>(
+        fullUrl,
+        data: data,
+        cancelToken: cancelToken,
+      );
+      if (response.statusCode == 201) return response.data;
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> delete(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('DELETE => PATH: \$path');
+    try {
+      final cleanPath = path.replaceAll('//', '/');
+      final fullUrl =
+          cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+      final response = await _dio.delete<String>(
+        fullUrl,
+        data: body,
+        cancelToken: cancelToken,
+        options: Options(
+          headers: header ??
+              {
+                if (token != null && token!.isNotEmpty)
+                  'Authorization': 'Bearer \$token',
+              },
+          contentType: 'application/json',
+        ),
+      );
+      return response.data;
+    } on SocketException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      throw ExceptionHandler.handleDioException(e);
+    } catch (ex) {
+      if (ex is AppException) rethrow;
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String?> put(
+    String url, {
+    Map<String, dynamic>? body,
+    File? file,
+    String? mime,
+    ProgressCallback? onSendProgress,
+    Map<String, dynamic>? header,
+    CancelToken? cancelToken,
+  }) async {
+    debugPrint('PUT => PATH: \$url');
+    Options? options;
+    Uint8List? imageBytes;
+    if (file != null) {
+      final bytes = await file.readAsBytes();
+      final base64Image = base64Encode(bytes);
+      imageBytes = base64Decode(base64Image);
+      options = Options(contentType: mime);
+    } else {
+      options = Options(
+        contentType: mime,
+        headers: header ??
+            {
+              if (token != null && token!.isNotEmpty)
+                'Authorization': 'Bearer \$token',
+            },
+      );
+    }
+
+    try {
+      final cleanPath = url.replaceAll('//', '/');
+      final fullUrl = file != null
+          ? url
+          : (cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath');
+      final response = await _dio.put<String>(
+        fullUrl,
+        data: body ?? imageBytes,
+        cancelToken: cancelToken,
+        options: options,
+        onSendProgress: onSendProgress,
+      );
+      return response.data;
+    } on SocketException {
+      throw NoInternetException();
+    } on DioException catch (e) {
+      throw ExceptionHandler.handleDioException(e);
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+}
+
+/// Backwards-compatible alias for ApiService.
+typedef ApiClient = ApiService;
+''';
+}
+
+/// Generates `lib/core/network/network_event_provider.dart`.
+String renderNetworkEventProvider([ProjectConfig? config]) {
+  return '''
+/// Sealed class representing global network events.
+sealed class NetworkEvent {
+  const NetworkEvent();
+}
+
+class BannedEvent extends NetworkEvent {
+  const BannedEvent();
+}
+
+class RateLimitEvent extends NetworkEvent {
+  const RateLimitEvent();
+}
+
+class RegionRestrictedEvent extends NetworkEvent {
+  const RegionRestrictedEvent();
+}
+''';
+}
+
+/// Generates `lib/core/network/failures/failure.dart`.
+String renderFailure() {
+  return '''
+/// Base Failure class for domain and data layer error propagation.
+abstract class Failure {
+  const Failure({
+    required this.message,
+    this.code,
+  });
+
+  final String message;
+  final int? code;
+
+  @override
+  String toString() => message;
+}
+
+class ServerFailure extends Failure {
+  const ServerFailure({required super.message, super.code});
+}
+
+class CacheFailure extends Failure {
+  const CacheFailure({required super.message, super.code});
+}
+
+class NetworkFailure extends Failure {
+  const NetworkFailure({required super.message, super.code});
+}
+
+class ImagePickerFailure extends Failure {
+  const ImagePickerFailure({required super.message, super.code});
+}
+''';
+}
+
+/// Generates `lib/core/network/failures/exception.dart`.
+String renderException() {
+  return '''
+/// Base exception classes for datasources and device operations.
+class ImagePickFailedException implements Exception {
+  const ImagePickFailedException({this.code});
+  final String? code;
+}
+
+class NotValidImageException implements Exception {
+  const NotValidImageException();
+}
+
+class CacheException implements Exception {
+  const CacheException([this.message]);
+  final String? message;
+}
+
+class NetworkException implements Exception {
+  const NetworkException([this.message]);
+  final String? message;
+}
+''';
+}
+
+/// Generates `lib/core/network/network.dart` barrel file.
+String renderNetworkBarrel() {
+  return '''
+export 'api_contract.dart';
+export 'api_endpoint.dart';
+export 'api_interceptor.dart';
+export 'api_response.dart';
+export 'api_service.dart';
+export 'app_exception.dart';
+export 'failures/exception.dart';
+export 'failures/failure.dart';
+export 'network_event_provider.dart';
+''';
+}
+
+/// Generates `lib/core/network/api_client.dart` (or simple client for HTTP).
+String renderApiClient(ProjectConfig config) {
+  if (config.networking == Networking.dio) {
+    return renderApiService(config);
   } else if (config.networking == Networking.http) {
     final baseConfig = config.hasEnvFlavors
         ? 'static const String _baseUrl = AppConfig.apiBaseUrl;'
