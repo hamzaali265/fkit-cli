@@ -1648,13 +1648,13 @@ class StorageService {
   }
 
   static Future<bool> setString(String key, String value) => instance.setString(key, value);
-  static String? getString(String key) => instance.getString(key);
+  static Future<String?> getString(String key) async => instance.getString(key);
 
   static Future<bool> setInt(String key, int value) => instance.setInt(key, value);
-  static int? getInt(String key) => instance.getInt(key);
+  static Future<int?> getInt(String key) async => instance.getInt(key);
 
   static Future<bool> setBool(String key, bool value) => instance.setBool(key, value);
-  static bool? getBool(String key) => instance.getBool(key);
+  static Future<bool?> getBool(String key) async => instance.getBool(key);
 
   static Future<bool> remove(String key) => instance.remove(key);
   static Future<bool> clear() => instance.clear();
@@ -1678,16 +1678,16 @@ class StorageService {
   static Box<dynamic> get appBox => Hive.box<dynamic>(appBoxName);
 
   static Future<void> put(String key, dynamic value) => appBox.put(key, value);
-  static T? get<T>(String key, {T? defaultValue}) => appBox.get(key, defaultValue: defaultValue) as T?;
+  static Future<T?> get<T>(String key, {T? defaultValue}) async => appBox.get(key, defaultValue: defaultValue) as T?;
 
   static Future<void> setString(String key, String value) => put(key, value);
-  static String? getString(String key) => get<String>(key);
+  static Future<String?> getString(String key) async => get<String>(key);
 
   static Future<void> setInt(String key, int value) => put(key, value);
-  static int? getInt(String key) => get<int>(key);
+  static Future<int?> getInt(String key) async => get<int>(key);
 
   static Future<void> setBool(String key, bool value) => put(key, value);
-  static bool? getBool(String key) => get<bool>(key);
+  static Future<bool?> getBool(String key) async => get<bool>(key);
 
   static Future<void> remove(String key) => delete(key);
   static Future<void> delete(String key) => appBox.delete(key);

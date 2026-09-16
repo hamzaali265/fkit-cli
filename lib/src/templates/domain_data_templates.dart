@@ -69,7 +69,7 @@ class CounterRepositoryImpl implements CounterRepository {
 
   @override
   Future<CounterEntity> getCounter() async {
-${hasStorage ? '    final value = StorageService.getInt(_storageKey) ?? 0;\n    return CounterEntity(value: value);' : '    return const CounterEntity(value: 0);'}
+${hasStorage ? '    final value = await StorageService.getInt(_storageKey) ?? 0;\n    return CounterEntity(value: value);' : '    return const CounterEntity(value: 0);'}
   }
 
   @override
