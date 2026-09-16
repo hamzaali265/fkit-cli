@@ -212,18 +212,6 @@ enum ProjectFeature {
 
 /// Popular utility packages for UI, native device access, and formatting.
 enum UtilityPackage {
-  flutterSvg('flutter_svg', '^2.0.17', 'SVG vector image and icon rendering'),
-  cachedNetworkImage(
-    'cached_network_image',
-    '^3.4.1',
-    'Image caching with placeholder and error fallback widgets',
-  ),
-  gap('gap', '^3.0.1', 'Clean whitespace spacing in flex widgets (Column/Row)'),
-  flutterScreenutil(
-    'flutter_screenutil',
-    '^5.9.3',
-    'Responsive UI adaptation and screen sizing (ScreenUtilInit)',
-  ),
   imagePicker(
     'image_picker',
     '^1.1.2',
@@ -234,56 +222,68 @@ enum UtilityPackage {
     '^8.1.7',
     'Native cross-platform file, document, and directory picker',
   ),
-  permissionHandler(
-    'permission_handler',
-    '^11.4.0',
-    'Cross-platform runtime permissions management',
+  flutterSvg('flutter_svg', '^2.0.17', 'SVG vector image and icon rendering'),
+  cachedNetworkImage(
+    'cached_network_image',
+    '^3.4.1',
+    'Image caching with placeholder and error fallback widgets',
   ),
-  getIt(
-    'get_it',
-    '^8.0.3',
-    'Direct Service Locator / Dependency Injection (initDependencies)',
-  ),
-  flutterSecureStorage(
-    'flutter_secure_storage',
-    '^9.2.4',
-    'Encrypted key-value storage (Keychain / Keystore)',
+  intl(
+    'intl',
+    '^0.20.2',
+    'Internationalization, date/number formatting, and bidirectional text',
   ),
   urlLauncher(
     'url_launcher',
     '^6.3.1',
     'Launch web URLs, phone calls, and email client',
   ),
-  uuid('uuid', '^4.5.1', 'RFC-compliant UUID generator'),
-  intl(
-    'intl',
-    '^0.20.2',
-    'Internationalization, date/number formatting, and bidirectional text',
+  permissionHandler(
+    'permission_handler',
+    '^11.4.0',
+    'Cross-platform runtime permissions management',
+  ),
+  flutterSecureStorage(
+    'flutter_secure_storage',
+    '^9.2.4',
+    'Encrypted key-value storage (Keychain / Keystore)',
+  ),
+  gap('gap', '^3.0.1', 'Clean whitespace spacing in flex widgets (Column/Row)'),
+  flutterScreenutil(
+    'flutter_screenutil',
+    '^5.9.3',
+    'Responsive UI adaptation and screen sizing (ScreenUtilInit)',
+  ),
+  getIt(
+    'get_it',
+    '^8.0.3',
+    'Direct Service Locator / Dependency Injection (initDependencies)',
   ),
   equatable(
     'equatable',
     '^2.0.7',
     'Value equality comparisons without boilerplate operator== overrides',
   ),
-  sqflite(
-    'sqflite',
-    '^2.4.1',
-    'SQLite relational database for tabular data and SQL queries',
-  ),
-  crypto(
-    'crypto',
-    '^3.0.6',
-    'Cryptographic hashing algorithms (SHA-256, MD5, HMAC)',
+  geolocator(
+    'geolocator',
+    '^13.0.2',
+    'Cross-platform geolocation and location permissions',
   ),
   webviewFlutter(
     'webview_flutter',
     '^4.10.0',
     'In-app web browser and webview widget',
   ),
-  geolocator(
-    'geolocator',
-    '^13.0.2',
-    'Cross-platform geolocation and location permissions',
+  uuid('uuid', '^4.5.1', 'RFC-compliant UUID generator'),
+  crypto(
+    'crypto',
+    '^3.0.6',
+    'Cryptographic hashing algorithms (SHA-256, MD5, HMAC)',
+  ),
+  sqflite(
+    'sqflite',
+    '^2.4.1',
+    'SQLite relational database for tabular data and SQL queries',
   );
 
   const UtilityPackage(this.packageName, this.version, this.description);

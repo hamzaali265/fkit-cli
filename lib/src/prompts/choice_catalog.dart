@@ -113,40 +113,40 @@ abstract final class ChoiceCatalog {
 
   static String _utilityShort(UtilityPackage item) {
     switch (item) {
-      case UtilityPackage.flutterSvg:
-        return 'svg';
-      case UtilityPackage.cachedNetworkImage:
-        return 'cache';
-      case UtilityPackage.gap:
-        return 'spacing';
-      case UtilityPackage.flutterScreenutil:
-        return 'responsive';
       case UtilityPackage.imagePicker:
         return 'camera';
       case UtilityPackage.filePicker:
         return 'files';
-      case UtilityPackage.permissionHandler:
-        return 'permissions';
-      case UtilityPackage.getIt:
-        return 'di';
-      case UtilityPackage.flutterSecureStorage:
-        return 'secure';
-      case UtilityPackage.urlLauncher:
-        return 'links';
-      case UtilityPackage.uuid:
-        return 'ids';
+      case UtilityPackage.flutterSvg:
+        return 'svg';
+      case UtilityPackage.cachedNetworkImage:
+        return 'cache';
       case UtilityPackage.intl:
         return 'i18n';
+      case UtilityPackage.urlLauncher:
+        return 'links';
+      case UtilityPackage.permissionHandler:
+        return 'permissions';
+      case UtilityPackage.flutterSecureStorage:
+        return 'secure';
+      case UtilityPackage.gap:
+        return 'spacing';
+      case UtilityPackage.flutterScreenutil:
+        return 'responsive';
+      case UtilityPackage.getIt:
+        return 'di';
       case UtilityPackage.equatable:
         return 'equality';
-      case UtilityPackage.sqflite:
-        return 'sqlite';
-      case UtilityPackage.crypto:
-        return 'hashing';
-      case UtilityPackage.webviewFlutter:
-        return 'browser';
       case UtilityPackage.geolocator:
         return 'location';
+      case UtilityPackage.webviewFlutter:
+        return 'browser';
+      case UtilityPackage.uuid:
+        return 'ids';
+      case UtilityPackage.crypto:
+        return 'hashing';
+      case UtilityPackage.sqflite:
+        return 'sqlite';
     }
   }
 }

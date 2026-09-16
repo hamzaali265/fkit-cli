@@ -19,23 +19,28 @@ void main() {
       expect(options.every((o) => o.shortDescription.isNotEmpty), isTrue);
     });
 
-    test('utilities catalog includes all new packages', () {
-      final options = ChoiceCatalog.utilities();
-      expect(
-        options.map((o) => o.label),
-        containsAll([
-          'intl',
-          'uuid',
-          'equatable',
-          'sqflite',
-          'crypto',
-          'webview_flutter',
-          'geolocator',
-        ]),
-      );
-      final geoOption = options.firstWhere((o) => o.label == 'geolocator');
-      expect(geoOption.shortDescription, equals('location'));
-    });
+    test(
+      'utilities catalog includes all new packages and places popular pickers first',
+      () {
+        final options = ChoiceCatalog.utilities();
+        expect(options.first.label, equals('image_picker'));
+        expect(options[1].label, equals('file_picker'));
+        expect(
+          options.map((o) => o.label),
+          containsAll([
+            'intl',
+            'uuid',
+            'equatable',
+            'sqflite',
+            'crypto',
+            'webview_flutter',
+            'geolocator',
+          ]),
+        );
+        final geoOption = options.firstWhere((o) => o.label == 'geolocator');
+        expect(geoOption.shortDescription, equals('location'));
+      },
+    );
 
     test('storage catalog includes sqflite', () {
       final options = ChoiceCatalog.storage();

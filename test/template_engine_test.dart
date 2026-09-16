@@ -491,10 +491,7 @@ void main() {
           contains('Future<List<File>> pickMultipleFiles'),
         );
         expect(filePickerService, contains('Future<File?> pickPdf'));
-        expect(
-          filePickerService,
-          contains('Future<String?> pickDirectory'),
-        );
+        expect(filePickerService, contains('Future<String?> pickDirectory'));
 
         // DI container auto-registration
         final di = files['lib/core/di/injection_container.dart']!;
