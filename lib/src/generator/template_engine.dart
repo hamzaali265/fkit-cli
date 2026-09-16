@@ -83,7 +83,15 @@ class TemplateEngine {
         renderWidgetExtensions();
     files['lib/shared/extensions/string_extensions.dart'] =
         renderStringExtensions();
-    files['lib/shared/extensions/extensions.dart'] = renderExtensionsBarrel();
+    files['lib/shared/extensions/number_extensions.dart'] =
+        renderNumberExtensions(hasIntl: config.hasIntl);
+    if (config.hasIntl) {
+      files['lib/shared/extensions/datetime_extensions.dart'] =
+          renderDateTimeExtensions();
+    }
+    files['lib/shared/extensions/extensions.dart'] = renderExtensionsBarrel(
+      hasIntl: config.hasIntl,
+    );
     files['lib/shared/utils/app_formatters.dart'] = renderAppFormatters(
       hasIntl: config.hasIntl,
     );

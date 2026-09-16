@@ -616,20 +616,58 @@ void main() {
       );
 
       final files = engine.generateFiles(config);
-      final formatters = files['lib/shared/utils/app_formatters.dart']!;
-      expect(formatters, contains("import 'package:intl/intl.dart';"));
+
+      // Verify datetime_extensions.dart
       expect(
-        formatters,
+        files.containsKey('lib/shared/extensions/datetime_extensions.dart'),
+        isTrue,
+      );
+      final datetimeExt =
+          files['lib/shared/extensions/datetime_extensions.dart']!;
+      expect(datetimeExt, contains("import 'package:intl/intl.dart';"));
+      expect(
+        datetimeExt,
         contains('extension DateTimeFormatExtension on DateTime'),
       );
-      expect(formatters, contains('extension NumberFormatExtension on num'));
-      expect(formatters, contains('String formatDate({'));
-      expect(formatters, contains('String formatCurrency({'));
-      expect(formatters, contains('DateFormat(format, locale).format(this)'));
       expect(
-        files['lib/shared/extensions/extensions.dart'],
-        contains("export '../utils/app_formatters.dart';"),
+        datetimeExt,
+        contains('extension NullableDateTimeFormatExtension on DateTime?'),
       );
+      expect(datetimeExt, contains('String formatDate({'));
+      expect(datetimeExt, contains('DateFormat(format, locale).format(this)'));
+
+      // Verify number_extensions.dart
+      expect(
+        files.containsKey('lib/shared/extensions/number_extensions.dart'),
+        isTrue,
+      );
+      final numberExt = files['lib/shared/extensions/number_extensions.dart']!;
+      expect(numberExt, contains("import 'package:intl/intl.dart';"));
+      expect(numberExt, contains('extension NumberFormatExtension on num'));
+      expect(
+        numberExt,
+        contains('extension NullableNumberFormatExtension on num?'),
+      );
+      expect(numberExt, contains('String formatCurrency({'));
+
+      // Verify extensions barrel
+      final extBarrel = files['lib/shared/extensions/extensions.dart']!;
+      expect(extBarrel, contains("export 'datetime_extensions.dart';"));
+      expect(extBarrel, contains("export 'number_extensions.dart';"));
+
+      // Verify app_formatters.dart delegating
+      final formatters = files['lib/shared/utils/app_formatters.dart']!;
+      expect(
+        formatters,
+        contains("import '../extensions/datetime_extensions.dart';"),
+      );
+      expect(
+        formatters,
+        contains("import '../extensions/number_extensions.dart';"),
+      );
+      expect(formatters, contains('class AppFormatters'));
+      expect(formatters, contains('static String formatDate('));
+      expect(formatters, contains('static String formatCurrency('));
     });
 
     test(

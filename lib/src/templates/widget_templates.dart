@@ -279,10 +279,9 @@ extension NullableStringExtensions on String? {
 ''';
 }
 
-/// Generates `lib/shared/utils/app_formatters.dart`.
-String renderAppFormatters({bool hasIntl = false}) {
-  if (hasIntl) {
-    return '''
+/// Generates `lib/shared/extensions/datetime_extensions.dart` with intl date/time formatting.
+String renderDateTimeExtensions() {
+  return '''
 import 'package:intl/intl.dart';
 
 /// Extension on [DateTime] providing convenient date and time formatting methods.
@@ -344,6 +343,14 @@ extension NullableDateTimeFormatExtension on DateTime? {
     return this!.formatTime(format: format, locale: locale);
   }
 }
+''';
+}
+
+/// Generates `lib/shared/extensions/number_extensions.dart`.
+String renderNumberExtensions({bool hasIntl = false}) {
+  if (hasIntl) {
+    return '''
+import 'package:intl/intl.dart';
 
 /// Extension on [num] providing currency and number formatting methods.
 extension NumberFormatExtension on num {
@@ -393,8 +400,33 @@ extension NullableNumberFormatExtension on num? {
     );
   }
 }
+''';
+  }
 
-/// Shared formatters and utility string functions.
+  return '''
+/// Extension on [num] for basic thousands-separator number formatting.
+extension NumberFormatExtension on num {
+  /// Formats a number with thousands separators (e.g. 1,000,000).
+  String get formatNumber {
+    final parts = toString().split('.');
+    final intPart = parts[0].replaceAllMapped(
+      RegExp(r'(\\d{1,3})(?=(\\d{3})+(?!\\d))'),
+      (match) => '\${match[1]},',
+    );
+    return parts.length > 1 ? '\$intPart.\${parts[1]}' : intPart;
+  }
+}
+''';
+}
+
+/// Generates `lib/shared/utils/app_formatters.dart`.
+String renderAppFormatters({bool hasIntl = false}) {
+  if (hasIntl) {
+    return '''
+import '../extensions/datetime_extensions.dart';
+import '../extensions/number_extensions.dart';
+
+/// Shared formatters and utility string functions delegating to extensions.
 class AppFormatters {
   AppFormatters._();
 
@@ -453,18 +485,7 @@ class AppFormatters {
   }
 
   return '''
-/// Extension on [num] for basic thousands-separator number formatting.
-extension NumberFormatExtension on num {
-  /// Formats a number with thousands separators (e.g. 1,000,000).
-  String get formatNumber {
-    final parts = toString().split('.');
-    final intPart = parts[0].replaceAllMapped(
-      RegExp(r'(\\d{1,3})(?=(\\d{3})+(?!\\d))'),
-      (match) => '\${match[1]},',
-    );
-    return parts.length > 1 ? '\$intPart.\${parts[1]}' : intPart;
-  }
-}
+import '../extensions/number_extensions.dart';
 
 /// Shared formatters and utility string functions.
 class AppFormatters {
@@ -483,10 +504,11 @@ class AppFormatters {
 }
 
 /// Generates barrel `extensions.dart` exporting all extension files.
-String renderExtensionsBarrel() {
+String renderExtensionsBarrel({bool hasIntl = false}) {
+  final datetimeExport = hasIntl ? "export 'datetime_extensions.dart';\n" : '';
   return '''
-export '../utils/app_formatters.dart';
 export 'context_extensions.dart';
+$datetimeExport export 'number_extensions.dart';
 export 'string_extensions.dart';
 export 'widget_extensions.dart';
 ''';
