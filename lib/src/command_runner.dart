@@ -7,7 +7,7 @@ import 'commands/list_command.dart';
 import 'prompts/home_screen.dart';
 
 const String packageName = 'fkit';
-const String packageVersion = '1.0.4';
+const String packageVersion = '1.1.0';
 const String packageDescription =
     'FKIT CLI — interactive tool for bootstrapping production-ready Flutter applications.';
 

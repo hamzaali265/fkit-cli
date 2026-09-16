@@ -5,6 +5,23 @@ All notable changes to **FKIT CLI** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-09-16
+
+### 🌟 Added
+- **Expanded Utilities Catalog**:
+  - `intl`: Automated date, time, relative time, and currency formatters along with `DateTime` and `num` extensions in `lib/shared/extensions/`.
+  - `equatable`: Value equality support for entities and models.
+  - `sqflite`: Local SQLite relational database support with typed table creation and persistence helpers.
+  - `crypto`: Cryptographic hashing helpers (MD5, SHA-1, SHA-256, HMAC).
+  - `webview_flutter`: In-app web view integration with pre-configured platform permissions.
+  - `geolocator`: GPS location and permission handling with automated iOS `NSLocationWhenInUseUsageDescription` and Android location permissions.
+- **Enterprise Network Architecture**: Production-grade HTTP architecture featuring abstraction contracts, interceptors, and typed exception handlers.
+
+### 🐛 Fixed
+- **Storage Service Futures**: Unified getter methods across all local persistence backends (`sqflite`, `hive`, `shared_preferences`) to consistently return `Future<T?>`.
+
+---
+
 ## [1.0.4] - 2026-09-15
 
 ### 📖 Documentation & Polish
