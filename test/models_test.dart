@@ -202,5 +202,72 @@ void main() {
         equals(UtilityPackage.intl),
       );
     });
+
+    test(
+      'supports new packages: equatable, sqflite, crypto, webview, geolocator',
+      () {
+        final config = ProjectConfig(
+          projectName: 'new_packages_app',
+          orgName: 'com.packages',
+          targetDirectory: '/tmp/new_packages_app',
+          architecture: ArchitecturePattern.layerFirst,
+          stateManagement: StateManagement.provider,
+          routing: Routing.goRouter,
+          networking: Networking.none,
+          storage: Storage.sqflite,
+          features: const {},
+          utilities: {
+            UtilityPackage.equatable,
+            UtilityPackage.sqflite,
+            UtilityPackage.crypto,
+            UtilityPackage.webviewFlutter,
+            UtilityPackage.geolocator,
+          },
+        );
+
+        expect(config.hasEquatable, isTrue);
+        expect(config.hasSqflite, isTrue);
+        expect(config.hasCrypto, isTrue);
+        expect(config.hasWebview, isTrue);
+        expect(config.hasGeolocator, isTrue);
+
+        expect(config.storage, equals(Storage.sqflite));
+        expect(config.dependencies.containsKey('equatable'), isTrue);
+        expect(config.dependencies.containsKey('sqflite'), isTrue);
+        expect(config.dependencies.containsKey('path'), isTrue);
+        expect(config.dependencies.containsKey('crypto'), isTrue);
+        expect(config.dependencies.containsKey('webview_flutter'), isTrue);
+        expect(config.dependencies.containsKey('geolocator'), isTrue);
+      },
+    );
+
+    test('fromKey parses new package aliases', () {
+      expect(
+        UtilityPackage.fromKey('equatable'),
+        equals(UtilityPackage.equatable),
+      );
+      expect(UtilityPackage.fromKey('sqflite'), equals(UtilityPackage.sqflite));
+      expect(UtilityPackage.fromKey('sqlite'), equals(UtilityPackage.sqflite));
+      expect(UtilityPackage.fromKey('crypto'), equals(UtilityPackage.crypto));
+      expect(
+        UtilityPackage.fromKey('webview'),
+        equals(UtilityPackage.webviewFlutter),
+      );
+      expect(
+        UtilityPackage.fromKey('webview_flutter'),
+        equals(UtilityPackage.webviewFlutter),
+      );
+      expect(
+        UtilityPackage.fromKey('geolocator'),
+        equals(UtilityPackage.geolocator),
+      );
+      expect(
+        UtilityPackage.fromKey('location'),
+        equals(UtilityPackage.geolocator),
+      );
+      expect(UtilityPackage.fromKey('gps'), equals(UtilityPackage.geolocator));
+      expect(Storage.fromKey('sqflite'), equals(Storage.sqflite));
+      expect(Storage.fromKey('sqlite'), equals(Storage.sqflite));
+    });
   });
 }

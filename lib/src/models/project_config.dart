@@ -156,6 +156,10 @@ enum Storage {
     'hive_flutter',
     'Fast, lightweight NoSQL key-value database written in pure Dart',
   ),
+  sqflite(
+    'sqflite',
+    'Relational SQLite database for structured querying and transactions',
+  ),
   none('None', 'No local database');
 
   const Storage(this.label, this.description);
@@ -171,6 +175,9 @@ enum Storage {
       case 'hive':
       case 'hive_flutter':
         return Storage.hive;
+      case 'sqflite':
+      case 'sqlite':
+        return Storage.sqflite;
       case 'none':
         return Storage.none;
       default:
@@ -252,6 +259,31 @@ enum UtilityPackage {
     'intl',
     '^0.20.2',
     'Internationalization, date/number formatting, and bidirectional text',
+  ),
+  equatable(
+    'equatable',
+    '^2.0.7',
+    'Value equality comparisons without boilerplate operator== overrides',
+  ),
+  sqflite(
+    'sqflite',
+    '^2.4.1',
+    'SQLite relational database for tabular data and SQL queries',
+  ),
+  crypto(
+    'crypto',
+    '^3.0.6',
+    'Cryptographic hashing algorithms (SHA-256, MD5, HMAC)',
+  ),
+  webviewFlutter(
+    'webview_flutter',
+    '^4.10.0',
+    'In-app web browser and webview widget',
+  ),
+  geolocator(
+    'geolocator',
+    '^13.0.2',
+    'Cross-platform geolocation and location permissions',
   );
 
   const UtilityPackage(this.packageName, this.version, this.description);
@@ -303,6 +335,21 @@ enum UtilityPackage {
       case 'internationalization':
       case 'i18n':
         return UtilityPackage.intl;
+      case 'equatable':
+        return UtilityPackage.equatable;
+      case 'sqflite':
+      case 'sqlite':
+        return UtilityPackage.sqflite;
+      case 'crypto':
+        return UtilityPackage.crypto;
+      case 'webview_flutter':
+      case 'webview':
+      case 'web_view':
+        return UtilityPackage.webviewFlutter;
+      case 'geolocator':
+      case 'location':
+      case 'gps':
+        return UtilityPackage.geolocator;
       default:
         throw ArgumentError('Unknown utility package: $key');
     }
@@ -362,6 +409,14 @@ class ProjectConfig {
   bool get hasUuid => utilities.contains(UtilityPackage.uuid);
   bool get hasIntl =>
       utilities.contains(UtilityPackage.intl) || hasLocalization;
+  bool get hasEquatable =>
+      utilities.contains(UtilityPackage.equatable) ||
+      stateManagement == StateManagement.bloc;
+  bool get hasSqflite =>
+      utilities.contains(UtilityPackage.sqflite) || storage == Storage.sqflite;
+  bool get hasCrypto => utilities.contains(UtilityPackage.crypto);
+  bool get hasWebview => utilities.contains(UtilityPackage.webviewFlutter);
+  bool get hasGeolocator => utilities.contains(UtilityPackage.geolocator);
 
   /// Computes the list of production dependencies with tested versions.
   Map<String, String> get dependencies {
@@ -419,6 +474,10 @@ class ProjectConfig {
         deps['hive'] = '^2.2.3';
         deps['hive_flutter'] = '^1.1.0';
         break;
+      case Storage.sqflite:
+        deps['sqflite'] = '^2.4.1';
+        deps['path'] = '^1.9.1';
+        break;
       case Storage.none:
         break;
     }
@@ -428,9 +487,19 @@ class ProjectConfig {
       deps['flutter_localizations'] = 'sdk: flutter';
     }
 
-    // Utility packages (flutter_svg, cached_network_image, gap, intl, etc.)
+    // Utility packages (flutter_svg, cached_network_image, gap, intl, equatable, etc.)
     for (final util in utilities) {
       deps[util.packageName] = util.version;
+    }
+
+    // Ensure path is present if sqflite is used
+    if (hasSqflite && !deps.containsKey('path')) {
+      deps['path'] = '^1.9.1';
+    }
+
+    // Ensure equatable is present if equatable is enabled
+    if (hasEquatable && !deps.containsKey('equatable')) {
+      deps['equatable'] = '^2.0.7';
     }
 
     // Ensure intl is present if localization is enabled

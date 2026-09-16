@@ -61,7 +61,7 @@ class CreateCommand extends Command<int> {
       ..addOption(
         'storage',
         help: 'Local persistence library.',
-        allowed: ['shared_preferences', 'hive', 'none'],
+        allowed: ['shared_preferences', 'hive', 'sqflite', 'none'],
       )
       ..addFlag(
         'interactive',
@@ -144,6 +144,31 @@ class CreateCommand extends Command<int> {
         'intl',
         help: 'Include intl package for date/number formatting and i18n.',
         defaultsTo: true,
+      )
+      ..addFlag(
+        'equatable',
+        help: 'Include equatable package for value equality comparisons.',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'sqflite',
+        help: 'Include sqflite package for SQLite local database.',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'crypto',
+        help: 'Include crypto package for SHA256/MD5 hashing.',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'webview',
+        help: 'Include webview_flutter package and AppWebView widget.',
+        defaultsTo: false,
+      )
+      ..addFlag(
+        'geolocator',
+        help: 'Include geolocator package and LocationService.',
+        defaultsTo: false,
       )
       ..addFlag(
         'hero',
@@ -251,6 +276,21 @@ class CreateCommand extends Command<int> {
       }
       if (args['intl'] as bool) {
         utilities.add(UtilityPackage.intl);
+      }
+      if (args['equatable'] as bool) {
+        utilities.add(UtilityPackage.equatable);
+      }
+      if (args['sqflite'] as bool) {
+        utilities.add(UtilityPackage.sqflite);
+      }
+      if (args['crypto'] as bool) {
+        utilities.add(UtilityPackage.crypto);
+      }
+      if (args['webview'] as bool) {
+        utilities.add(UtilityPackage.webviewFlutter);
+      }
+      if (args['geolocator'] as bool) {
+        utilities.add(UtilityPackage.geolocator);
       }
 
       config = ProjectConfig(

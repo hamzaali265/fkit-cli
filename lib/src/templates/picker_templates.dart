@@ -171,14 +171,91 @@ class FilePickerService {
         allowedExtensions: const ['pdf'],
       );
 
-  /// Prompts user to select a directory folder path.
-  Future<String?> pickDirectoryPath() async {
+  /// Picks a directory from device storage.
+  Future<String?> pickDirectory() async {
     try {
       return await _picker.getDirectoryPath();
     } on Exception catch (e, stackTrace) {
-      debugPrint('FilePickerService.pickDirectoryPath failed: \$e\\n\$stackTrace');
+      debugPrint('FilePickerService.pickDirectory failed: \$e\\n\$stackTrace');
       return null;
     }
+  }
+}
+''';
+}
+
+/// Generates cross-platform location and GPS service using geolocator.
+String renderLocationService() {
+  return '''
+import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
+
+/// Service providing device location, distance calculations, and permission checks.
+class LocationService {
+  const LocationService();
+
+  /// Determines the current position of the device.
+  ///
+  /// Requests location permissions if not yet granted.
+  Future<Position?> getCurrentPosition({
+    LocationAccuracy desiredAccuracy = LocationAccuracy.high,
+  }) async {
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        debugPrint('Location services are disabled.');
+        return null;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          debugPrint('Location permissions are denied');
+          return null;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        debugPrint('Location permissions are permanently denied.');
+        return null;
+      }
+
+      return await Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(accuracy: desiredAccuracy),
+      );
+    } on Exception catch (e, stackTrace) {
+      debugPrint('LocationService.getCurrentPosition failed: \$e\\n\$stackTrace');
+      return null;
+    }
+  }
+
+  /// Calculates distance in meters between two geographical coordinates.
+  double distanceBetween({
+    required double startLatitude,
+    required double startLongitude,
+    required double endLatitude,
+    required double endLongitude,
+  }) {
+    return Geolocator.distanceBetween(
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+    );
+  }
+
+  /// Listens to location changes continuously.
+  Stream<Position> getPositionStream({
+    LocationAccuracy accuracy = LocationAccuracy.high,
+    int distanceFilter = 10,
+  }) {
+    return Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        accuracy: accuracy,
+        distanceFilter: distanceFilter,
+      ),
+    );
   }
 }
 ''';

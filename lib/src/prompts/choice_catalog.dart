@@ -77,6 +77,7 @@ abstract final class ChoiceCatalog {
         shortDescription: switch (item) {
           Storage.sharedPreferences => 'key-value',
           Storage.hive => 'nosql',
+          Storage.sqflite => 'sqlite db',
           Storage.none => 'skip',
         },
         detail: item.description,
@@ -136,6 +137,16 @@ abstract final class ChoiceCatalog {
         return 'ids';
       case UtilityPackage.intl:
         return 'i18n';
+      case UtilityPackage.equatable:
+        return 'equality';
+      case UtilityPackage.sqflite:
+        return 'sqlite';
+      case UtilityPackage.crypto:
+        return 'hashing';
+      case UtilityPackage.webviewFlutter:
+        return 'browser';
+      case UtilityPackage.geolocator:
+        return 'location';
     }
   }
 }

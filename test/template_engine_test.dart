@@ -493,7 +493,7 @@ void main() {
         expect(filePickerService, contains('Future<File?> pickPdf'));
         expect(
           filePickerService,
-          contains('Future<String?> pickDirectoryPath'),
+          contains('Future<String?> pickDirectory'),
         );
 
         // DI container auto-registration
@@ -625,5 +625,83 @@ void main() {
       expect(formatters, contains('static String formatCurrency('));
       expect(formatters, contains('DateFormat(format, locale).format(date)'));
     });
+
+    test(
+      'generates sqflite StorageService, AppCrypto, AppWebView, and LocationService',
+      () {
+        final config = ProjectConfig(
+          projectName: 'rich_app',
+          orgName: 'com.example',
+          targetDirectory: '/tmp/rich_app',
+          architecture: ArchitecturePattern.featureFirst,
+          stateManagement: StateManagement.riverpod,
+          routing: Routing.goRouter,
+          networking: Networking.none,
+          storage: Storage.sqflite,
+          features: const {},
+          utilities: {
+            UtilityPackage.crypto,
+            UtilityPackage.webviewFlutter,
+            UtilityPackage.geolocator,
+            UtilityPackage.getIt,
+          },
+        );
+
+        final files = engine.generateFiles(config);
+
+        // sqflite StorageService
+        final storage = files['lib/core/storage/storage_service.dart']!;
+        expect(storage, contains("import 'package:sqflite/sqflite.dart';"));
+        expect(storage, contains("import 'package:path/path.dart' as p;"));
+        expect(storage, contains('CREATE TABLE IF NOT EXISTS settings'));
+
+        // AppCrypto
+        final crypto = files['lib/shared/utils/app_crypto.dart']!;
+        expect(
+          crypto,
+          contains("import 'package:crypto/crypto.dart' as crypto;"),
+        );
+        expect(crypto, contains('static String sha256(String input)'));
+        expect(crypto, contains('static String md5(String input)'));
+        expect(
+          crypto,
+          contains('static String hmacSha256(String secretKey, String input)'),
+        );
+
+        // AppWebView
+        final webview = files['lib/shared/widgets/app_webview.dart']!;
+        expect(
+          webview,
+          contains("import 'package:webview_flutter/webview_flutter.dart';"),
+        );
+        expect(webview, contains('class AppWebView extends StatefulWidget'));
+
+        // LocationService
+        final location = files['lib/core/services/location_service.dart']!;
+        expect(
+          location,
+          contains("import 'package:geolocator/geolocator.dart';"),
+        );
+        expect(location, contains('class LocationService'));
+        expect(location, contains('getCurrentPosition('));
+
+        // Barrels
+        final utilsBarrel = files['lib/shared/utils/utils.dart']!;
+        expect(utilsBarrel, contains("export 'app_crypto.dart';"));
+
+        final widgetsBarrel = files['lib/shared/widgets/widgets.dart']!;
+        expect(widgetsBarrel, contains("export 'app_webview.dart';"));
+
+        // Injection container
+        final di = files['lib/core/di/injection_container.dart']!;
+        expect(di, contains("import '../services/location_service.dart';"));
+        expect(
+          di,
+          contains(
+            'serviceLocator.registerLazySingleton<LocationService>(LocationService.new);',
+          ),
+        );
+      },
+    );
   });
 }

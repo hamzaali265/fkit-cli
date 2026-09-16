@@ -465,6 +465,107 @@ class StorageService {
   static Future<int> clear() => appBox.clear();
 }
 ''';
+  } else if (config.storage == Storage.sqflite) {
+    return '''
+import 'package:path/path.dart' as p;
+import 'package:sqflite/sqflite.dart';
+
+/// Local SQLite relational database service.
+class StorageService {
+  StorageService._();
+
+  static const String _dbName = 'app_database.db';
+  static const int _dbVersion = 1;
+  static Database? _database;
+
+  static Future<void> initialize() async {
+    final databasesPath = await getDatabasesPath();
+    final path = p.join(databasesPath, _dbName);
+
+    _database = await openDatabase(
+      path,
+      version: _dbVersion,
+      onCreate: (db, version) async {
+        await db.execute(\'''
+          CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+          )
+        \''');
+      },
+    );
+  }
+
+  static Database get database {
+    if (_database == null) {
+      throw StateError('StorageService has not been initialized. Call initialize() in main().');
+    }
+    return _database!;
+  }
+
+  static Future<void> setString(String key, String value) async {
+    await database.insert(
+      'settings',
+      {'key': key, 'value': value},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<String?> getString(String key) async {
+    final results = await database.query(
+      'settings',
+      where: 'key = ?',
+      whereArgs: [key],
+      limit: 1,
+    );
+    if (results.isNotEmpty) {
+      return results.first['value'] as String?;
+    }
+    return null;
+  }
+
+  static Future<void> setInt(String key, int value) async {
+    await setString(key, value.toString());
+  }
+
+  static Future<int?> getInt(String key) async {
+    final value = await getString(key);
+    if (value != null) {
+      return int.tryParse(value);
+    }
+    return null;
+  }
+
+  static Future<void> setBool(String key, bool value) async {
+    await setString(key, value ? '1' : '0');
+  }
+
+  static Future<bool?> getBool(String key) async {
+    final value = await getString(key);
+    if (value != null) {
+      return value == '1' || value == 'true';
+    }
+    return null;
+  }
+
+  static Future<int> remove(String key) async {
+    return database.delete(
+      'settings',
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+  }
+
+  static Future<int> clear() async {
+    return database.delete('settings');
+  }
+
+  static Future<void> close() async {
+    await _database?.close();
+    _database = null;
+  }
+}
+''';
   }
 
   return '';
@@ -497,6 +598,17 @@ String renderInjectionContainer(
     );
     registrations.add(
       '  serviceLocator.registerLazySingleton<FilePickerService>(FilePickerService.new);',
+    );
+  }
+
+  if (config.hasGeolocator) {
+    imports.add(
+      usesCoreDir
+          ? "import '../services/location_service.dart';"
+          : "import 'location_service.dart';",
+    );
+    registrations.add(
+      '  serviceLocator.registerLazySingleton<LocationService>(LocationService.new);',
     );
   }
 

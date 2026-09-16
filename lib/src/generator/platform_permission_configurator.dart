@@ -96,8 +96,10 @@ class PlatformPermissionConfigurator {
     var result = content;
     final permissionsToAdd = <String>[];
 
-    // 1. Networking (dio, http, or cached_network_image)
-    if (config.networking != Networking.none || config.hasCachedNetworkImage) {
+    // 1. Networking (dio, http, or cached_network_image, or webview)
+    if (config.networking != Networking.none ||
+        config.hasCachedNetworkImage ||
+        config.hasWebview) {
       _addIfMissing(
         permissionsToAdd,
         result,
@@ -148,7 +150,21 @@ class PlatformPermissionConfigurator {
       );
     }
 
-    // 4. Notifications (permission_handler)
+    // 4. Geolocation (geolocator)
+    if (config.hasGeolocator) {
+      _addIfMissing(
+        permissionsToAdd,
+        result,
+        '<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />',
+      );
+      _addIfMissing(
+        permissionsToAdd,
+        result,
+        '<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />',
+      );
+    }
+
+    // 5. Notifications (permission_handler)
     if (config.hasPermissionHandler) {
       _addIfMissing(
         permissionsToAdd,
@@ -293,6 +309,22 @@ class PlatformPermissionConfigurator {
       }
     }
 
+    // Geolocation (geolocator)
+    if (config.hasGeolocator || config.hasPermissionHandler) {
+      if (!content.contains('NSLocationWhenInUseUsageDescription')) {
+        entriesToAdd.add(
+          '	<key>NSLocationWhenInUseUsageDescription</key>\n'
+          '	<string>Used to provide location-based services and features while using the app.</string>',
+        );
+      }
+      if (!content.contains('NSLocationAlwaysAndWhenInUseUsageDescription')) {
+        entriesToAdd.add(
+          '	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>\n'
+          '	<string>Used to provide location services continuously or in the background.</string>',
+        );
+      }
+    }
+
     // URL Launcher (LSApplicationQueriesSchemes)
     if (config.utilities.contains(UtilityPackage.urlLauncher)) {
       if (!content.contains('LSApplicationQueriesSchemes')) {
@@ -362,11 +394,25 @@ class PlatformPermissionConfigurator {
       }
     }
 
-    // Networking & Cached Network Image
-    if (config.networking != Networking.none || config.hasCachedNetworkImage) {
+    // Networking & Webview
+    if (config.networking != Networking.none ||
+        config.hasCachedNetworkImage ||
+        config.hasWebview) {
       if (!content.contains('com.apple.security.network.client')) {
         entriesToAdd.add(
           '	<key>com.apple.security.network.client</key>\n'
+          '	<true/>',
+        );
+      }
+    }
+
+    // Geolocation
+    if (config.hasGeolocator) {
+      if (!content.contains(
+        'com.apple.security.personal-information.location',
+      )) {
+        entriesToAdd.add(
+          '	<key>com.apple.security.personal-information.location</key>\n'
           '	<true/>',
         );
       }
@@ -409,6 +455,7 @@ class PlatformPermissionConfigurator {
             'PERMISSION_CAMERA=1',
             'PERMISSION_PHOTOS=1',
             'PERMISSION_MICROPHONE=1',
+            'PERMISSION_LOCATION=1',
             'PERMISSION_NOTIFICATIONS=1',
           ]
         end''';

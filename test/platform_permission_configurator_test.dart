@@ -301,5 +301,54 @@ end''';
       expect(defaultPodfile, contains('PERMISSION_CAMERA=1'));
       expect(defaultPodfile, contains('flutter_install_all_ios_pods'));
     });
+
+    test('configures geolocator and webview permissions across platforms', () {
+      final config = ProjectConfig(
+        projectName: 'geo_web_app',
+        orgName: 'com.example',
+        targetDirectory: '/tmp/geo_web_app',
+        architecture: ArchitecturePattern.featureFirst,
+        stateManagement: StateManagement.bloc,
+        routing: Routing.goRouter,
+        networking: Networking.none,
+        storage: Storage.none,
+        features: const {},
+        utilities: {UtilityPackage.geolocator, UtilityPackage.webviewFlutter},
+      );
+
+      final androidManifest = configurator.updateAndroidManifest(
+        sampleAndroidManifest,
+        config,
+      );
+      expect(
+        androidManifest,
+        contains('android.permission.ACCESS_FINE_LOCATION'),
+      );
+      expect(
+        androidManifest,
+        contains('android.permission.ACCESS_COARSE_LOCATION'),
+      );
+      expect(androidManifest, contains('android.permission.INTERNET'));
+
+      final iosPlist = configurator.updateIosInfoPlist(
+        sampleIosInfoPlist,
+        config,
+      );
+      expect(iosPlist, contains('NSLocationWhenInUseUsageDescription'));
+      expect(
+        iosPlist,
+        contains('NSLocationAlwaysAndWhenInUseUsageDescription'),
+      );
+
+      final macosEntitlements = configurator.updateMacOsEntitlements(
+        sampleMacOsEntitlements,
+        config,
+      );
+      expect(
+        macosEntitlements,
+        contains('com.apple.security.personal-information.location'),
+      );
+      expect(macosEntitlements, contains('com.apple.security.network.client'));
+    });
   });
 }

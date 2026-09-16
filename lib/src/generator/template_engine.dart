@@ -87,7 +87,14 @@ class TemplateEngine {
     files['lib/shared/utils/app_formatters.dart'] = renderAppFormatters(
       hasIntl: config.hasIntl,
     );
-    files['lib/shared/utils/utils.dart'] = renderUtilsBarrel();
+
+    if (config.hasCrypto) {
+      files['lib/shared/utils/app_crypto.dart'] = renderAppCrypto();
+    }
+
+    files['lib/shared/utils/utils.dart'] = renderUtilsBarrel(
+      hasCrypto: config.hasCrypto,
+    );
 
     // Asset folder placeholders (directories created on disk in generator too)
     if (config.hasAssetsStructure) {
@@ -107,8 +114,14 @@ class TemplateEngine {
           renderAppNetworkImage(config);
     }
 
+    // UI Utilities: In-App Web View helper
+    if (config.hasWebview) {
+      files['lib/shared/widgets/app_webview.dart'] = renderAppWebView();
+    }
+
     files['lib/shared/widgets/widgets.dart'] = renderWidgetsBarrel(
       hasCachedNetworkImage: config.hasCachedNetworkImage,
+      hasWebview: config.hasWebview,
     );
 
     // UI Utilities: Starter SVG Icon
@@ -133,6 +146,14 @@ class TemplateEngine {
           ? 'lib/core/services/file_picker_service.dart'
           : 'lib/services/file_picker_service.dart';
       files[pickerPath] = renderFilePickerService();
+    }
+
+    // Cross-Platform Geolocation Service
+    if (config.hasGeolocator) {
+      final locationPath = usesCoreDir
+          ? 'lib/core/services/location_service.dart'
+          : 'lib/services/location_service.dart';
+      files[locationPath] = renderLocationService();
     }
 
     // 5. Architectural Domain, Data, Presentation layers

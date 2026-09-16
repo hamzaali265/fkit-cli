@@ -252,12 +252,12 @@ lib/
 | **State Management** | `flutter_bloc`, `flutter_riverpod`, `provider`, `get`, `none` | Pre-wired with starter state, events, or providers |
 | **Routing** | `go_router`, `auto_route`, `standard` | Declarative routing with typed route configs |
 | **Networking** | `dio`, `http`, `none` | Configured with base options, JSON parsing, error handlers |
-| **Local Storage** | `hive_flutter`, `shared_preferences`, `none` | Fast NoSQL storage or key-value persistence |
+| **Local Storage** | `hive_flutter`, `shared_preferences`, `sqflite`, `none` | Fast NoSQL storage, key-value persistence, or SQLite relational database |
 | **Dependency Injection** | `get_it` | Pre-wired `initDependencies()` service locator |
-| **Hardware & Devices** | `image_picker`, `file_picker`, `permission_handler` | Camera/gallery picking, document browsing, permission checks |
+| **Hardware & Devices** | `image_picker`, `file_picker`, `permission_handler`, `geolocator` | Camera/gallery, file picking, runtime permissions, and GPS location tracking |
 | **Secure Storage** | `flutter_secure_storage` | Keychain & Keystore encrypted storage |
-| **UI & Layout** | `gap`, `flutter_screenutil`, `flutter_svg`, `cached_network_image` | Modern layout spacing, responsive sizing, vector & cached media |
-| **Utilities** | `url_launcher`, `uuid` | External link handling & RFC UUID generation |
+| **UI & Layout** | `gap`, `flutter_screenutil`, `flutter_svg`, `cached_network_image`, `webview_flutter` | Modern spacing, responsive sizing, vector/cached media, and in-app web views |
+| **Utilities & Cryptography** | `equatable`, `crypto`, `intl`, `url_launcher`, `uuid` | Value equality, SHA256/MD5 hashing, formatters, external links, and UUIDs |
 | **Quality & Lints** | `very_good_analysis` | Pre-configured strict linting rules |
 | **Internationalization** | `flutter_localizations`, `intl` | `l10n.yaml` with starter ARB dictionaries |
 | **Environment Flavors** | Development / Staging / Production | `AppConfig` supporting `--dart-define=ENVIRONMENT` |
@@ -271,19 +271,22 @@ When you enable hardware and device features, FKIT CLI automatically updates you
 ```text
 Platform Configuration Breakdown:
 ├── 🤖 Android (android/app/src/main/AndroidManifest.xml)
-│   ├── Internet access permissions
+│   ├── Internet & Network State permissions
 │   ├── Camera & Gallery storage permissions (READ_MEDIA_IMAGES / VIDEO)
+│   ├── Location permissions (ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION)
 │   └── Intent <queries> for url_launcher
 │
 ├── 🍎 iOS (ios/Runner/Info.plist & ios/Podfile)
 │   ├── NSCameraUsageDescription & NSPhotoLibraryUsageDescription
 │   ├── NSMicrophoneUsageDescription
+│   ├── NSLocationWhenInUseUsageDescription & NSLocationAlwaysAndWhenInUseUsageDescription
 │   ├── LSApplicationQueriesSchemes (https, http, mailto, tel)
-│   └── Podfile macro flags (PERMISSION_CAMERA=1, PERMISSION_PHOTOS=1)
+│   └── Podfile macro flags (PERMISSION_CAMERA=1, PERMISSION_PHOTOS=1, PERMISSION_LOCATION=1)
 │
 └── 💻 macOS (macos/Runner/*.entitlements)
     ├── Network client entitlements (com.apple.security.network.client)
     ├── File access entitlements (user-selected read-write)
+    ├── Location entitlements (com.apple.security.personal-information.location)
     └── Camera device permissions
 ```
 
@@ -309,7 +312,7 @@ Scaffolds a new Flutter application.
 | `--state` | `-s` | `bloc` \| `riverpod` \| `provider` \| `getx` \| `none` | Interactive | State management library. |
 | `--routing` | `-r` | `go_router` \| `auto_route` \| `standard` | Interactive | Navigation & routing approach. |
 | `--networking` | `-n` | `dio` \| `http` \| `none` | Interactive | HTTP networking client. |
-| `--storage` | | `shared_preferences` \| `hive` \| `none` | Interactive | Local persistence engine. |
+| `--storage` | | `shared_preferences` \| `hive` \| `sqflite` \| `none` | Interactive | Local persistence engine. |
 | `--[no-]interactive` | `-i` | `boolean` | `true` | Enable or disable the interactive wizard. |
 | `--[no-]offline` | | `boolean` | `false` | Skip `flutter pub get` and online fetches. |
 | `--[no-]strict-lints` | | `boolean` | `true` | Include `very_good_analysis` rules. |
@@ -328,6 +331,11 @@ Scaffolds a new Flutter application.
 | `--[no-]url-launcher` | | `boolean` | `false` | Include `url_launcher` package. |
 | `--[no-]uuid` | | `boolean` | `false` | Include `uuid` package for RFC-compliant UUID generation. |
 | `--[no-]intl` | | `boolean` | `true` | Include `intl` package with Date, Time, & Currency `AppFormatters`. |
+| `--[no-]equatable` | | `boolean` | `false` | Include `equatable` package for value equality without boilerplate. |
+| `--[no-]sqflite` | | `boolean` | `false` | Include `sqflite` SQLite local database plugin. |
+| `--[no-]crypto` | | `boolean` | `false` | Include `crypto` package with `AppCrypto` SHA256/MD5 hashing. |
+| `--[no-]webview` | | `boolean` | `false` | Include `webview_flutter` package with `AppWebView` component. |
+| `--[no-]geolocator` | | `boolean` | `false` | Include `geolocator` package with `LocationService`. |
 
 ---
 

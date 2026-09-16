@@ -382,21 +382,124 @@ export 'widget_extensions.dart';
 ''';
 }
 
+/// Generates `lib/shared/utils/app_crypto.dart` for SHA256, MD5, and HMAC hashing.
+String renderAppCrypto() {
+  return '''
+import 'dart:convert';
+import 'package:crypto/crypto.dart' as crypto;
+
+/// Utility class for cryptographic hashing and digest conversions.
+class AppCrypto {
+  AppCrypto._();
+
+  /// Computes SHA-256 hash string for the given [input].
+  static String sha256(String input) {
+    final bytes = utf8.encode(input);
+    return crypto.sha256.convert(bytes).toString();
+  }
+
+  /// Computes MD5 hash string for the given [input].
+  static String md5(String input) {
+    final bytes = utf8.encode(input);
+    return crypto.md5.convert(bytes).toString();
+  }
+
+  /// Computes HMAC-SHA256 hash using [secretKey] and [input].
+  static String hmacSha256(String secretKey, String input) {
+    final keyBytes = utf8.encode(secretKey);
+    final inputBytes = utf8.encode(input);
+    final hmac = crypto.Hmac(crypto.sha256, keyBytes);
+    return hmac.convert(inputBytes).toString();
+  }
+}
+''';
+}
+
+/// Generates `lib/shared/widgets/app_webview.dart` for in-app web views.
+String renderAppWebView() {
+  return '''
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+/// Reusable Web View widget with loading progress indicator and title bar.
+class AppWebView extends StatefulWidget {
+  const AppWebView({
+    super.key,
+    required this.initialUrl,
+    this.title,
+  });
+
+  final String initialUrl;
+  final String? title;
+
+  @override
+  State<AppWebView> createState() => _AppWebViewState();
+}
+
+class _AppWebViewState extends State<AppWebView> {
+  late final WebViewController _controller;
+  int _loadingProgress = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (progress) {
+            setState(() {
+              _loadingProgress = progress;
+            });
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.initialUrl));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: widget.title != null
+          ? AppBar(
+              title: Text(widget.title!),
+            )
+          : null,
+      body: Stack(
+        children: [
+          WebViewWidget(controller: _controller),
+          if (_loadingProgress < 100)
+            LinearProgressIndicator(
+              value: _loadingProgress / 100.0,
+            ),
+        ],
+      ),
+    );
+  }
+}
+''';
+}
+
 /// Generates barrel `widgets.dart` exporting shared widgets.
-String renderWidgetsBarrel({required bool hasCachedNetworkImage}) {
+String renderWidgetsBarrel({
+  required bool hasCachedNetworkImage,
+  bool hasWebview = false,
+}) {
   final networkImage = hasCachedNetworkImage
       ? "export 'app_network_image.dart';\n"
       : '';
+  final webview = hasWebview ? "export 'app_webview.dart';\n" : '';
   return '''
 export 'app_button.dart';
-$networkImage''';
+$networkImage$webview''';
 }
 
 /// Generates barrel `utils.dart` exporting shared utilities.
-String renderUtilsBarrel() {
+String renderUtilsBarrel({bool hasCrypto = false}) {
+  final crypto = hasCrypto ? "export 'app_crypto.dart';\n" : '';
   return '''
 export 'app_formatters.dart';
-''';
+$crypto''';
 }
 
 /// Generates `lib/shared/constants/app_assets.dart` with typed asset paths.
