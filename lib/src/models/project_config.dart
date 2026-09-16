@@ -279,11 +279,6 @@ enum UtilityPackage {
     'crypto',
     '^3.0.6',
     'Cryptographic hashing algorithms (SHA-256, MD5, HMAC)',
-  ),
-  sqflite(
-    'sqflite',
-    '^2.4.1',
-    'SQLite relational database for tabular data and SQL queries',
   );
 
   const UtilityPackage(this.packageName, this.version, this.description);
@@ -337,9 +332,6 @@ enum UtilityPackage {
         return UtilityPackage.intl;
       case 'equatable':
         return UtilityPackage.equatable;
-      case 'sqflite':
-      case 'sqlite':
-        return UtilityPackage.sqflite;
       case 'crypto':
         return UtilityPackage.crypto;
       case 'webview_flutter':
@@ -412,8 +404,7 @@ class ProjectConfig {
   bool get hasEquatable =>
       utilities.contains(UtilityPackage.equatable) ||
       stateManagement == StateManagement.bloc;
-  bool get hasSqflite =>
-      utilities.contains(UtilityPackage.sqflite) || storage == Storage.sqflite;
+  bool get hasSqflite => storage == Storage.sqflite;
   bool get hasCrypto => utilities.contains(UtilityPackage.crypto);
   bool get hasWebview => utilities.contains(UtilityPackage.webviewFlutter);
   bool get hasGeolocator => utilities.contains(UtilityPackage.geolocator);

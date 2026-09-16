@@ -332,7 +332,6 @@ Scaffolds a new Flutter application.
 | `--[no-]uuid` | | `boolean` | `false` | Include `uuid` package for RFC-compliant UUID generation. |
 | `--[no-]intl` | | `boolean` | `true` | Include `intl` package with Date, Time, & Currency `AppFormatters`. |
 | `--[no-]equatable` | | `boolean` | `false` | Include `equatable` package for value equality without boilerplate. |
-| `--[no-]sqflite` | | `boolean` | `false` | Include `sqflite` SQLite local database plugin. |
 | `--[no-]crypto` | | `boolean` | `false` | Include `crypto` package with `AppCrypto` SHA256/MD5 hashing. |
 | `--[no-]webview` | | `boolean` | `false` | Include `webview_flutter` package with `AppWebView` component. |
 | `--[no-]geolocator` | | `boolean` | `false` | Include `geolocator` package with `LocationService`. |

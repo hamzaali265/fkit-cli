@@ -145,8 +145,6 @@ abstract final class ChoiceCatalog {
         return 'ids';
       case UtilityPackage.crypto:
         return 'hashing';
-      case UtilityPackage.sqflite:
-        return 'sqlite';
     }
   }
 }

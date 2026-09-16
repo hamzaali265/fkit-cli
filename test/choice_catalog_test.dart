@@ -31,12 +31,12 @@ void main() {
             'intl',
             'uuid',
             'equatable',
-            'sqflite',
             'crypto',
             'webview_flutter',
             'geolocator',
           ]),
         );
+        expect(options.map((o) => o.label), isNot(contains('sqflite')));
         final geoOption = options.firstWhere((o) => o.label == 'geolocator');
         expect(geoOption.shortDescription, equals('location'));
       },

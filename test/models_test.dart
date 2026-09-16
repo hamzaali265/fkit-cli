@@ -204,7 +204,7 @@ void main() {
     });
 
     test(
-      'supports new packages: equatable, sqflite, crypto, webview, geolocator',
+      'supports new packages: equatable, crypto, webview, geolocator, and sqflite storage',
       () {
         final config = ProjectConfig(
           projectName: 'new_packages_app',
@@ -218,7 +218,6 @@ void main() {
           features: const {},
           utilities: {
             UtilityPackage.equatable,
-            UtilityPackage.sqflite,
             UtilityPackage.crypto,
             UtilityPackage.webviewFlutter,
             UtilityPackage.geolocator,
@@ -246,8 +245,6 @@ void main() {
         UtilityPackage.fromKey('equatable'),
         equals(UtilityPackage.equatable),
       );
-      expect(UtilityPackage.fromKey('sqflite'), equals(UtilityPackage.sqflite));
-      expect(UtilityPackage.fromKey('sqlite'), equals(UtilityPackage.sqflite));
       expect(UtilityPackage.fromKey('crypto'), equals(UtilityPackage.crypto));
       expect(
         UtilityPackage.fromKey('webview'),

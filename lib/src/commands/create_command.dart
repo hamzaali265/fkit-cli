@@ -151,11 +151,6 @@ class CreateCommand extends Command<int> {
         defaultsTo: false,
       )
       ..addFlag(
-        'sqflite',
-        help: 'Include sqflite package for SQLite local database.',
-        defaultsTo: false,
-      )
-      ..addFlag(
         'crypto',
         help: 'Include crypto package for SHA256/MD5 hashing.',
         defaultsTo: false,
@@ -279,9 +274,6 @@ class CreateCommand extends Command<int> {
       }
       if (args['equatable'] as bool) {
         utilities.add(UtilityPackage.equatable);
-      }
-      if (args['sqflite'] as bool) {
-        utilities.add(UtilityPackage.sqflite);
       }
       if (args['crypto'] as bool) {
         utilities.add(UtilityPackage.crypto);
