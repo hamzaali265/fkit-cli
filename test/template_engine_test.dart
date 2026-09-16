@@ -618,9 +618,18 @@ void main() {
       final files = engine.generateFiles(config);
       final formatters = files['lib/shared/utils/app_formatters.dart']!;
       expect(formatters, contains("import 'package:intl/intl.dart';"));
-      expect(formatters, contains('static String formatDate('));
-      expect(formatters, contains('static String formatCurrency('));
-      expect(formatters, contains('DateFormat(format, locale).format(date)'));
+      expect(
+        formatters,
+        contains('extension DateTimeFormatExtension on DateTime'),
+      );
+      expect(formatters, contains('extension NumberFormatExtension on num'));
+      expect(formatters, contains('String formatDate({'));
+      expect(formatters, contains('String formatCurrency({'));
+      expect(formatters, contains('DateFormat(format, locale).format(this)'));
+      expect(
+        files['lib/shared/extensions/extensions.dart'],
+        contains("export '../utils/app_formatters.dart';"),
+      );
     });
 
     test(

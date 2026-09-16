@@ -285,6 +285,115 @@ String renderAppFormatters({bool hasIntl = false}) {
     return '''
 import 'package:intl/intl.dart';
 
+/// Extension on [DateTime] providing convenient date and time formatting methods.
+extension DateTimeFormatExtension on DateTime {
+  /// Formats date into readable string (e.g. "MMM d, yyyy").
+  String formatDate({
+    String format = 'MMM d, yyyy',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(this);
+  }
+
+  /// Formats time into readable string (e.g. "hh:mm a").
+  String formatTime({
+    String format = 'hh:mm a',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(this);
+  }
+
+  /// Formats full date and time (e.g. "MMM d, yyyy hh:mm a").
+  String formatDateTime({
+    String format = 'MMM d, yyyy hh:mm a',
+    String? locale,
+  }) {
+    return DateFormat(format, locale).format(this);
+  }
+
+  /// Custom formatted date string using [pattern].
+  String toPattern(String pattern, [String? locale]) {
+    return DateFormat(pattern, locale).format(this);
+  }
+
+  /// Shorthand getters for common date formats.
+  String get formattedDate => formatDate();
+  String get formattedTime => formatTime();
+  String get formattedDateTime => formatDateTime();
+}
+
+/// Extension on nullable [DateTime] for safe fallback formatting.
+extension NullableDateTimeFormatExtension on DateTime? {
+  /// Formats date or returns [fallback] when null.
+  String formatDateOr({
+    String format = 'MMM d, yyyy',
+    String? locale,
+    String fallback = '',
+  }) {
+    if (this == null) return fallback;
+    return this!.formatDate(format: format, locale: locale);
+  }
+
+  /// Formats time or returns [fallback] when null.
+  String formatTimeOr({
+    String format = 'hh:mm a',
+    String? locale,
+    String fallback = '',
+  }) {
+    if (this == null) return fallback;
+    return this!.formatTime(format: format, locale: locale);
+  }
+}
+
+/// Extension on [num] providing currency and number formatting methods.
+extension NumberFormatExtension on num {
+  /// Formats currency (e.g. "\$1,234.56").
+  String formatCurrency({
+    String symbol = r'\$',
+    int decimalDigits = 2,
+    String? locale,
+  }) {
+    return NumberFormat.currency(
+      symbol: symbol,
+      decimalDigits: decimalDigits,
+      locale: locale,
+    ).format(this);
+  }
+
+  /// Formats compact numbers (e.g. "1.2K", "3.4M").
+  String formatCompact({String? locale}) {
+    return NumberFormat.compact(locale: locale).format(this);
+  }
+
+  /// Formats a number with thousands separators (e.g. 1,000,000).
+  String formatDecimal({String? locale}) {
+    return NumberFormat.decimalPattern(locale).format(this);
+  }
+
+  /// Formats number as percentage (e.g. "25%").
+  String formatPercent({String? locale}) {
+    return NumberFormat.percentPattern(locale).format(this);
+  }
+}
+
+/// Extension on nullable [num] for safe fallback formatting.
+extension NullableNumberFormatExtension on num? {
+  /// Formats currency or returns [fallback] when null.
+  String formatCurrencyOr({
+    String symbol = r'\$',
+    int decimalDigits = 2,
+    String? locale,
+    String fallback = '',
+  }) {
+    if (this == null) return fallback;
+    return this!.formatCurrency(
+      symbol: symbol,
+      decimalDigits: decimalDigits,
+      locale: locale,
+    );
+  }
+}
+
 /// Shared formatters and utility string functions.
 class AppFormatters {
   AppFormatters._();
@@ -294,27 +403,24 @@ class AppFormatters {
     DateTime date, {
     String format = 'MMM d, yyyy',
     String? locale,
-  }) {
-    return DateFormat(format, locale).format(date);
-  }
+  }) =>
+      date.formatDate(format: format, locale: locale);
 
   /// Formats time into readable string (e.g. "hh:mm a").
   static String formatTime(
     DateTime date, {
     String format = 'hh:mm a',
     String? locale,
-  }) {
-    return DateFormat(format, locale).format(date);
-  }
+  }) =>
+      date.formatTime(format: format, locale: locale);
 
   /// Formats full date and time (e.g. "MMM d, yyyy hh:mm a").
   static String formatDateTime(
     DateTime date, {
     String format = 'MMM d, yyyy hh:mm a',
     String? locale,
-  }) {
-    return DateFormat(format, locale).format(date);
-  }
+  }) =>
+      date.formatDateTime(format: format, locale: locale);
 
   /// Formats currency (e.g. "\$1,234.56").
   static String formatCurrency(
@@ -322,23 +428,20 @@ class AppFormatters {
     String symbol = r'\$',
     int decimalDigits = 2,
     String? locale,
-  }) {
-    return NumberFormat.currency(
-      symbol: symbol,
-      decimalDigits: decimalDigits,
-      locale: locale,
-    ).format(amount);
-  }
+  }) =>
+      amount.formatCurrency(
+        symbol: symbol,
+        decimalDigits: decimalDigits,
+        locale: locale,
+      );
 
   /// Formats compact numbers (e.g. "1.2K", "3.4M").
-  static String formatCompact(num number, {String? locale}) {
-    return NumberFormat.compact(locale: locale).format(number);
-  }
+  static String formatCompact(num number, {String? locale}) =>
+      number.formatCompact(locale: locale);
 
   /// Formats a number with thousands separators (e.g. 1,000,000).
-  static String formatNumber(num number, {String? locale}) {
-    return NumberFormat.decimalPattern(locale).format(number);
-  }
+  static String formatNumber(num number, {String? locale}) =>
+      number.formatDecimal(locale: locale);
 
   /// Capitalizes the first letter of a string.
   static String capitalize(String text) {
@@ -350,19 +453,25 @@ class AppFormatters {
   }
 
   return '''
-/// Shared formatters and utility string functions.
-class AppFormatters {
-  AppFormatters._();
-
+/// Extension on [num] for basic thousands-separator number formatting.
+extension NumberFormatExtension on num {
   /// Formats a number with thousands separators (e.g. 1,000,000).
-  static String formatNumber(num number) {
-    final parts = number.toString().split('.');
+  String get formatNumber {
+    final parts = toString().split('.');
     final intPart = parts[0].replaceAllMapped(
       RegExp(r'(\\d{1,3})(?=(\\d{3})+(?!\\d))'),
       (match) => '\${match[1]},',
     );
     return parts.length > 1 ? '\$intPart.\${parts[1]}' : intPart;
   }
+}
+
+/// Shared formatters and utility string functions.
+class AppFormatters {
+  AppFormatters._();
+
+  /// Formats a number with thousands separators (e.g. 1,000,000).
+  static String formatNumber(num number) => number.formatNumber;
 
   /// Capitalizes the first letter of a string.
   static String capitalize(String text) {
@@ -376,6 +485,7 @@ class AppFormatters {
 /// Generates barrel `extensions.dart` exporting all extension files.
 String renderExtensionsBarrel() {
   return '''
+export '../utils/app_formatters.dart';
 export 'context_extensions.dart';
 export 'string_extensions.dart';
 export 'widget_extensions.dart';
