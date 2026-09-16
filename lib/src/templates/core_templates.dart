@@ -283,7 +283,53 @@ class AppConfig {
 }
 
 /// Generates `lib/core/network/api_contract.dart`.
-String renderApiContract() {
+String renderApiContract([ProjectConfig? config]) {
+  if (config?.networking == Networking.http) {
+    return '''
+import 'dart:io';
+
+abstract interface class ApiContract {
+  Future<String?> get(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, String>? header,
+  });
+  Future<String?> post(
+    String path, {
+    Object? body,
+    Map<String, dynamic>? query,
+    Map<String, String>? header,
+    String? contentType,
+  });
+  Future<String?> patch(
+    String path, {
+    Object? body,
+    Map<String, String>? header,
+  });
+  Future<String?> update(
+    String path,
+    Map<String, dynamic>? data,
+  );
+  Future<String?> create(
+    String path,
+    Map<String, dynamic>? data,
+  );
+  Future<String?> delete(
+    String path, {
+    Object? body,
+    Map<String, String>? header,
+  });
+  Future<String?> put(
+    String url, {
+    Object? body,
+    File? file,
+    String? mime,
+    Map<String, String>? header,
+  });
+}
+''';
+  }
+
   return '''
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -394,7 +440,180 @@ enum LoadStatus {
 }
 
 /// Generates `lib/core/network/app_exception.dart`.
-String renderAppException() {
+String renderAppException([ProjectConfig? config]) {
+  if (config?.networking == Networking.http) {
+    return '''
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+/// Base class for all application specific exceptions.
+class AppException implements Exception {
+  const AppException({
+    required this.message,
+    this.prefix,
+    this.statusCode,
+  });
+
+  final String message;
+  final String? prefix;
+  final int? statusCode;
+
+  @override
+  String toString() => message;
+}
+
+/// Generic data fetching exception.
+class FetchDataException extends AppException {
+  FetchDataException([String? message])
+      : super(
+          message: message ??
+              'Oops! We encountered an issue while loading data. Please try again.',
+          prefix: 'Connection Error',
+        );
+}
+
+/// 400 Bad Request
+class BadRequestException extends AppException {
+  BadRequestException([String? message])
+      : super(
+          message: message ??
+              'Oops! Something went wrong with your request. Please try again.',
+          statusCode: 400,
+        );
+}
+
+/// 401 Unauthorized
+class UnauthorizedException extends AppException {
+  UnauthorizedException([String? message])
+      : super(
+          message: message ?? 'Session expired. Log in again.',
+          statusCode: 401,
+        );
+}
+
+/// 403 Forbidden
+class ForbiddenException extends AppException {
+  ForbiddenException([String? message])
+      : super(
+          message: message ??
+              "Access denied. You don't have permission for this action.",
+          statusCode: 403,
+        );
+}
+
+/// 404 Not Found
+class NotFoundException extends AppException {
+  NotFoundException([String? message])
+      : super(
+          message: message ?? "Oops! We couldn't find what you were looking for.",
+          statusCode: 404,
+        );
+}
+
+/// 409 Conflict
+class ConflictException extends AppException {
+  ConflictException([String? message])
+      : super(
+          message: message ?? 'This already exists! Try something else.',
+          statusCode: 409,
+        );
+}
+
+/// 429 Too Many Requests
+class RateLimitException extends AppException {
+  RateLimitException([String? message])
+      : super(
+          message: message ??
+              'Rate limit exceeded. Please wait a moment before trying again.',
+          statusCode: 429,
+        );
+}
+
+/// 500+ Internal Server Error
+class ServerException extends AppException {
+  ServerException([String? message])
+      : super(
+          message: message ?? 'The server is busy, please try again later.',
+          statusCode: 500,
+        );
+}
+
+/// Internet Connectivity Exceptions
+class NoInternetException extends AppException {
+  NoInternetException()
+      : super(
+          message: 'No signal! Please check your internet connection.',
+          prefix: 'Internet Connection Error',
+        );
+}
+
+class TimeoutException extends AppException {
+  TimeoutException()
+      : super(
+          message: 'The connection timed out. Please try again later.',
+          prefix: 'Connection Timeout',
+        );
+}
+
+/// Utility class to handle and map HTTP responses to AppExceptions.
+class ExceptionHandler {
+  static AppException handleResponse(http.Response? response) {
+    if (response == null) {
+      return NoInternetException();
+    }
+
+    final statusCode = response.statusCode;
+    final responseData = response.body;
+    String? errorMessage;
+
+    try {
+      if (responseData.isNotEmpty) {
+        final dynamic data = jsonDecode(responseData);
+
+        if (data is Map) {
+          errorMessage = data['message'] as String? ??
+              (data['errors'] is Map
+                  ? (data['errors'] as Map)['detail'] as String?
+                  : null) ??
+              (data['error'] is Map
+                  ? (data['error'] as Map)['message'] as String?
+                  : null);
+        }
+      }
+    } on Exception {
+      // Ignore parsing errors and use default messages
+    }
+
+    switch (statusCode) {
+      case 400:
+        return BadRequestException(errorMessage);
+      case 401:
+        return UnauthorizedException(errorMessage);
+      case 403:
+        return ForbiddenException(errorMessage);
+      case 404:
+        return NotFoundException(errorMessage);
+      case 409:
+        return ConflictException(errorMessage);
+      case 422:
+        return BadRequestException(
+          errorMessage ?? 'Check your details and try again.',
+        );
+      case 429:
+        return RateLimitException();
+      case 500:
+      case 502:
+      case 503:
+      case 504:
+        return ServerException();
+      default:
+        return FetchDataException();
+    }
+  }
+}
+''';
+  }
+
   return '''
 import 'dart:convert';
 import 'package:dio/dio.dart';
@@ -589,7 +808,54 @@ class ExceptionHandler {
 }
 
 /// Generates `lib/core/network/api_interceptor.dart`.
-String renderApiInterceptor() {
+String renderApiInterceptor([ProjectConfig? config]) {
+  if (config?.networking == Networking.http) {
+    return '''
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
+
+/// Production-ready HTTP client wrapper with automatic headers and logging.
+class ApiInterceptor extends http.BaseClient {
+  ApiInterceptor([http.Client? inner, this._tokenProvider])
+      : _inner = inner ?? http.Client();
+
+  final http.Client _inner;
+  final String? Function()? _tokenProvider;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    request.headers['x-client-platform'] = 'mobile';
+    request.headers['x-client-device'] = Platform.isIOS ? 'ios' : 'android';
+    if (!request.headers.containsKey('Content-Type')) {
+      request.headers['Content-Type'] = 'application/json';
+    }
+    if (!request.headers.containsKey('Accept')) {
+      request.headers['Accept'] = 'application/json';
+    }
+    final token = _tokenProvider?.call();
+    if (token != null &&
+        token.isNotEmpty &&
+        !request.headers.containsKey('Authorization')) {
+      request.headers['Authorization'] = 'Bearer \$token';
+    }
+
+    log('REQUEST[\${request.method}] => PATH: \${request.url}');
+    final response = await _inner.send(request);
+    log('RESPONSE[\${response.statusCode}] => PATH: \${request.url}');
+    return response;
+  }
+
+  @override
+  void close() {
+    _inner.close();
+    super.close();
+  }
+}
+''';
+  }
+
   return '''
 import 'dart:developer';
 import 'dart:io';
@@ -643,6 +909,260 @@ String renderApiService(ProjectConfig config) {
   final configImport = config.hasEnvFlavors
       ? "import '../config/app_config.dart';\n"
       : '';
+
+  if (config.networking == Networking.http) {
+    return '''
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
+$configImport import 'api_contract.dart';
+import 'api_interceptor.dart';
+import 'app_exception.dart';
+
+/// Primary API service implementation powered by http package.
+class ApiService implements ApiContract {
+  ApiService({
+    http.Client? client,
+    String? baseUrl,
+    String? Function()? tokenProvider,
+  })  : _baseUrl = baseUrl ?? $baseUrlVal,
+        _tokenProvider = tokenProvider,
+        _client = ApiInterceptor(client, tokenProvider);
+
+  final http.Client _client;
+  final String _baseUrl;
+  final String? Function()? _tokenProvider;
+
+  http.Client get client => _client;
+  String get baseUrl => _baseUrl;
+  String get baseURL => _baseUrl;
+
+  String? _token;
+  String? get token => _token ?? _tokenProvider?.call();
+  set token(String? value) => _token = value;
+
+  Uri _buildUri(String path, [Map<String, dynamic>? query]) {
+    final cleanPath = path.replaceAll('//', '/');
+    final urlString =
+        cleanPath.startsWith('http') ? cleanPath : '\$_baseUrl\$cleanPath';
+    final uri = Uri.parse(urlString);
+    if (query == null || query.isEmpty) return uri;
+    return uri.replace(
+      queryParameters: {
+        ...uri.queryParameters,
+        ...query.map((k, v) => MapEntry(k, v.toString())),
+      },
+    );
+  }
+
+  @override
+  Future<String?> get(
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, String>? header,
+  }) async {
+    debugPrint('GET => PATH: \$path');
+    try {
+      final uri = _buildUri(path, query);
+      final response = await _client.get(uri, headers: header);
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 304) {
+        return response.body;
+      }
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> post(
+    String path, {
+    Object? body,
+    Map<String, dynamic>? query,
+    Map<String, String>? header,
+    String? contentType,
+  }) async {
+    debugPrint('POST => PATH: \$path');
+    try {
+      final uri = _buildUri(path, query);
+      final payload = body is Map || body is List ? jsonEncode(body) : body;
+      final headers = {
+        if (contentType != null) 'Content-Type': contentType,
+        if (header != null) ...header,
+      };
+      final response = await _client.post(uri, body: payload, headers: headers);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.body;
+      }
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> patch(
+    String path, {
+    Object? body,
+    Map<String, String>? header,
+  }) async {
+    debugPrint('PATCH => PATH: \$path');
+    try {
+      final uri = _buildUri(path);
+      final payload = body is Map || body is List ? jsonEncode(body) : body;
+      final response = await _client.patch(uri, body: payload, headers: header);
+      if (response.statusCode == 200) return response.body;
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> update(
+    String path,
+    Map<String, dynamic>? data,
+  ) async {
+    debugPrint('UPDATE => PATH: \$path');
+    try {
+      final uri = _buildUri(path);
+      final response = await _client.patch(
+        uri,
+        body: data != null ? jsonEncode(data) : null,
+      );
+      if (response.statusCode == 200) return response.body;
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> create(
+    String path,
+    Map<String, dynamic>? data,
+  ) async {
+    debugPrint('POST (create) => PATH: \$path');
+    try {
+      final uri = _buildUri(path);
+      final response = await _client.post(
+        uri,
+        body: data != null ? jsonEncode(data) : null,
+      );
+      if (response.statusCode == 201) return response.body;
+      throw ExceptionHandler.handleResponse(response);
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  @override
+  Future<String?> delete(
+    String path, {
+    Object? body,
+    Map<String, String>? header,
+  }) async {
+    debugPrint('DELETE => PATH: \$path');
+    try {
+      final uri = _buildUri(path);
+      final payload = body is Map || body is List ? jsonEncode(body) : body;
+      final response = await _client.delete(uri, body: payload, headers: header);
+      return response.body;
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String?> put(
+    String url, {
+    Object? body,
+    File? file,
+    String? mime,
+    Map<String, String>? header,
+  }) async {
+    debugPrint('PUT => PATH: \$url');
+    try {
+      final uri = _buildUri(url);
+      final headers = {
+        if (mime != null) 'Content-Type': mime,
+        if (header != null) ...header,
+      };
+      dynamic payload = body;
+      if (file != null) {
+        payload = await file.readAsBytes();
+      } else if (body is Map || body is List) {
+        payload = jsonEncode(body);
+      }
+      final response = await _client.put(uri, body: payload, headers: headers);
+      return response.body;
+    } on SocketException {
+      throw NoInternetException();
+    } on HttpException {
+      throw NoInternetException();
+    } on TimeoutException {
+      throw TimeoutException();
+    } catch (e) {
+      if (e is AppException) rethrow;
+      throw FetchDataException('Unexpected error: \$e');
+    }
+  }
+
+  void close() => _client.close();
+}
+
+/// Backwards-compatible alias for ApiService.
+typedef ApiClient = ApiService;
+''';
+  }
 
   return '''
 import 'dart:async';

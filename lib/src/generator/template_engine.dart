@@ -52,35 +52,28 @@ class TemplateEngine {
     }
 
     if (config.networking != Networking.none) {
-      if (config.networking == Networking.dio) {
-        final netPrefix = usesCoreDir ? 'lib/core/network/' : 'lib/network/';
-        files['${netPrefix}api_contract.dart'] = renderApiContract();
-        files['${netPrefix}api_endpoint.dart'] = renderApiEndpoint(config);
-        files['${netPrefix}api_response.dart'] = renderApiResponse();
-        files['${netPrefix}app_exception.dart'] = renderAppException();
-        files['${netPrefix}api_interceptor.dart'] = renderApiInterceptor();
-        files['${netPrefix}api_service.dart'] = renderApiService(config);
-        files['${netPrefix}api_client.dart'] = renderApiService(config);
-        files['${netPrefix}network_event_provider.dart'] =
-            renderNetworkEventProvider(config);
-        files['${netPrefix}failures/failure.dart'] = renderFailure();
-        files['${netPrefix}failures/exception.dart'] = renderException();
-        files['${netPrefix}network.dart'] = renderNetworkBarrel();
+      final netPrefix = usesCoreDir ? 'lib/core/network/' : 'lib/network/';
+      files['${netPrefix}api_contract.dart'] = renderApiContract(config);
+      files['${netPrefix}api_endpoint.dart'] = renderApiEndpoint(config);
+      files['${netPrefix}api_response.dart'] = renderApiResponse();
+      files['${netPrefix}app_exception.dart'] = renderAppException(config);
+      files['${netPrefix}api_interceptor.dart'] = renderApiInterceptor(config);
+      files['${netPrefix}api_service.dart'] = renderApiService(config);
+      files['${netPrefix}api_client.dart'] = renderApiService(config);
+      files['${netPrefix}network_event_provider.dart'] =
+          renderNetworkEventProvider(config);
+      files['${netPrefix}failures/failure.dart'] = renderFailure();
+      files['${netPrefix}failures/exception.dart'] = renderException();
+      files['${netPrefix}network.dart'] = renderNetworkBarrel();
 
-        if (!usesCoreDir) {
-          files['lib/services/api_client.dart'] = '''
+      if (!usesCoreDir) {
+        files['lib/services/api_client.dart'] = '''
 import '../network/network.dart';
 
 export '../network/network.dart';
 
 typedef ApiClient = ApiService;
 ''';
-        }
-      } else {
-        final networkPath = usesCoreDir
-            ? 'lib/core/network/api_client.dart'
-            : 'lib/services/api_client.dart';
-        files[networkPath] = renderApiClient(config);
       }
     }
 

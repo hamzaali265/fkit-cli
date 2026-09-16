@@ -839,5 +839,58 @@ void main() {
         expect(barrel, contains("export 'failures/exception.dart';"));
       },
     );
+
+    test('generates funsai network architecture suite for HTTP package', () {
+      final config = ProjectConfig(
+        projectName: 'http_network_app',
+        orgName: 'com.example',
+        targetDirectory: '/tmp/http_network_app',
+        architecture: ArchitecturePattern.mvvm,
+        stateManagement: StateManagement.provider,
+        routing: Routing.standard,
+        networking: Networking.http,
+        storage: Storage.none,
+        features: const {},
+      );
+
+      final files = engine.generateFiles(config);
+
+      expect(files.containsKey('lib/network/api_contract.dart'), isTrue);
+      expect(files.containsKey('lib/network/api_endpoint.dart'), isTrue);
+      expect(files.containsKey('lib/network/api_response.dart'), isTrue);
+      expect(files.containsKey('lib/network/app_exception.dart'), isTrue);
+      expect(files.containsKey('lib/network/api_interceptor.dart'), isTrue);
+      expect(files.containsKey('lib/network/api_service.dart'), isTrue);
+      expect(files.containsKey('lib/network/api_client.dart'), isTrue);
+      expect(files.containsKey('lib/services/api_client.dart'), isTrue);
+      expect(
+        files.containsKey('lib/network/network_event_provider.dart'),
+        isTrue,
+      );
+      expect(files.containsKey('lib/network/failures/failure.dart'), isTrue);
+      expect(files.containsKey('lib/network/failures/exception.dart'), isTrue);
+      expect(files.containsKey('lib/network/network.dart'), isTrue);
+
+      final apiContract = files['lib/network/api_contract.dart']!;
+      expect(apiContract, contains('abstract interface class ApiContract'));
+      expect(apiContract, isNot(contains('CancelToken')));
+
+      final apiInterceptor = files['lib/network/api_interceptor.dart']!;
+      expect(
+        apiInterceptor,
+        contains('class ApiInterceptor extends http.BaseClient'),
+      );
+
+      final apiService = files['lib/network/api_service.dart']!;
+      expect(apiService, contains("import 'package:http/http.dart' as http;"));
+      expect(apiService, contains('class ApiService implements ApiContract'));
+      expect(apiService, contains('typedef ApiClient = ApiService;'));
+
+      final appException = files['lib/network/app_exception.dart']!;
+      expect(
+        appException,
+        contains('static AppException handleResponse(http.Response? response)'),
+      );
+    });
   });
 }
