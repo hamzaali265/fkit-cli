@@ -1,13 +1,11 @@
 <div align="center">
 
-```
-███████╗██╗  ██╗██╗████████╗
-██╔════╝██║ ██╔╝██║╚══██╔══╝  FKIT CLI
-█████╗  █████╔╝ ██║   ██║     Production Flutter Scaffolder & Lifecycle Toolkit
-██╔══╝  ██╔═██╗ ██║   ██║     https://pub.dev/packages/fkit_cli
-██║     ██║  ██╗██║   ██║
-╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝
-```
+<a href="https://pub.dev/packages/fkit_cli">
+  <img src="https://raw.githubusercontent.com/hamzaali265/fkit-cli/main/assets/banner.png" alt="FKIT CLI Banner" width="100%" style="max-width: 800px; border-radius: 12px;"/>
+</a>
+
+<br/>
+<br/>
 
 # FKIT CLI
 
@@ -15,33 +13,40 @@
 
 **Bootstrap production-grade Flutter architectures in seconds, generate modular components and clean feature slices, configure multi-environment flavors, manage type-safe assets, and diagnose setup health.**
 
-[![Pub Version](https://img.shields.io/pub/v/fkit_cli.svg?style=flat-square&color=0175C2&label=pub.dev)](https://pub.dev/packages/fkit_cli)
-[![Pub Points](https://img.shields.io/pub/points/fkit_cli?style=flat-square&color=22C55E&label=pub%20points)](https://pub.dev/packages/fkit_cli/score)
-[![Dart SDK](https://img.shields.io/badge/Dart-3.12+-00B4AB.svg?style=flat-square&logo=dart)](https://dart.dev)
-[![Flutter](https://img.shields.io/badge/Flutter-3.x_Ready-02569B.svg?style=flat-square&logo=flutter)](https://flutter.dev)
-[![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Linux%20%7C%20Windows-blueviolet.svg?style=flat-square)](https://pub.dev/packages/fkit_cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![GitHub Stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=flat-square&logo=github&color=F59E0B)](https://github.com/hamzaali265/fkit-cli)
-
-<br/>
-
-```text
-  ✦ Welcome to FKIT CLI!
-  ─────────────────────────────────────────────────────────────────────────────
-    ? What would you like to do?
-    ❯ 🚀 Create New Project       Scaffold a production-ready Flutter app
-      ⚡ Make Component           Generate screen, controller, model, or service
-      🧩 Add Feature Slice        Add clean architecture feature module
-      🎨 Manage Assets            Generate type-safe asset code or clean unused
-      🏷️  Configure Flavors       Automate Android, iOS & VS Code flavors
-      🩺 Doctor                   Diagnose Flutter, CocoaPods, and project health
-      📋 List Catalog             Browse supported architectures, state & packages
-      🚪 Exit
-  ─────────────────────────────────────────────────────────────────────────────
-```
+<p align="center">
+  <a href="https://pub.dev/packages/fkit_cli"><img src="https://img.shields.io/pub/v/fkit_cli.svg?style=flat-square&color=0175C2&label=pub.dev" alt="Pub Version"/></a>
+  <a href="https://pub.dev/packages/fkit_cli/score"><img src="https://img.shields.io/pub/points/fkit_cli?style=flat-square&color=22C55E&label=pub%20points" alt="Pub Points"/></a>
+  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.12+-00B4AB.svg?style=flat-square&logo=dart" alt="Dart SDK"/></a>
+  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.x_Ready-02569B.svg?style=flat-square&logo=flutter" alt="Flutter"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square" alt="License"/></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome"/></a>
+  <a href="https://github.com/hamzaali265/fkit-cli"><img src="https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=flat-square&logo=github&color=F59E0B" alt="GitHub Stars"/></a>
+</p>
 
 </div>
+
+---
+
+### 🖥️ Interactive Console
+
+Run `fkit` with no arguments to launch the interactive dashboard:
+
+```text
+$ fkit
+
+  ✦ Welcome to FKIT CLI (v1.2.0)
+  ─────────────────────────────────────────────────────────────
+  ? What would you like to do?
+  ❯ Create New Project   — Scaffold a production-ready Flutter app
+    Make Component       — Generate screen, controller, model, or service
+    Add Feature Slice    — Add clean architecture feature module
+    Manage Assets        — Generate type-safe asset code or clean unused
+    Configure Flavors    — Automate Android, iOS & VS Code flavors
+    Doctor               — Diagnose Flutter, CocoaPods, and project health
+    List Catalog         — Browse supported architectures, state & packages
+    Exit
+  ─────────────────────────────────────────────────────────────
+```
 
 ---
 

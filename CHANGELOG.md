@@ -5,6 +5,14 @@ All notable changes to **FKIT CLI** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-09-17
+
+### 📖 Documentation & Polish
+- **Visual README Overhaul**: Added high-resolution cybernetic graphic banner (`assets/banner.png`) for GitHub and pub.dev.
+- **Terminal Layout Fix**: Fixed cross-platform monospace alignment and removed broken ASCII glyphs in interactive console preview.
+
+---
+
 ## [1.2.0] - 2026-09-17
 
 ### 🌟 Added
