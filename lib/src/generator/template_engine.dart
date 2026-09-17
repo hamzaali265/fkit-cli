@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../models/project_config.dart';
 import '../templates/analysis_options_template.dart';
 import '../templates/core_templates.dart';
@@ -23,6 +25,7 @@ class TemplateEngine {
     files['pubspec.yaml'] = renderPubspecYaml(config);
     files['analysis_options.yaml'] = renderAnalysisOptions(config);
     files['README.md'] = _renderReadme(config);
+    files['.fkit.json'] = _renderFkitJson(config);
 
     // 2. Localization
     if (config.hasLocalization) {
@@ -395,5 +398,10 @@ flutter run --dart-define=ENV=prod
 ```
 ''' : ''}
 ''';
+  }
+
+  String _renderFkitJson(ProjectConfig config) {
+    const encoder = JsonEncoder.withIndent('  ');
+    return '${encoder.convert(config.toJson())}\n';
   }
 }

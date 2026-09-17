@@ -409,6 +409,126 @@ class ProjectConfig {
   bool get hasWebview => utilities.contains(UtilityPackage.webviewFlutter);
   bool get hasGeolocator => utilities.contains(UtilityPackage.geolocator);
 
+  /// Serializes configuration to a JSON map for `.fkit.json`.
+  Map<String, dynamic> toJson() {
+    return {
+      'name': projectName,
+      'org': orgName,
+      'description': description,
+      'architecture': architecture.name,
+      'state_management': stateManagement.name,
+      'routing': routing.name,
+      'networking': networking.name,
+      'storage': storage.name,
+      'features': features.map((f) => f.name).toList(),
+      'utilities': utilities.map((u) => u.name).toList(),
+    };
+  }
+
+  /// Deserializes a configuration from a JSON map (e.g. from `.fkit.json`).
+  factory ProjectConfig.fromJson(
+    Map<String, dynamic> json, {
+    String targetDirectory = '.',
+  }) {
+    ArchitecturePattern parseArch(String? val) {
+      if (val == null) return ArchitecturePattern.featureFirst;
+      try {
+        return ArchitecturePattern.fromKey(val);
+      } catch (_) {
+        return ArchitecturePattern.values.firstWhere(
+          (e) => e.name == val,
+          orElse: () => ArchitecturePattern.featureFirst,
+        );
+      }
+    }
+
+    StateManagement parseState(String? val) {
+      if (val == null) return StateManagement.bloc;
+      try {
+        return StateManagement.fromKey(val);
+      } catch (_) {
+        return StateManagement.values.firstWhere(
+          (e) => e.name == val,
+          orElse: () => StateManagement.bloc,
+        );
+      }
+    }
+
+    Routing parseRouting(String? val) {
+      if (val == null) return Routing.goRouter;
+      try {
+        return Routing.fromKey(val);
+      } catch (_) {
+        return Routing.values.firstWhere(
+          (e) => e.name == val,
+          orElse: () => Routing.goRouter,
+        );
+      }
+    }
+
+    Networking parseNetworking(String? val) {
+      if (val == null) return Networking.dio;
+      try {
+        return Networking.fromKey(val);
+      } catch (_) {
+        return Networking.values.firstWhere(
+          (e) => e.name == val,
+          orElse: () => Networking.dio,
+        );
+      }
+    }
+
+    Storage parseStorage(String? val) {
+      if (val == null) return Storage.sharedPreferences;
+      try {
+        return Storage.fromKey(val);
+      } catch (_) {
+        return Storage.values.firstWhere(
+          (e) => e.name == val,
+          orElse: () => Storage.sharedPreferences,
+        );
+      }
+    }
+
+    final featureNames = (json['features'] as List<dynamic>?) ?? [];
+    final parsedFeatures = <ProjectFeature>{};
+    for (final fn in featureNames) {
+      final fStr = fn.toString();
+      for (final f in ProjectFeature.values) {
+        if (f.name == fStr || f.label.toLowerCase() == fStr.toLowerCase()) {
+          parsedFeatures.add(f);
+        }
+      }
+    }
+
+    final utilNames = (json['utilities'] as List<dynamic>?) ?? [];
+    final parsedUtils = <UtilityPackage>{};
+    for (final un in utilNames) {
+      final uStr = un.toString();
+      for (final u in UtilityPackage.values) {
+        if (u.name == uStr || u.packageName == uStr) {
+          parsedUtils.add(u);
+        }
+      }
+    }
+
+    return ProjectConfig(
+      projectName: json['name'] as String? ?? 'flutter_app',
+      orgName: json['org'] as String? ?? 'com.example',
+      description:
+          json['description'] as String? ??
+          'A new Flutter project created with FKIT CLI.',
+      targetDirectory: targetDirectory,
+      architecture: parseArch(json['architecture'] as String?),
+      stateManagement: parseState(json['state_management'] as String?),
+      routing: parseRouting(json['routing'] as String?),
+      networking: parseNetworking(json['networking'] as String?),
+      storage: parseStorage(json['storage'] as String?),
+      features: parsedFeatures,
+      utilities: parsedUtils,
+    );
+  }
+
   /// Computes the list of production dependencies with tested versions.
   Map<String, String> get dependencies {
     final deps = <String, String>{'flutter': 'sdk: flutter'};

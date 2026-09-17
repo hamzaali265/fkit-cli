@@ -3,7 +3,9 @@ library;
 
 export 'src/command_runner.dart';
 export 'src/commands/create_command.dart';
+export 'src/commands/feature_command.dart';
 export 'src/commands/list_command.dart';
+export 'src/generator/feature_generator.dart';
 export 'src/generator/platform_permission_configurator.dart';
 export 'src/generator/project_generator.dart';
 export 'src/generator/template_engine.dart';

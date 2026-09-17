@@ -36,6 +36,9 @@ void main() {
         expect(files.containsKey('pubspec.yaml'), isTrue);
         expect(files.containsKey('analysis_options.yaml'), isTrue);
         expect(files.containsKey('README.md'), isTrue);
+        expect(files.containsKey('.fkit.json'), isTrue);
+        expect(files['.fkit.json'], contains('"name": "bloc_app"'));
+        expect(files['.fkit.json'], contains('"architecture": "featureFirst"'));
         expect(files.containsKey('l10n.yaml'), isTrue);
         expect(files.containsKey('lib/l10n/app_en.arb'), isTrue);
         expect(files.containsKey('lib/l10n/app_localizations.dart'), isTrue);
