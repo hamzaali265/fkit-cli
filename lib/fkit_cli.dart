@@ -4,6 +4,7 @@ library;
 export 'src/command_runner.dart';
 export 'src/commands/assets_command.dart';
 export 'src/commands/create_command.dart';
+export 'src/commands/doctor_command.dart';
 export 'src/commands/feature_command.dart';
 export 'src/commands/flavor_command.dart';
 export 'src/commands/list_command.dart';
