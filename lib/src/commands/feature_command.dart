@@ -5,6 +5,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as p;
 
 import '../generator/feature_generator.dart';
+import '../generator/flutter_project_validator.dart';
 import '../models/project_config.dart';
 
 /// Command that adds a new feature module to an existing project.
@@ -34,6 +35,13 @@ class FeatureCommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    final projectPath = argResults?['path'] as String? ?? '.';
+    final projectDir = Directory(projectPath);
+
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'feature')) {
+      return ExitCode.usage.code;
+    }
+
     final featureName = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : _logger.prompt('Feature name (e.g. auth, profile, cart):');
@@ -42,9 +50,6 @@ class FeatureCommand extends Command<int> {
       _logger.err('Feature name cannot be empty.');
       return ExitCode.usage.code;
     }
-
-    final projectPath = argResults?['path'] as String? ?? '.';
-    final projectDir = Directory(projectPath);
 
     // Look for .fkit.json
     final fkitConfigFile = File(p.join(projectDir.path, '.fkit.json'));

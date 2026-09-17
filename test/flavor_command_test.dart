@@ -9,6 +9,12 @@ void main() {
 
     setUp(() {
       tempDir = Directory.systemTemp.createTempSync('fkit_flavor_test_');
+      File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
+name: mock_app
+dependencies:
+  flutter:
+    sdk: flutter
+''');
     });
 
     tearDown(() {

@@ -117,6 +117,12 @@ void main() {
   "features": []
 }
 ''';
+      File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
+name: mock_app
+dependencies:
+  flutter:
+    sdk: flutter
+''');
       File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync(fkitJson);
 
       final runner = FkitCommandRunner();

@@ -5,6 +5,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as p;
 
 import '../generator/feature_generator.dart';
+import '../generator/flutter_project_validator.dart';
 import '../models/project_config.dart';
 
 /// Subcommand for `fkit make screen <name>`.
@@ -28,6 +29,13 @@ class MakeScreenSubcommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    final projectPath = argResults?['path'] as String? ?? '.';
+    final projectDir = Directory(projectPath);
+
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make screen')) {
+      return ExitCode.usage.code;
+    }
+
     final screenName = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : _logger.prompt('Screen name (e.g. login, settings, details):');
@@ -37,8 +45,6 @@ class MakeScreenSubcommand extends Command<int> {
       return ExitCode.usage.code;
     }
 
-    final projectPath = argResults?['path'] as String? ?? '.';
-    final projectDir = Directory(projectPath);
     final config = _loadConfig(projectDir);
 
     final snake = screenName.trim().toSnakeCase();
@@ -107,6 +113,13 @@ class MakeControllerSubcommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    final projectPath = argResults?['path'] as String? ?? '.';
+    final projectDir = Directory(projectPath);
+
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make controller')) {
+      return ExitCode.usage.code;
+    }
+
     final name = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : _logger.prompt('Controller name (e.g. auth, profile, cart):');
@@ -116,8 +129,6 @@ class MakeControllerSubcommand extends Command<int> {
       return ExitCode.usage.code;
     }
 
-    final projectPath = argResults?['path'] as String? ?? '.';
-    final projectDir = Directory(projectPath);
     final config = _loadConfig(projectDir);
 
     final snake = name.trim().toSnakeCase();
@@ -243,6 +254,13 @@ class MakeModelSubcommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    final projectPath = argResults?['path'] as String? ?? '.';
+    final projectDir = Directory(projectPath);
+
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make model')) {
+      return ExitCode.usage.code;
+    }
+
     final name = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : _logger.prompt('Model name (e.g. user, product, transaction):');
@@ -252,8 +270,6 @@ class MakeModelSubcommand extends Command<int> {
       return ExitCode.usage.code;
     }
 
-    final projectPath = argResults?['path'] as String? ?? '.';
-    final projectDir = Directory(projectPath);
     final config = _loadConfig(projectDir);
 
     final snake = name.trim().toSnakeCase();
@@ -325,6 +341,13 @@ class MakeServiceSubcommand extends Command<int> {
 
   @override
   Future<int> run() async {
+    final projectPath = argResults?['path'] as String? ?? '.';
+    final projectDir = Directory(projectPath);
+
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make service')) {
+      return ExitCode.usage.code;
+    }
+
     final name = argResults?.rest.isNotEmpty == true
         ? argResults!.rest.first
         : _logger.prompt('Service name (e.g. auth, payment, analytics):');
@@ -334,8 +357,6 @@ class MakeServiceSubcommand extends Command<int> {
       return ExitCode.usage.code;
     }
 
-    final projectPath = argResults?['path'] as String? ?? '.';
-    final projectDir = Directory(projectPath);
     final config = _loadConfig(projectDir);
 
     final snake = name.trim().toSnakeCase();

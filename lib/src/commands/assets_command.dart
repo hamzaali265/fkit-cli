@@ -4,6 +4,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as p;
 
 import '../generator/asset_manager.dart';
+import '../generator/flutter_project_validator.dart';
 
 /// Subcommand for `fkit assets gen`.
 class AssetsGenSubcommand extends Command<int> {
@@ -33,8 +34,7 @@ class AssetsGenSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!projectDir.existsSync()) {
-      _logger.err('Project directory "$projectPath" not found.');
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'assets gen')) {
       return ExitCode.usage.code;
     }
 
@@ -86,8 +86,7 @@ class AssetsCleanSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!projectDir.existsSync()) {
-      _logger.err('Project directory "$projectPath" not found.');
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'assets clean')) {
       return ExitCode.usage.code;
     }
 

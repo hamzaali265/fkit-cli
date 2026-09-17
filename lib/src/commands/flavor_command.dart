@@ -3,6 +3,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 
 import '../generator/flavor_configurator.dart';
+import '../generator/flutter_project_validator.dart';
 
 /// Command that initializes and configures project flavors.
 class FlavorCommand extends Command<int> {
@@ -41,8 +42,7 @@ class FlavorCommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!projectDir.existsSync()) {
-      _logger.err('Target project directory "$projectPath" does not exist.');
+    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'flavor')) {
       return ExitCode.usage.code;
     }
 

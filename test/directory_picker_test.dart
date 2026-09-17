@@ -50,14 +50,28 @@ void main() {
   });
 
   group('HomeAction', () {
-    test('defaultActions include create, list, coming soon, and quit', () {
+    test('defaultActions include all core lifecycle commands', () {
       final ids = HomeScreen.defaultActions.map((a) => a.id).toList();
-      expect(ids, equals(['create', 'list', 'coming_soon', 'quit']));
       expect(
-        HomeScreen.defaultActions
-            .firstWhere((a) => a.id == 'coming_soon')
-            .enabled,
-        isFalse,
+        ids,
+        equals([
+          'create',
+          'feature',
+          'make',
+          'flavor',
+          'assets',
+          'doctor',
+          'list',
+          'quit',
+        ]),
+      );
+      expect(
+        HomeScreen.defaultActions.firstWhere((a) => a.id == 'create').enabled,
+        isTrue,
+      );
+      expect(
+        HomeScreen.defaultActions.firstWhere((a) => a.id == 'feature').enabled,
+        isTrue,
       );
     });
   });

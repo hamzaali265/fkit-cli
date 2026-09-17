@@ -12,6 +12,7 @@ export 'src/commands/make_command.dart';
 export 'src/generator/asset_manager.dart';
 export 'src/generator/feature_generator.dart';
 export 'src/generator/flavor_configurator.dart';
+export 'src/generator/flutter_project_validator.dart';
 export 'src/generator/platform_permission_configurator.dart';
 export 'src/generator/project_generator.dart';
 export 'src/generator/template_engine.dart';
