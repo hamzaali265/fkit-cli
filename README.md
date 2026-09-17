@@ -1,41 +1,44 @@
 <div align="center">
 
 ```
-███████╗  ██╗  ██╗██╗████████╗
-██╔════╝  ██║ ██╔╝██║╚══██╔══╝
-█████╗    █████╔╝ ██║   ██║   
-██╔══╝    ██╔═██╗ ██║   ██║   
-██║       ██║  ██╗██║   ██║   
-╚═╝       ╚═╝  ╚═╝╚═╝   ╚═╝   
+███████╗██╗  ██╗██╗████████╗
+██╔════╝██║ ██╔╝██║╚══██╔══╝  FKIT CLI
+█████╗  █████╔╝ ██║   ██║     Production Flutter Scaffolder & Lifecycle Toolkit
+██╔══╝  ██╔═██╗ ██║   ██║     https://pub.dev/packages/fkit_cli
+██║     ██║  ██╗██║   ██║
+╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝
 ```
 
 # FKIT CLI
 
-### The modern, interactive project scaffolder for production-ready Flutter apps.
+### The ultimate Flutter scaffolding & lifecycle companion CLI.
 
-Scaffold fully-configured, production-grade Flutter architectures in seconds.<br/>
-Includes state management, routing, networking, storage, native permissions, design systems, and CI-ready automation.
+**Bootstrap production-grade Flutter architectures in seconds, generate modular components and clean feature slices, configure multi-environment flavors, manage type-safe assets, and diagnose setup health.**
 
-[![Pub Version](https://img.shields.io/pub/v/fkit_cli.svg?style=for-the-badge&logo=dart&color=0175C2)](https://pub.dev/packages/fkit_cli)
-[![Dart Version](https://img.shields.io/badge/Dart-3.12+-00B4AB.svg?style=for-the-badge&logo=dart)](https://dart.dev)
-[![Flutter](https://img.shields.io/badge/Flutter-3.x_Ready-02569B.svg?style=for-the-badge&logo=flutter)](https://flutter.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-22C55E.svg?style=for-the-badge)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-6366F1.svg?style=for-the-badge)](CONTRIBUTING.md)
-[![GitHub Stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=for-the-badge&logo=github&color=F59E0B)](https://github.com/hamzaali265/fkit-cli)
+[![Pub Version](https://img.shields.io/pub/v/fkit_cli.svg?style=flat-square&color=0175C2&label=pub.dev)](https://pub.dev/packages/fkit_cli)
+[![Pub Points](https://img.shields.io/pub/points/fkit_cli?style=flat-square&color=22C55E&label=pub%20points)](https://pub.dev/packages/fkit_cli/score)
+[![Dart SDK](https://img.shields.io/badge/Dart-3.12+-00B4AB.svg?style=flat-square&logo=dart)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.x_Ready-02569B.svg?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Linux%20%7C%20Windows-blueviolet.svg?style=flat-square)](https://pub.dev/packages/fkit_cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![GitHub Stars](https://img.shields.io/github/stars/hamzaali265/fkit-cli?style=flat-square&logo=github&color=F59E0B)](https://github.com/hamzaali265/fkit-cli)
 
 <br/>
 
 ```text
- ✦ Welcome to FKIT CLI!
- ────────────────────────────────────────────────────────
-   ▸ [1/6] Architecture  ● Feature-first (Domain / Data / Presentation)
-     [2/6] State         ● BLoC (flutter_bloc)
-     [3/6] Routing       ● go_router with typed routes & guards
-     [4/6] Networking    ● Dio with interceptors & error handlers
-     [5/6] Storage       ● Hive NoSQL database
-     [6/6] Utilities     ● SVG, Caching, Gap, Permissions, DI
- ────────────────────────────────────────────────────────
- ✓ Scaffolding complete in 1.4s — Ready to build!
+  ✦ Welcome to FKIT CLI!
+  ─────────────────────────────────────────────────────────────────────────────
+    ? What would you like to do?
+    ❯ 🚀 Create New Project       Scaffold a production-ready Flutter app
+      ⚡ Make Component           Generate screen, controller, model, or service
+      🧩 Add Feature Slice        Add clean architecture feature module
+      🎨 Manage Assets            Generate type-safe asset code or clean unused
+      🏷️  Configure Flavors       Automate Android, iOS & VS Code flavors
+      🩺 Doctor                   Diagnose Flutter, CocoaPods, and project health
+      📋 List Catalog             Browse supported architectures, state & packages
+      🚪 Exit
+  ─────────────────────────────────────────────────────────────────────────────
 ```
 
 </div>
@@ -44,14 +47,16 @@ Includes state management, routing, networking, storage, native permissions, des
 
 ## ⚡ Highlights
 
-- 🎯 **Interactive Terminal UI** — Rich arrow-key menus, step counters, and integrated interactive folder browser.
-- 🏛️ **4 Battle-Tested Architectures** — Feature-First Clean Architecture, Layer-First, MVVM, or lightweight MVC.
+- 🎯 **Interactive Terminal UX** — Arrow-key navigation, step counters, ASCII wordmarks, and built-in interactive directory picker.
+- 🏛️ **4 Battle-Tested Architectures** — Feature-First Clean Architecture, Layer-First Clean Architecture, MVVM, or lightweight MVC.
 - ⚡ **5 State Management Options** — Flutter BLoC, Riverpod, Provider, GetX, or Vanilla Flutter.
-- 🛡️ **Zero-Config Native Permissions** — Automatically configures `AndroidManifest.xml`, iOS `Info.plist`, iOS `Podfile`, and macOS `Entitlements`.
-- 🌐 **Production Networking & Storage** — Dio (with custom interceptors & error mapping) or HTTP; Hive or SharedPreferences.
-- 🎨 **Built-in Design System & Utilities** — Themes (light/dark), typography, responsive ScreenUtil, Gap, SVG icons, cached images, UUID, URL launcher, and GetIt DI.
-- 🌍 **Localization & Flavors Ready** — Built-in `l10n.yaml` with starter ARBs, plus environment flavors (dev/prod) with `--dart-define`.
-- 🤖 **100% Scriptable for CI/CD** — Full non-interactive flag support (`--no-interactive`) for automated scaffolding in pipelines.
+- 🛡️ **Zero-Config Native Permissions** — Automatically patches Android `AndroidManifest.xml`, iOS `Info.plist`, iOS `Podfile`, and macOS `Entitlements`.
+- ⚡ **Rapid Component Generators (`fkit make`)** — Generate screens, controllers, models, and services that automatically conform to your project's architectural pattern.
+- 🧩 **Clean Feature Slices (`fkit feature`)** — Scaffold complete domain slices (`data/`, `domain/`, `presentation/`) in one command.
+- 🏷️ **Automated Flavor System (`fkit flavor`)** — Configure Android productFlavors, iOS Xcode build schemes, and VS Code `.vscode/launch.json` debug configurations.
+- 🎨 **Type-Safe Asset Automation (`fkit assets`)** — Generate compile-safe `AppAssets` constants from your asset directories, and detect unreferenced/dead assets.
+- 🩺 **Environment & Project Diagnostics (`fkit doctor`)** — Validate Flutter SDK, Dart SDK, CocoaPods, Android toolchain, and inspect project health.
+- 🤖 **100% CI/CD & Headless Automation** — Full non-interactive flag support (`--no-interactive`) for automated pipeline generation.
 
 ---
 
@@ -59,14 +64,23 @@ Includes state management, routing, networking, storage, native permissions, des
 
 - [Why FKIT CLI?](#-why-fkit-cli)
 - [Installation](#-installation)
+- [Commands Cheatsheet](#-commands-cheatsheet)
 - [Quick Start](#-quick-start)
-- [Interactive Scaffolding Flow](#-interactive-scaffolding-flow)
+- [Command Reference](#-command-reference)
+  - [`fkit` (Interactive Home)](#1-fkit-interactive-home)
+  - [`fkit create` (Project Scaffolder)](#2-fkit-create-project-scaffolder)
+  - [`fkit make` (Component Generators)](#3-fkit-make-component-generators)
+  - [`fkit feature` (Clean Feature Slices)](#4-fkit-feature-clean-feature-slices)
+  - [`fkit flavor` (Multi-Flavor Automation)](#5-fkit-flavor-multi-flavor-automation)
+  - [`fkit assets` (Asset Code Gen & Cleanup)](#6-fkit-assets-asset-code-gen--cleanup)
+  - [`fkit doctor` (Environment Diagnostics)](#7-fkit-doctor-environment-diagnostics)
+  - [`fkit list` (Architecture & Package Catalog)](#8-fkit-list-catalog)
 - [Architectures Breakdown](#-architectures-breakdown)
 - [Tech Stack & Features Matrix](#-tech-stack--features-matrix)
 - [Automated Native Permissions](#-automated-native-permissions)
-- [CLI Command & Flag Reference](#-cli-command--flag-reference)
 - [Popular Recipe Examples](#-popular-recipe-examples)
 - [CI/CD & Headless Usage](#-cicd--headless-usage)
+- [Programmatic API](#-programmatic-api)
 - [Contributing](#-contributing)
 - [License](#-license)
 
@@ -74,17 +88,20 @@ Includes state management, routing, networking, storage, native permissions, des
 
 ## 💡 Why FKIT CLI?
 
-Setting up a production Flutter application usually requires hours of repetitive setup: configuring folder hierarchies, wiring router boilerplate, setting up HTTP interceptors, configuring local databases, editing Android manifests and iOS plists, and adding utility packages.
+Setting up a production Flutter application usually requires hours of repetitive work: assembling directory hierarchies, wiring router boilerplate, setting up HTTP interceptors, configuring local databases, editing Android manifests, iOS plists, and Podfiles, and generating boilerplate for every new screen or service.
 
-**FKIT CLI** eliminates all the boilerplate while giving you full architectural control:
+**FKIT CLI** provides an end-to-end development toolkit from initial project scaffolding through active day-to-day feature development:
 
-| Standard Flutter Setup | With FKIT CLI |
+| Standard Flutter Workflow | With FKIT CLI |
 | :--- | :--- |
-| ⏳ 1–2 hours manual folder & package wiring | ⚡ **< 10 seconds** interactive or headless generation |
-| ❌ Inconsistent architecture across projects & teams | ✅ **Standardized, industry-proven architectures** |
+| ⏳ 1–2 hours manual folder & package setup | ⚡ **< 10 seconds** interactive or headless generation |
+| ❌ Inconsistent architecture across teams | ✅ **Standardized, battle-tested architectural blueprints** |
 | ❌ Manual editing of AndroidManifest, Info.plist, Podfiles | ✅ **Automated native permission configuration** |
-| ❌ Copy-pasting boilerplate networking & error handlers | ✅ **Pre-wired Dio / HTTP services & interceptors** |
-| ❌ Setting up themes, typography, and l10n manually | ✅ **Production design system, ARB l10n, & environment flavors** |
+| ❌ Repetitive boilerplate for new screens & services | ✅ **`fkit make` & `fkit feature` one-command generators** |
+| ❌ Fragile manual flavor setups across Android & iOS | ✅ **`fkit flavor` multi-environment automation** |
+| ❌ String-based asset typos (`"assets/images/logo.png"`) | ✅ **`fkit assets gen` type-safe `AppAssets` constants** |
+| ❌ Unused asset bloat inflating app bundle size | ✅ **`fkit assets clean` dead asset detector** |
+| ❌ Hard to diagnose missing dependencies & SDK tools | ✅ **`fkit doctor` instant environment health checks** |
 
 ---
 
@@ -96,7 +113,9 @@ Setting up a production Flutter application usually requires hours of repetitive
 dart pub global activate fkit_cli
 ```
 
-Make sure your pub global bin directory is in your system's `PATH`.
+Make sure your pub global bin directory is in your system's `PATH`:
+- **macOS / Linux**: `~/.pub-cache/bin`
+- **Windows**: `%LOCALAPPDATA%\Pub\Cache\bin`
 
 ### From Git Source
 
@@ -113,35 +132,64 @@ dart pub get
 dart pub global activate --source path .
 ```
 
-> **Requirement**: [Dart SDK](https://dart.dev/get-dart) `^3.12.2` and [Flutter SDK](https://flutter.dev) on your `PATH`.
+> **Requirements**: [Dart SDK](https://dart.dev/get-dart) `^3.12.2` and [Flutter SDK](https://flutter.dev) `3.x` on your `PATH`.
+
+---
+
+## ⚡ Commands Cheatsheet
+
+| Command | Description |
+| :--- | :--- |
+| `fkit` | Launch the interactive console with quick-action dashboard. |
+| `fkit create <name>` | Scaffold a production-ready Flutter app with guided wizard or flags. |
+| `fkit make screen <name>` | Generate a new screen/view conforming to the project architecture. |
+| `fkit make controller <name>` | Generate a BLoC, Cubit, GetxController, or ChangeNotifier. |
+| `fkit make model <name>` | Generate a data model with `fromJson`, `toJson`, and `copyWith`. |
+| `fkit make service <name>` | Generate an API/data service with error handling & singleton. |
+| `fkit feature add <name>` | Scaffold a complete Clean Architecture feature slice (`data/`, `domain/`, `presentation/`). |
+| `fkit flavor add <name>` | Configure multi-flavor support across Android, iOS, and VS Code. |
+| `fkit flavor list` | Display all configured project flavors. |
+| `fkit assets gen` | Scan `assets/` and generate type-safe `AppAssets` constants. |
+| `fkit assets clean` | Scan codebase for unreferenced assets and report or remove them. |
+| `fkit doctor` | Validate Flutter SDK, Dart SDK, CocoaPods, and project health. |
+| `fkit list` | Display catalog of supported architectures, state, and packages. |
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Interactive Home Menu
+### 1. Launch Interactive Dashboard
 Run `fkit` with no arguments to enter the interactive console:
 
 ```bash
 fkit
 ```
 
-### 2. Scaffold a New Project with Wizard
-Launch the guided step-by-step wizard directly:
+### 2. Scaffold a New Project
+Run the guided step-by-step creation wizard:
 
 ```bash
 fkit create my_awesome_app
 ```
 
-### 3. Browse Supported Stacks & Packages
-List all architectural patterns, state managers, and utility packages:
+### 3. Generate Components on the Fly
+Navigate into your Flutter project and generate components:
 
 ```bash
-fkit list
+cd my_awesome_app
+
+# Generate a screen
+fkit make screen profile
+
+# Generate a data model
+fkit make model user
+
+# Add a complete feature slice
+fkit feature add authentication
 ```
 
-### 4. Non-Interactive One-Liner (CI / Scripting)
-Scaffold everything headlessly with explicit flags:
+### 4. Headless One-Liner (CI / Automated Scripting)
+Scaffold everything non-interactively with explicit flags:
 
 ```bash
 fkit create my_enterprise_app \
@@ -152,7 +200,6 @@ fkit create my_enterprise_app \
   --storage hive \
   --get-it \
   --image-picker \
-  --file-picker \
   --permission-handler \
   --org com.mycompany \
   --no-interactive
@@ -160,19 +207,190 @@ fkit create my_enterprise_app \
 
 ---
 
-## 🧙‍♂️ Interactive Scaffolding Flow
+## 💻 Command Reference
 
-When running `fkit create <project_name>`, the interactive terminal guides you through a streamlined 6-step configurator:
+### 1. `fkit` (Interactive Home)
+Launches the interactive terminal menu where you can navigate between project creation, component generation, flavor configuration, asset management, and diagnostics using arrow keys:
 
+```bash
+fkit
 ```
-  ┌────────────────────────────────────────────────────────┐
-  │  Step 1: Target Directory Picker (Interactive Browser) │
-  │  Step 2: Architecture Pattern Selection                │
-  │  Step 3: State Management Choice                       │
-  │  Step 4: Routing & Navigation Strategy                 │
-  │  Step 5: Networking Client & Local Storage             │
-  │  Step 6: Utilities, Permissions & Design System Extras │
-  └────────────────────────────────────────────────────────┘
+
+---
+
+### 2. `fkit create` (Project Scaffolder)
+Scaffolds a new Flutter application. When run without options, it guides you through an interactive 6-step configurator.
+
+```bash
+fkit create <project_name> [options]
+```
+
+#### CLI Flags & Options
+
+| Flag | Shorthand | Type / Options | Default | Description |
+| :--- | :---: | :--- | :--- | :--- |
+| `--architecture` | `-a` | `feature-first` \| `layer-first` \| `mvvm` \| `simple-mvc` | Interactive | Folder architecture pattern. |
+| `--state` | `-s` | `bloc` \| `riverpod` \| `provider` \| `getx` \| `none` | Interactive | State management solution. |
+| `--routing` | `-r` | `go_router` \| `auto_route` \| `standard` | Interactive | Declarative routing strategy. |
+| `--networking` | `-n` | `dio` \| `http` \| `none` | Interactive | HTTP networking client. |
+| `--storage` | | `hive` \| `shared_preferences` \| `sqflite` \| `none` | Interactive | Local persistence backend. |
+| `--org` | `-o` | `string` | `com.example` | Organization reverse domain. |
+| `--output` | `-d` | `path` | `./` | Output destination directory. |
+| `--description` | | `string` | `"A new Flutter project..."` | Description in `pubspec.yaml`. |
+| `--[no-]interactive` | `-i` | `boolean` | `true` | Enable or disable the interactive wizard. |
+| `--[no-]offline` | | `boolean` | `false` | Skip `flutter pub get` and online fetches. |
+| `--[no-]strict-lints` | | `boolean` | `true` | Include `very_good_analysis` rules. |
+| `--[no-]l10n` | | `boolean` | `true` | Include internationalization & starter ARB. |
+| `--[no-]flavors` | | `boolean` | `true` | Include AppConfig environment flavors. |
+| `--[no-]assets` | | `boolean` | `true` | Create structured `assets/` folders. |
+| `--[no-]svg` | | `boolean` | `true` | Include `flutter_svg` package. |
+| `--[no-]cached-image` | | `boolean` | `true` | Include `cached_network_image` package. |
+| `--[no-]gap` | | `boolean` | `true` | Include `gap` layout package. |
+| `--[no-]screenutil` | | `boolean` | `false` | Include `flutter_screenutil` responsive library. |
+| `--[no-]get-it` | | `boolean` | `false` | Include `get_it` service locator. |
+| `--[no-]permission-handler` | | `boolean` | `false` | Include `permission_handler` + native config. |
+| `--[no-]image-picker` | | `boolean` | `false` | Include `image_picker` + native permissions. |
+| `--[no-]file-picker` | | `boolean` | `false` | Include `file_picker` + native entitlements. |
+| `--[no-]secure-storage` | | `boolean` | `false` | Include `flutter_secure_storage` vault. |
+| `--[no-]geolocator` | | `boolean` | `false` | Include `geolocator` + native location permissions. |
+| `--[no-]url-launcher` | | `boolean` | `false` | Include `url_launcher` + platform queries. |
+| `--[no-]webview` | | `boolean` | `false` | Include `webview_flutter` component. |
+| `--[no-]uuid` | | `boolean` | `false` | Include `uuid` package. |
+| `--[no-]intl` | | `boolean` | `true` | Include `intl` + `AppFormatters` helpers. |
+| `--[no-]equatable` | | `boolean` | `false` | Include `equatable` value equality helper. |
+| `--[no-]crypto` | | `boolean` | `false` | Include `crypto` SHA256/MD5 hashing helper. |
+
+---
+
+### 3. `fkit make` (Component Generators)
+Quickly scaffold individual components inside an existing Flutter project. The generated files automatically match your project's architecture (`feature-first`, `layer-first`, `mvvm`, or `simple-mvc`).
+
+#### Make Screen / View
+```bash
+fkit make screen <screen_name>
+```
+*Generates screen widget with app bar, responsive body, and routing hook.*
+
+#### Make Controller / BLoC
+```bash
+fkit make controller <name> [type]
+```
+*Generates state controller based on project stack (BLoC + Event + State, Cubit, GetxController, or ChangeNotifier).*
+
+#### Make Model
+```bash
+fkit make model <model_name>
+```
+*Generates typed Dart data model with `fromJson`, `toJson`, `copyWith`, and `toString` methods.*
+
+#### Make Service
+```bash
+fkit make service <service_name>
+```
+*Generates service layer class with pre-wired error handling, logging, and singleton access.*
+
+---
+
+### 4. `fkit feature` (Clean Feature Slices)
+Scaffolds a complete modular feature slice adhering to Clean Architecture principles:
+
+```bash
+fkit feature add <feature_name>
+```
+
+For example, `fkit feature add auth` generates:
+```text
+lib/features/auth/
+├── data/
+│   ├── datasources/auth_remote_datasource.dart
+│   ├── models/auth_model.dart
+│   └── repositories/auth_repository_impl.dart
+├── domain/
+│   ├── entities/auth_entity.dart
+│   ├── repositories/auth_repository.dart
+│   └── usecases/login_usecase.dart
+└── presentation/
+    ├── controllers/auth_controller.dart
+    ├── views/auth_view.dart
+    └── widgets/auth_form_widget.dart
+```
+
+---
+
+### 5. `fkit flavor` (Multi-Flavor Automation)
+Automates multi-flavor configuration without tedious manual editing:
+
+```bash
+# Add a new environment flavor
+fkit flavor add <flavor_name> [options]
+
+# List configured project flavors
+fkit flavor list
+```
+
+**What it automates:**
+- 🤖 **Android**: Adds `productFlavors` and `flavorDimensions` to `android/app/build.gradle`.
+- 🍎 **iOS**: Creates Xcode scheme configurations and build configurations in `ios/Runner.xcodeproj`.
+- 🎯 **Dart Entrypoints**: Generates `lib/main_<flavor>.dart` with environment-specific `AppConfig`.
+- 💻 **VS Code**: Generates `.vscode/launch.json` debug profiles with `--flavor` and target entrypoints.
+
+---
+
+### 6. `fkit assets` (Asset Code Gen & Cleanup)
+Manages static assets with type safety and size optimization:
+
+#### Generate Type-Safe Constants (`assets gen`)
+```bash
+fkit assets gen
+```
+Scans `assets/images/`, `assets/icons/`, `assets/svgs/`, and `assets/fonts/` and writes `lib/core/constants/app_assets.dart`:
+
+```dart
+// Generated by FKIT CLI — Type-Safe Asset Access
+class AppAssets {
+  AppAssets._();
+
+  static const String imagesLogo = 'assets/images/logo.png';
+  static const String iconsUser = 'assets/icons/user.svg';
+  static const String svgsBackground = 'assets/svgs/background.svg';
+}
+```
+
+#### Find Unreferenced Assets (`assets clean`)
+```bash
+fkit assets clean [--delete]
+```
+Scans all `.dart` files in your project, checks for referenced asset strings, and flags unreferenced files. Pass `--delete` to safely prune unused assets from disk.
+
+---
+
+### 7. `fkit doctor` (Environment Diagnostics)
+Checks your machine's development environment and validates the health of your local Flutter project:
+
+```bash
+fkit doctor
+```
+
+```text
+🩺 Running FKIT Doctor...
+
+[✓] Flutter SDK installed: Flutter 3.24.0 • channel stable
+[✓] Dart SDK installed: Dart SDK version: 3.12.2
+[✓] CocoaPods installed: pod 1.15.2
+[✓] Project root: Valid Flutter project structure detected
+[✓] Dependencies: pubspec.lock is synchronized
+[✓] FKIT Configuration: .fkit.json configuration is valid
+
+✓ Doctor found 0 issues. Environment and project are ready!
+```
+
+---
+
+### 8. `fkit list` (Catalog)
+Displays a terminal catalog of all supported architectures, state managers, routing engines, network clients, storage backends, and utility packages:
+
+```bash
+fkit list
 ```
 
 ---
@@ -190,10 +408,10 @@ lib/
 ├── core/                     # Common services, network clients, base models
 │   ├── config/               # AppConfig, environment constants
 │   ├── network/              # ApiClient, interceptors, error handling
-│   └── di/                   # Service locator / injection
+│   └── di/                   # Service locator / dependency injection
 ├── features/                 # Modular domain slices
 │   ├── auth/
-│   │   ├── data/             # Models, datasources, repositories implementation
+│   │   ├── data/             # Models, datasources, repository implementations
 │   │   ├── domain/           # Entities, repository interfaces, usecases
 │   │   └── presentation/     # BLoCs / controllers, screens, widgets
 │   └── home/
@@ -266,7 +484,7 @@ lib/
 
 ## 🛡️ Automated Native Permissions
 
-When you enable hardware and device features, FKIT CLI automatically updates your native platform files without manual copy-pasting:
+When hardware and device features are selected, FKIT CLI automatically patches your platform configuration files without manual copy-pasting:
 
 ```text
 Platform Configuration Breakdown:
@@ -289,52 +507,6 @@ Platform Configuration Breakdown:
     ├── Location entitlements (com.apple.security.personal-information.location)
     └── Camera device permissions
 ```
-
----
-
-## 💻 CLI Command & Flag Reference
-
-### `fkit`
-Opens the interactive terminal home screen.
-
-### `fkit list`
-Displays a comprehensive catalog of all architectures, state solutions, routing, networking, storage, and utility packages.
-
-### `fkit create <project_name> [options]`
-Scaffolds a new Flutter application.
-
-| Flag | Shorthand | Options / Type | Default | Description |
-| :--- | :---: | :--- | :--- | :--- |
-| `--org` | `-o` | `string` | `com.example` | The organization reverse domain (e.g. `com.mycompany`). |
-| `--output` | `-d` | `path` | `./` | Output directory where the project folder is created. |
-| `--description` | | `string` | `"A new Flutter project..."` | Project description in `pubspec.yaml`. |
-| `--architecture` | `-a` | `feature-first` \| `layer-first` \| `mvvm` \| `simple-mvc` | Interactive | Folder layout pattern. |
-| `--state` | `-s` | `bloc` \| `riverpod` \| `provider` \| `getx` \| `none` | Interactive | State management library. |
-| `--routing` | `-r` | `go_router` \| `auto_route` \| `standard` | Interactive | Navigation & routing approach. |
-| `--networking` | `-n` | `dio` \| `http` \| `none` | Interactive | HTTP networking client. |
-| `--storage` | | `shared_preferences` \| `hive` \| `sqflite` \| `none` | Interactive | Local persistence engine. |
-| `--[no-]interactive` | `-i` | `boolean` | `true` | Enable or disable the interactive wizard. |
-| `--[no-]offline` | | `boolean` | `false` | Skip `flutter pub get` and online fetches. |
-| `--[no-]strict-lints` | | `boolean` | `true` | Include `very_good_analysis` rules. |
-| `--[no-]l10n` | | `boolean` | `true` | Include internationalization & ARB files. |
-| `--[no-]flavors` | | `boolean` | `true` | Include AppConfig environment flavors. |
-| `--[no-]assets` | | `boolean` | `true` | Create `assets/images/`, `icons/`, `svgs/`, `fonts/`. |
-| `--[no-]svg` | | `boolean` | `true` | Include `flutter_svg` package. |
-| `--[no-]cached-image` | | `boolean` | `true` | Include `cached_network_image` package. |
-| `--[no-]gap` | | `boolean` | `true` | Include `gap` layout package. |
-| `--[no-]screenutil` | | `boolean` | `false` | Include `flutter_screenutil` responsive library. |
-| `--[no-]permission-handler` | | `boolean` | `false` | Include `permission_handler` and native configs. |
-| `--[no-]get-it` | | `boolean` | `false` | Include `get_it` service locator. |
-| `--[no-]image-picker` | | `boolean` | `false` | Include `image_picker` + `ImagePickerService`. |
-| `--[no-]file-picker` | | `boolean` | `false` | Include `file_picker` + `FilePickerService`. |
-| `--[no-]secure-storage` | | `boolean` | `false` | Include `flutter_secure_storage` encrypted vault. |
-| `--[no-]url-launcher` | | `boolean` | `false` | Include `url_launcher` package. |
-| `--[no-]uuid` | | `boolean` | `false` | Include `uuid` package for RFC-compliant UUID generation. |
-| `--[no-]intl` | | `boolean` | `true` | Include `intl` package with Date, Time, & Currency `AppFormatters`. |
-| `--[no-]equatable` | | `boolean` | `false` | Include `equatable` package for value equality without boilerplate. |
-| `--[no-]crypto` | | `boolean` | `false` | Include `crypto` package with `AppCrypto` SHA256/MD5 hashing. |
-| `--[no-]webview` | | `boolean` | `false` | Include `webview_flutter` package with `AppWebView` component. |
-| `--[no-]geolocator` | | `boolean` | `false` | Include `geolocator` package with `LocationService`. |
 
 ---
 
@@ -383,7 +555,7 @@ fkit create quick_prototype \
 
 ## 🤖 CI/CD & Headless Usage
 
-FKIT CLI works seamlessly in headless environments like GitHub Actions, GitLab CI, and Docker.
+FKIT CLI is designed to run headlessly in CI/CD pipelines (GitHub Actions, GitLab CI, Docker):
 
 ```yaml
 # .github/workflows/scaffold_test.yml
@@ -425,6 +597,31 @@ jobs:
 
 ---
 
+## 💻 Programmatic API
+
+You can also use `package:fkit_cli` as a Dart library in your custom automation scripts:
+
+```dart
+import 'dart:io';
+import 'package:fkit_cli/fkit_cli.dart';
+
+void main() async {
+  final runner = FkitCommandRunner();
+
+  // Run doctor diagnostics programmatically
+  await runner.run(['doctor']);
+
+  // Or inspect supported architecture patterns
+  for (final pattern in ArchitecturePattern.values) {
+    print('${pattern.label}: ${pattern.description}');
+  }
+}
+```
+
+See the [example/](example/) directory for complete runnable demonstrations.
+
+---
+
 ## 🛠️ Contributing
 
 Contributions, feature requests, and bug reports are warmly welcome!
@@ -441,7 +638,7 @@ Contributions, feature requests, and bug reports are warmly welcome!
    ```
 4. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/):
    ```bash
-   git commit -m "feat: support supabase backend template"
+   git commit -m "feat: add support for supabase template"
    ```
 5. Push to your branch and submit a Pull Request!
 
@@ -455,6 +652,6 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 Crafted with ❤️ by [hamzaali265](https://github.com/hamzaali265)
 
-**If FKIT CLI helps accelerate your Flutter development, please consider giving it a ⭐ on GitHub!**
+**If FKIT CLI helps accelerate your Flutter development, please give it a ⭐ on [GitHub](https://github.com/hamzaali265/fkit-cli) and 👍 on [pub.dev](https://pub.dev/packages/fkit_cli)!**
 
 </div>

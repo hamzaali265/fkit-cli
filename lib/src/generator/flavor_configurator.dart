@@ -20,13 +20,18 @@ class FlavorConfigurator {
 
   void _configureAndroid(String targetDir, List<String> flavors) {
     // 1. Check build.gradle.kts or build.gradle
-    final ktsFile = File(p.join(targetDir, 'android', 'app', 'build.gradle.kts'));
-    final groovyFile = File(p.join(targetDir, 'android', 'app', 'build.gradle'));
+    final ktsFile = File(
+      p.join(targetDir, 'android', 'app', 'build.gradle.kts'),
+    );
+    final groovyFile = File(
+      p.join(targetDir, 'android', 'app', 'build.gradle'),
+    );
 
     if (ktsFile.existsSync()) {
       var content = ktsFile.readAsStringSync();
       if (!content.contains('flavorDimensions')) {
-        final flavorBlock = '''
+        final flavorBlock =
+            '''
     flavorDimensions += "default"
     productFlavors {
 ${flavors.map((f) => '''        create("$f") {
@@ -48,7 +53,8 @@ ${flavors.map((f) => '''        create("$f") {
     } else if (groovyFile.existsSync()) {
       var content = groovyFile.readAsStringSync();
       if (!content.contains('flavorDimensions')) {
-        final flavorBlock = '''
+        final flavorBlock =
+            '''
     flavorDimensions "default"
     productFlavors {
 ${flavors.map((f) => '''        $f {
@@ -74,24 +80,32 @@ ${flavors.map((f) => '''        $f {
     if (!flutterDir.existsSync()) return;
 
     for (final flavor in flavors) {
-      final debugXconfig = File(p.join(flutterDir.path, 'Debug-$flavor.xcconfig'));
+      final debugXconfig = File(
+        p.join(flutterDir.path, 'Debug-$flavor.xcconfig'),
+      );
       if (!debugXconfig.existsSync()) {
-        debugXconfig.writeAsStringSync('''#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+        debugXconfig.writeAsStringSync(
+          '''#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
 #include "Debug.xcconfig"
 
 APP_DISPLAY_NAME=${flavor == 'prod' ? 'App' : 'App ($flavor)'}
-''');
+''',
+        );
       }
 
-      final releaseXconfig = File(p.join(flutterDir.path, 'Release-$flavor.xcconfig'));
+      final releaseXconfig = File(
+        p.join(flutterDir.path, 'Release-$flavor.xcconfig'),
+      );
       if (!releaseXconfig.existsSync()) {
-        releaseXconfig.writeAsStringSync('''#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+        releaseXconfig.writeAsStringSync(
+          '''#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
 #include "Release.xcconfig"
 
 APP_DISPLAY_NAME=${flavor == 'prod' ? 'App' : 'App ($flavor)'}
-''');
+''',
+        );
       }
     }
   }
@@ -126,7 +140,10 @@ void main() {
 
     final launchJson = File(p.join(vscodeDir.path, 'launch.json'));
     if (!launchJson.existsSync()) {
-      final configs = flavors.map((f) => '''    {
+      final configs = flavors
+          .map(
+            (f) =>
+                '''    {
       "name": "Flutter (${f.toUpperCase()})",
       "request": "launch",
       "type": "dart",
@@ -135,7 +152,9 @@ void main() {
         "--flavor",
         "$f"
       ]
-    }''').join(',\n');
+    }''',
+          )
+          .join(',\n');
 
       launchJson.writeAsStringSync('''{
   "version": "0.2.0",

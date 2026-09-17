@@ -10,11 +10,9 @@ import '../models/project_config.dart';
 
 /// Command that adds a new feature module to an existing project.
 class FeatureCommand extends Command<int> {
-  FeatureCommand({
-    Logger? logger,
-    FeatureGenerator? generator,
-  }) : _logger = logger ?? Logger(),
-       _generator = generator ?? const FeatureGenerator() {
+  FeatureCommand({Logger? logger, FeatureGenerator? generator})
+    : _logger = logger ?? Logger(),
+      _generator = generator ?? const FeatureGenerator() {
     argParser.addOption(
       'path',
       abbr: 'p',
@@ -38,7 +36,11 @@ class FeatureCommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'feature')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'feature',
+    )) {
       return ExitCode.usage.code;
     }
 
@@ -60,13 +62,19 @@ class FeatureCommand extends Command<int> {
         final content = fkitConfigFile.readAsStringSync();
         final json = jsonDecode(content) as Map<String, dynamic>;
         config = ProjectConfig.fromJson(json, targetDirectory: projectDir.path);
-        _logger.info('📦 Found existing FKIT config (${config.architecture.label}, ${config.stateManagement.label})');
+        _logger.info(
+          '📦 Found existing FKIT config (${config.architecture.label}, ${config.stateManagement.label})',
+        );
       } catch (e) {
-        _logger.warn('Failed to parse .fkit.json: $e. Falling back to default Feature-First + BLoC.');
+        _logger.warn(
+          'Failed to parse .fkit.json: $e. Falling back to default Feature-First + BLoC.',
+        );
         config = _defaultConfig(projectDir.path);
       }
     } else {
-      _logger.info('💡 No .fkit.json found. Scaffolding with standard Feature-First Clean architecture.');
+      _logger.info(
+        '💡 No .fkit.json found. Scaffolding with standard Feature-First Clean architecture.',
+      );
       config = _defaultConfig(projectDir.path);
     }
 
@@ -86,7 +94,9 @@ class FeatureCommand extends Command<int> {
       }
     }
 
-    progress.complete('Generated feature "$featureName" (${files.length} files)');
+    progress.complete(
+      'Generated feature "$featureName" (${files.length} files)',
+    );
 
     _logger.info('');
     _logger.info('📁 Created files:');

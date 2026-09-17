@@ -32,7 +32,11 @@ class MakeScreenSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make screen')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'make screen',
+    )) {
       return ExitCode.usage.code;
     }
 
@@ -58,10 +62,12 @@ class MakeScreenSubcommand extends Command<int> {
     } else if (config.architecture == ArchitecturePattern.layerFirst) {
       relativePath = 'lib/presentation/$snake/views/${snake}_view.dart';
     } else {
-      relativePath = 'lib/features/$snake/presentation/views/${snake}_view.dart';
+      relativePath =
+          'lib/features/$snake/presentation/views/${snake}_view.dart';
     }
 
-    final code = '''
+    final code =
+        '''
 import 'package:flutter/material.dart';
 
 /// $pascal screen widget.
@@ -116,7 +122,11 @@ class MakeControllerSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make controller')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'make controller',
+    )) {
       return ExitCode.usage.code;
     }
 
@@ -142,10 +152,11 @@ class MakeControllerSubcommand extends Command<int> {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_cubit.dart'
           : config.architecture == ArchitecturePattern.layerFirst
-              ? 'lib/presentation/$snake/bloc/${snake}_cubit.dart'
-              : 'lib/features/$snake/presentation/bloc/${snake}_cubit.dart';
+          ? 'lib/presentation/$snake/bloc/${snake}_cubit.dart'
+          : 'lib/features/$snake/presentation/bloc/${snake}_cubit.dart';
 
-      code = '''
+      code =
+          '''
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -177,10 +188,11 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_notifier.dart'
           : config.architecture == ArchitecturePattern.layerFirst
-              ? 'lib/presentation/$snake/providers/${snake}_provider.dart'
-              : 'lib/features/$snake/presentation/providers/${snake}_provider.dart';
+          ? 'lib/presentation/$snake/providers/${snake}_provider.dart'
+          : 'lib/features/$snake/presentation/providers/${snake}_provider.dart';
 
-      code = '''
+      code =
+          '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ${pascal}State {
@@ -206,7 +218,8 @@ final ${camel}Provider = StateNotifierProvider<${pascal}Notifier, ${pascal}State
           ? 'lib/viewmodels/${snake}_viewmodel.dart'
           : 'lib/features/$snake/presentation/controllers/${snake}_controller.dart';
 
-      code = '''
+      code =
+          '''
 import 'package:flutter/foundation.dart';
 
 class ${pascal}ViewModel extends ChangeNotifier {
@@ -257,7 +270,11 @@ class MakeModelSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make model')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'make model',
+    )) {
       return ExitCode.usage.code;
     }
 
@@ -284,7 +301,8 @@ class MakeModelSubcommand extends Command<int> {
       relativePath = 'lib/models/${snake}_model.dart';
     }
 
-    final code = '''
+    final code =
+        '''
 /// Model representing $pascal.
 class ${pascal}Model {
   const ${pascal}Model({
@@ -344,7 +362,11 @@ class MakeServiceSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'make service')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'make service',
+    )) {
       return ExitCode.usage.code;
     }
 
@@ -364,14 +386,16 @@ class MakeServiceSubcommand extends Command<int> {
 
     String relativePath;
     if (config.architecture == ArchitecturePattern.featureFirst) {
-      relativePath = 'lib/features/$snake/data/datasources/${snake}_remote_data_source.dart';
+      relativePath =
+          'lib/features/$snake/data/datasources/${snake}_remote_data_source.dart';
     } else if (config.architecture == ArchitecturePattern.layerFirst) {
       relativePath = 'lib/data/datasources/${snake}_remote_data_source.dart';
     } else {
       relativePath = 'lib/services/${snake}_service.dart';
     }
 
-    final code = '''
+    final code =
+        '''
 /// Service managing operations for $pascal.
 class ${pascal}Service {
   const ${pascal}Service();
@@ -412,7 +436,8 @@ ProjectConfig _loadConfig(Directory projectDir) {
   final fkitConfigFile = File(p.join(projectDir.path, '.fkit.json'));
   if (fkitConfigFile.existsSync()) {
     try {
-      final json = jsonDecode(fkitConfigFile.readAsStringSync()) as Map<String, dynamic>;
+      final json =
+          jsonDecode(fkitConfigFile.readAsStringSync()) as Map<String, dynamic>;
       return ProjectConfig.fromJson(json, targetDirectory: projectDir.path);
     } catch (_) {}
   }

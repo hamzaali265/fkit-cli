@@ -25,18 +25,53 @@ void main() {
         config: config,
       );
 
-      expect(files.containsKey('lib/features/user_profile/domain/entities/user_profile_entity.dart'), isTrue);
-      expect(files.containsKey('lib/features/user_profile/domain/repositories/user_profile_repository.dart'), isTrue);
-      expect(files.containsKey('lib/features/user_profile/data/models/user_profile_model.dart'), isTrue);
-      expect(files.containsKey('lib/features/user_profile/data/repositories/user_profile_repository_impl.dart'), isTrue);
-      expect(files.containsKey('lib/features/user_profile/presentation/bloc/user_profile_cubit.dart'), isTrue);
-      expect(files.containsKey('lib/features/user_profile/presentation/views/user_profile_view.dart'), isTrue);
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/domain/entities/user_profile_entity.dart',
+        ),
+        isTrue,
+      );
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/domain/repositories/user_profile_repository.dart',
+        ),
+        isTrue,
+      );
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/data/models/user_profile_model.dart',
+        ),
+        isTrue,
+      );
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/data/repositories/user_profile_repository_impl.dart',
+        ),
+        isTrue,
+      );
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/presentation/bloc/user_profile_cubit.dart',
+        ),
+        isTrue,
+      );
+      expect(
+        files.containsKey(
+          'lib/features/user_profile/presentation/views/user_profile_view.dart',
+        ),
+        isTrue,
+      );
 
-      final entityCode = files['lib/features/user_profile/domain/entities/user_profile_entity.dart']!;
+      final entityCode =
+          files['lib/features/user_profile/domain/entities/user_profile_entity.dart']!;
       expect(entityCode, contains('class UserProfileEntity'));
 
-      final cubitCode = files['lib/features/user_profile/presentation/bloc/user_profile_cubit.dart']!;
-      expect(cubitCode, contains('class UserProfileCubit extends Cubit<UserProfileState>'));
+      final cubitCode =
+          files['lib/features/user_profile/presentation/bloc/user_profile_cubit.dart']!;
+      expect(
+        cubitCode,
+        contains('class UserProfileCubit extends Cubit<UserProfileState>'),
+      );
     });
 
     test('generates Layer-first Riverpod feature correctly', () {
@@ -58,11 +93,23 @@ void main() {
       );
 
       expect(files.containsKey('lib/domain/entities/cart_entity.dart'), isTrue);
-      expect(files.containsKey('lib/domain/repositories/cart_repository.dart'), isTrue);
+      expect(
+        files.containsKey('lib/domain/repositories/cart_repository.dart'),
+        isTrue,
+      );
       expect(files.containsKey('lib/data/models/cart_model.dart'), isTrue);
-      expect(files.containsKey('lib/data/repositories/cart_repository_impl.dart'), isTrue);
-      expect(files.containsKey('lib/presentation/cart/providers/cart_provider.dart'), isTrue);
-      expect(files.containsKey('lib/presentation/cart/views/cart_view.dart'), isTrue);
+      expect(
+        files.containsKey('lib/data/repositories/cart_repository_impl.dart'),
+        isTrue,
+      );
+      expect(
+        files.containsKey('lib/presentation/cart/providers/cart_provider.dart'),
+        isTrue,
+      );
+      expect(
+        files.containsKey('lib/presentation/cart/views/cart_view.dart'),
+        isTrue,
+      );
     });
 
     test('generates MVVM feature correctly with ViewModel and View', () {
@@ -105,8 +152,10 @@ void main() {
       }
     });
 
-    test('reads .fkit.json and scaffolds feature in project directory', () async {
-      final fkitJson = '''
+    test(
+      'reads .fkit.json and scaffolds feature in project directory',
+      () async {
+        final fkitJson = '''
 {
   "name": "mock_app",
   "architecture": "featureFirst",
@@ -117,20 +166,42 @@ void main() {
   "features": []
 }
 ''';
-      File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
+        File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
 name: mock_app
 dependencies:
   flutter:
     sdk: flutter
 ''');
-      File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync(fkitJson);
+        File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync(fkitJson);
 
-      final runner = FkitCommandRunner();
-      final exitCode = await runner.run(['feature', 'billing', '-p', tempDir.path]);
+        final runner = FkitCommandRunner();
+        final exitCode = await runner.run([
+          'feature',
+          'billing',
+          '-p',
+          tempDir.path,
+        ]);
 
-      expect(exitCode, equals(0));
-      expect(File(p.join(tempDir.path, 'lib/features/billing/domain/entities/billing_entity.dart')).existsSync(), isTrue);
-      expect(File(p.join(tempDir.path, 'lib/features/billing/presentation/bloc/billing_cubit.dart')).existsSync(), isTrue);
-    });
+        expect(exitCode, equals(0));
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/features/billing/domain/entities/billing_entity.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/features/billing/presentation/bloc/billing_cubit.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+      },
+    );
   });
 }

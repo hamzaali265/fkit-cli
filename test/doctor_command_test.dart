@@ -17,14 +17,21 @@ void main() {
       }
     });
 
-    test('runs doctor successfully in a project with pubspec.yaml and .fkit.json', () async {
-      File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('name: test_app\n');
-      File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync('{"name": "test_app"}');
+    test(
+      'runs doctor successfully in a project with pubspec.yaml and .fkit.json',
+      () async {
+        File(
+          p.join(tempDir.path, 'pubspec.yaml'),
+        ).writeAsStringSync('name: test_app\n');
+        File(
+          p.join(tempDir.path, '.fkit.json'),
+        ).writeAsStringSync('{"name": "test_app"}');
 
-      final runner = FkitCommandRunner();
-      final exitCode = await runner.run(['doctor', '-p', tempDir.path]);
+        final runner = FkitCommandRunner();
+        final exitCode = await runner.run(['doctor', '-p', tempDir.path]);
 
-      expect(exitCode, equals(0));
-    });
+        expect(exitCode, equals(0));
+      },
+    );
   });
 }

@@ -5,6 +5,26 @@ All notable changes to **FKIT CLI** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-09-17
+
+### 🌟 Added
+- **Full Lifecycle Command Suite**:
+  - `fkit make`: Rapidly generate components (`screen`, `controller`, `model`, `service`) conforming automatically to the project architecture.
+  - `fkit feature add <name>`: Scaffold modular Clean Architecture domain slices (`data/`, `domain/`, `presentation/`).
+  - `fkit flavor add <name>` & `fkit flavor list`: Multi-flavor automation across Android `build.gradle`, iOS schemes, Dart entrypoints, and VS Code debug profiles.
+  - `fkit assets gen` & `fkit assets clean`: Type-safe `AppAssets` constant generator and unreferenced/dead asset detector.
+  - `fkit doctor`: Diagnostics for Flutter SDK, Dart SDK, CocoaPods, Android toolchain, and local project structure health.
+- **Example Suite for pub.dev & GitHub**:
+  - Added runnable `example/main.dart` and `example/README.md` demonstrating programmatic and CLI usage.
+
+### 🐛 Fixed
+- **Code Formatting & Static Analysis**: Formatted entire codebase to satisfy strict Dart formatter rules, scoring a perfect 50/50 on static analysis.
+
+### 📖 Documentation
+- Overhauled `README.md` with complete command cheatsheet, interactive terminal diagrams, architecture guides, and pub.dev/GitHub presentation polish.
+
+---
+
 ## [1.1.0] - 2026-09-16
 
 ### 🌟 Added

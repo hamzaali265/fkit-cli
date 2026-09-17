@@ -267,46 +267,48 @@ void main() {
       expect(Storage.fromKey('sqlite'), equals(Storage.sqflite));
     });
 
-    test('toJson and fromJson round-trip correctly preserves configuration', () {
-      final original = ProjectConfig(
-        projectName: 'roundtrip_app',
-        orgName: 'com.test.roundtrip',
-        description: 'Test roundtrip app',
-        targetDirectory: '/path/to/project',
-        architecture: ArchitecturePattern.featureFirst,
-        stateManagement: StateManagement.bloc,
-        routing: Routing.goRouter,
-        networking: Networking.dio,
-        storage: Storage.hive,
-        features: {
-          ProjectFeature.envFlavors,
-          ProjectFeature.localization,
-        },
-        utilities: {
-          UtilityPackage.flutterSvg,
-          UtilityPackage.cachedNetworkImage,
-          UtilityPackage.intl,
-        },
-      );
+    test(
+      'toJson and fromJson round-trip correctly preserves configuration',
+      () {
+        final original = ProjectConfig(
+          projectName: 'roundtrip_app',
+          orgName: 'com.test.roundtrip',
+          description: 'Test roundtrip app',
+          targetDirectory: '/path/to/project',
+          architecture: ArchitecturePattern.featureFirst,
+          stateManagement: StateManagement.bloc,
+          routing: Routing.goRouter,
+          networking: Networking.dio,
+          storage: Storage.hive,
+          features: {ProjectFeature.envFlavors, ProjectFeature.localization},
+          utilities: {
+            UtilityPackage.flutterSvg,
+            UtilityPackage.cachedNetworkImage,
+            UtilityPackage.intl,
+          },
+        );
 
-      final json = original.toJson();
-      expect(json['name'], equals('roundtrip_app'));
-      expect(json['architecture'], equals('featureFirst'));
-      expect(json['state_management'], equals('bloc'));
-      expect(json['routing'], equals('goRouter'));
+        final json = original.toJson();
+        expect(json['name'], equals('roundtrip_app'));
+        expect(json['architecture'], equals('featureFirst'));
+        expect(json['state_management'], equals('bloc'));
+        expect(json['routing'], equals('goRouter'));
 
-      final reconstructed = ProjectConfig.fromJson(json, targetDirectory: '/path/to/project');
-      expect(reconstructed.projectName, equals(original.projectName));
-      expect(reconstructed.architecture, equals(original.architecture));
-      expect(reconstructed.stateManagement, equals(original.stateManagement));
-      expect(reconstructed.routing, equals(original.routing));
-      expect(reconstructed.networking, equals(original.networking));
-      expect(reconstructed.storage, equals(original.storage));
-      expect(reconstructed.hasEnvFlavors, isTrue);
-      expect(reconstructed.hasLocalization, isTrue);
-      expect(reconstructed.hasFlutterSvg, isTrue);
-      expect(reconstructed.hasCachedNetworkImage, isTrue);
-    });
+        final reconstructed = ProjectConfig.fromJson(
+          json,
+          targetDirectory: '/path/to/project',
+        );
+        expect(reconstructed.projectName, equals(original.projectName));
+        expect(reconstructed.architecture, equals(original.architecture));
+        expect(reconstructed.stateManagement, equals(original.stateManagement));
+        expect(reconstructed.routing, equals(original.routing));
+        expect(reconstructed.networking, equals(original.networking));
+        expect(reconstructed.storage, equals(original.storage));
+        expect(reconstructed.hasEnvFlavors, isTrue);
+        expect(reconstructed.hasLocalization, isTrue);
+        expect(reconstructed.hasFlutterSvg, isTrue);
+        expect(reconstructed.hasCachedNetworkImage, isTrue);
+      },
+    );
   });
 }
-

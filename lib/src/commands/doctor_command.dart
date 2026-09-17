@@ -51,7 +51,11 @@ class DoctorCommand extends Command<int> {
     try {
       final res = await Process.run('dart', ['--version'], runInShell: true);
       if (res.exitCode == 0) {
-        final out = (res.stdout.toString().isNotEmpty ? res.stdout : res.stderr).toString().split('\n').first.trim();
+        final out = (res.stdout.toString().isNotEmpty ? res.stdout : res.stderr)
+            .toString()
+            .split('\n')
+            .first
+            .trim();
         dartProgress.complete('Dart SDK installed: $out');
       } else {
         dartProgress.fail('Dart command returned an error');
@@ -68,13 +72,17 @@ class DoctorCommand extends Command<int> {
       try {
         final res = await Process.run('pod', ['--version'], runInShell: true);
         if (res.exitCode == 0) {
-          podProgress.complete('CocoaPods installed: ${res.stdout.toString().trim()}');
+          podProgress.complete(
+            'CocoaPods installed: ${res.stdout.toString().trim()}',
+          );
         } else {
           podProgress.fail('CocoaPods returned an error');
           issuesCount++;
         }
       } catch (_) {
-        podProgress.fail('CocoaPods is not installed (required for iOS/macOS builds: gem install cocoapods)');
+        podProgress.fail(
+          'CocoaPods is not installed (required for iOS/macOS builds: gem install cocoapods)',
+        );
         issuesCount++;
       }
     }
@@ -92,16 +100,22 @@ class DoctorCommand extends Command<int> {
       if (fkitConfig.existsSync()) {
         _logger.info('  ✓ .fkit.json configuration detected');
       } else {
-        _logger.warn('  ℹ .fkit.json not found (using default fallback configurations)');
+        _logger.warn(
+          '  ℹ .fkit.json not found (using default fallback configurations)',
+        );
       }
     }
 
     _logger.info('');
     if (issuesCount == 0) {
-      _logger.success('🎉 Doctor summary: Everything looks ready for Flutter development!');
+      _logger.success(
+        '🎉 Doctor summary: Everything looks ready for Flutter development!',
+      );
       return ExitCode.success.code;
     } else {
-      _logger.warn('⚠️ Doctor summary: Found $issuesCount issue(s). Please review the logs above.');
+      _logger.warn(
+        '⚠️ Doctor summary: Found $issuesCount issue(s). Please review the logs above.',
+      );
       return ExitCode.success.code;
     }
   }

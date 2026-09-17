@@ -589,7 +589,9 @@ void main() {
         );
         expect(
           storage,
-          contains('static Future<int?> getInt(String key) async => get<int>(key);'),
+          contains(
+            'static Future<int?> getInt(String key) async => get<int>(key);',
+          ),
         );
         expect(
           storage,
@@ -599,7 +601,9 @@ void main() {
         );
         expect(
           storage,
-          contains('static Future<String?> getString(String key) async => get<String>(key);'),
+          contains(
+            'static Future<String?> getString(String key) async => get<String>(key);',
+          ),
         );
       },
     );

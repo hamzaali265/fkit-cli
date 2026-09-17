@@ -26,15 +26,23 @@ class FlutterProjectValidator {
   /// Verifies that [directory] is a valid Flutter project.
   ///
   /// If invalid, prints a helpful error message and returns `false`.
-  static bool requireFlutterProject(Directory directory, Logger logger, {String? commandName}) {
+  static bool requireFlutterProject(
+    Directory directory,
+    Logger logger, {
+    String? commandName,
+  }) {
     if (!isFlutterProject(directory)) {
       final cmd = commandName != null ? 'fkit $commandName' : 'this command';
       logger.err('Error: Cannot run "$cmd" outside of a Flutter project.');
       logger.info('');
-      logger.info('  • No valid pubspec.yaml with Flutter dependencies found in:');
+      logger.info(
+        '  • No valid pubspec.yaml with Flutter dependencies found in:',
+      );
       logger.info('    ${p.canonicalize(directory.path)}');
       logger.info('');
-      logger.info('  👉 Navigate to a Flutter project directory or specify `--path <path>`:');
+      logger.info(
+        '  👉 Navigate to a Flutter project directory or specify `--path <path>`:',
+      );
       logger.info('     cd my_flutter_project');
       logger.info('     fkit ${commandName ?? '<command>'}');
       logger.info('');

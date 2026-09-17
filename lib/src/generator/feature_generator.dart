@@ -76,7 +76,8 @@ class FeatureGenerator {
     final basePath = 'lib/features/$snake';
 
     // Domain
-    files['$basePath/domain/entities/${snake}_entity.dart'] = '''
+    files['$basePath/domain/entities/${snake}_entity.dart'] =
+        '''
 /// Domain entity representing $pascal.
 class ${pascal}Entity {
   const ${pascal}Entity({
@@ -89,7 +90,8 @@ class ${pascal}Entity {
 }
 ''';
 
-    files['$basePath/domain/repositories/${snake}_repository.dart'] = '''
+    files['$basePath/domain/repositories/${snake}_repository.dart'] =
+        '''
 import '../entities/${snake}_entity.dart';
 
 /// Repository interface for $pascal feature.
@@ -99,7 +101,8 @@ abstract class ${pascal}Repository {
 ''';
 
     // Data
-    files['$basePath/data/models/${snake}_model.dart'] = '''
+    files['$basePath/data/models/${snake}_model.dart'] =
+        '''
 import '../../domain/entities/${snake}_entity.dart';
 
 /// Data model for $pascal.
@@ -125,7 +128,8 @@ class ${pascal}Model extends ${pascal}Entity {
 }
 ''';
 
-    files['$basePath/data/repositories/${snake}_repository_impl.dart'] = '''
+    files['$basePath/data/repositories/${snake}_repository_impl.dart'] =
+        '''
 import '../../domain/entities/${snake}_entity.dart';
 import '../../domain/repositories/${snake}_repository.dart';
 import '../models/${snake}_model.dart';
@@ -142,7 +146,14 @@ class ${pascal}RepositoryImpl implements ${pascal}Repository {
 ''';
 
     // Presentation
-    _addPresentationFiles(files, '$basePath/presentation', snake, pascal, camel, config);
+    _addPresentationFiles(
+      files,
+      '$basePath/presentation',
+      snake,
+      pascal,
+      camel,
+      config,
+    );
   }
 
   void _generateLayerFirst(
@@ -153,7 +164,8 @@ class ${pascal}RepositoryImpl implements ${pascal}Repository {
     ProjectConfig config,
   ) {
     // Domain
-    files['lib/domain/entities/${snake}_entity.dart'] = '''
+    files['lib/domain/entities/${snake}_entity.dart'] =
+        '''
 /// Domain entity representing $pascal.
 class ${pascal}Entity {
   const ${pascal}Entity({
@@ -166,7 +178,8 @@ class ${pascal}Entity {
 }
 ''';
 
-    files['lib/domain/repositories/${snake}_repository.dart'] = '''
+    files['lib/domain/repositories/${snake}_repository.dart'] =
+        '''
 import '../entities/${snake}_entity.dart';
 
 /// Repository interface for $pascal.
@@ -176,7 +189,8 @@ abstract class ${pascal}Repository {
 ''';
 
     // Data
-    files['lib/data/models/${snake}_model.dart'] = '''
+    files['lib/data/models/${snake}_model.dart'] =
+        '''
 import '../../domain/entities/${snake}_entity.dart';
 
 /// Data model for $pascal.
@@ -202,7 +216,8 @@ class ${pascal}Model extends ${pascal}Entity {
 }
 ''';
 
-    files['lib/data/repositories/${snake}_repository_impl.dart'] = '''
+    files['lib/data/repositories/${snake}_repository_impl.dart'] =
+        '''
 import '../../domain/entities/${snake}_entity.dart';
 import '../../domain/repositories/${snake}_repository.dart';
 import '../models/${snake}_model.dart';
@@ -219,7 +234,14 @@ class ${pascal}RepositoryImpl implements ${pascal}Repository {
 ''';
 
     // Presentation
-    _addPresentationFiles(files, 'lib/presentation/$snake', snake, pascal, camel, config);
+    _addPresentationFiles(
+      files,
+      'lib/presentation/$snake',
+      snake,
+      pascal,
+      camel,
+      config,
+    );
   }
 
   void _generateMvvm(
@@ -230,7 +252,8 @@ class ${pascal}RepositoryImpl implements ${pascal}Repository {
     ProjectConfig config,
   ) {
     // Model
-    files['lib/models/${snake}_model.dart'] = '''
+    files['lib/models/${snake}_model.dart'] =
+        '''
 /// Model representing $pascal.
 class ${pascal}Model {
   const ${pascal}Model({
@@ -259,7 +282,8 @@ class ${pascal}Model {
 
     // ViewModel
     if (config.stateManagement == StateManagement.bloc) {
-      files['lib/viewmodels/${snake}_cubit.dart'] = '''
+      files['lib/viewmodels/${snake}_cubit.dart'] =
+          '''
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/${snake}_model.dart';
@@ -294,7 +318,8 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
 }
 ''';
     } else if (config.stateManagement == StateManagement.riverpod) {
-      files['lib/viewmodels/${snake}_viewmodel.dart'] = '''
+      files['lib/viewmodels/${snake}_viewmodel.dart'] =
+          '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/${snake}_model.dart';
 
@@ -321,7 +346,8 @@ final ${camel}Provider = StateNotifierProvider<${pascal}ViewModel, ${pascal}Stat
 });
 ''';
     } else {
-      files['lib/viewmodels/${snake}_viewmodel.dart'] = '''
+      files['lib/viewmodels/${snake}_viewmodel.dart'] =
+          '''
 import 'package:flutter/foundation.dart';
 import '../models/${snake}_model.dart';
 
@@ -344,7 +370,8 @@ class ${pascal}ViewModel extends ChangeNotifier {
     }
 
     // View
-    files['lib/views/${snake}_view.dart'] = '''
+    files['lib/views/${snake}_view.dart'] =
+        '''
 import 'package:flutter/material.dart';
 
 class ${pascal}View extends StatelessWidget {
@@ -373,7 +400,8 @@ class ${pascal}View extends StatelessWidget {
     ProjectConfig config,
   ) {
     // Model
-    files['lib/models/${snake}_model.dart'] = '''
+    files['lib/models/${snake}_model.dart'] =
+        '''
 class ${pascal}Model {
   const ${pascal}Model({
     required this.id,
@@ -386,7 +414,8 @@ class ${pascal}Model {
 ''';
 
     // Screen
-    files['lib/screens/${snake}_screen.dart'] = '''
+    files['lib/screens/${snake}_screen.dart'] =
+        '''
 import 'package:flutter/material.dart';
 
 class ${pascal}Screen extends StatelessWidget {
@@ -416,7 +445,8 @@ class ${pascal}Screen extends StatelessWidget {
     ProjectConfig config,
   ) {
     if (config.stateManagement == StateManagement.bloc) {
-      files['$presentationPath/bloc/${snake}_cubit.dart'] = '''
+      files['$presentationPath/bloc/${snake}_cubit.dart'] =
+          '''
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -434,7 +464,8 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
 }
 ''';
     } else if (config.stateManagement == StateManagement.riverpod) {
-      files['$presentationPath/providers/${snake}_provider.dart'] = '''
+      files['$presentationPath/providers/${snake}_provider.dart'] =
+          '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final ${camel}Provider = Provider<String>((ref) {
@@ -443,7 +474,8 @@ final ${camel}Provider = Provider<String>((ref) {
 ''';
     }
 
-    files['$presentationPath/views/${snake}_view.dart'] = '''
+    files['$presentationPath/views/${snake}_view.dart'] =
+        '''
 import 'package:flutter/material.dart';
 
 class ${pascal}View extends StatelessWidget {

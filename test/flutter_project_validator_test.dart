@@ -21,17 +21,20 @@ void main() {
       expect(FlutterProjectValidator.isFlutterProject(tempDir), isFalse);
     });
 
-    test('returns false when pubspec.yaml is a pure Dart package without Flutter', () {
-      final pubspec = File(p.join(tempDir.path, 'pubspec.yaml'));
-      pubspec.writeAsStringSync('''
+    test(
+      'returns false when pubspec.yaml is a pure Dart package without Flutter',
+      () {
+        final pubspec = File(p.join(tempDir.path, 'pubspec.yaml'));
+        pubspec.writeAsStringSync('''
 name: pure_dart_tool
 environment:
   sdk: '>=3.0.0 <4.0.0'
 dependencies:
   args: ^2.5.0
 ''');
-      expect(FlutterProjectValidator.isFlutterProject(tempDir), isFalse);
-    });
+        expect(FlutterProjectValidator.isFlutterProject(tempDir), isFalse);
+      },
+    );
 
     test('returns true when pubspec.yaml has flutter sdk dependency', () {
       final pubspec = File(p.join(tempDir.path, 'pubspec.yaml'));
@@ -44,24 +47,43 @@ dependencies:
       expect(FlutterProjectValidator.isFlutterProject(tempDir), isTrue);
     });
 
-    test('commands fail with usage exit code and helpful message when executed outside Flutter project', () async {
-      final runner = FkitCommandRunner();
+    test(
+      'commands fail with usage exit code and helpful message when executed outside Flutter project',
+      () async {
+        final runner = FkitCommandRunner();
 
-      // feature command
-      final featureExit = await runner.run(['feature', 'auth', '-p', tempDir.path]);
-      expect(featureExit, isNot(equals(0)));
+        // feature command
+        final featureExit = await runner.run([
+          'feature',
+          'auth',
+          '-p',
+          tempDir.path,
+        ]);
+        expect(featureExit, isNot(equals(0)));
 
-      // make screen
-      final screenExit = await runner.run(['make', 'screen', 'profile', '-p', tempDir.path]);
-      expect(screenExit, isNot(equals(0)));
+        // make screen
+        final screenExit = await runner.run([
+          'make',
+          'screen',
+          'profile',
+          '-p',
+          tempDir.path,
+        ]);
+        expect(screenExit, isNot(equals(0)));
 
-      // flavor
-      final flavorExit = await runner.run(['flavor', '-p', tempDir.path]);
-      expect(flavorExit, isNot(equals(0)));
+        // flavor
+        final flavorExit = await runner.run(['flavor', '-p', tempDir.path]);
+        expect(flavorExit, isNot(equals(0)));
 
-      // assets gen
-      final assetsExit = await runner.run(['assets', 'gen', '-p', tempDir.path]);
-      expect(assetsExit, isNot(equals(0)));
-    });
+        // assets gen
+        final assetsExit = await runner.run([
+          'assets',
+          'gen',
+          '-p',
+          tempDir.path,
+        ]);
+        expect(assetsExit, isNot(equals(0)));
+      },
+    );
   });
 }

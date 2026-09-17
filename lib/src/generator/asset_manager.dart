@@ -17,7 +17,9 @@ class AssetManager {
 
     final assetPaths = <String>[];
     for (final entity in assetsDir.listSync(recursive: true)) {
-      if (entity is File && !entity.path.endsWith('.gitkeep') && !entity.path.endsWith('.DS_Store')) {
+      if (entity is File &&
+          !entity.path.endsWith('.gitkeep') &&
+          !entity.path.endsWith('.DS_Store')) {
         final rel = p.relative(entity.path, from: projectPath);
         assetPaths.add(rel);
       }
@@ -39,7 +41,8 @@ class AssetManager {
     buffer.writeln('}');
     buffer.writeln();
 
-    final targetPath = Directory(p.join(projectPath, 'lib', 'core')).existsSync()
+    final targetPath =
+        Directory(p.join(projectPath, 'lib', 'core')).existsSync()
         ? p.join(projectPath, 'lib', 'core', 'constants', 'app_assets.dart')
         : p.join(projectPath, 'lib', 'constants', 'app_assets.dart');
 
@@ -58,7 +61,9 @@ class AssetManager {
     final assetFiles = assetsDir
         .listSync(recursive: true)
         .whereType<File>()
-        .where((f) => !f.path.endsWith('.gitkeep') && !f.path.endsWith('.DS_Store'))
+        .where(
+          (f) => !f.path.endsWith('.gitkeep') && !f.path.endsWith('.DS_Store'),
+        )
         .toList();
 
     if (assetFiles.isEmpty) return [];
@@ -85,7 +90,9 @@ class AssetManager {
       final ext = p.extension(asset.path).replaceAll('.', '');
       final fieldName = '${base}_$ext'.toCamelCase();
 
-      if (!code.contains(rel) && !code.contains(filename) && !code.contains(fieldName)) {
+      if (!code.contains(rel) &&
+          !code.contains(filename) &&
+          !code.contains(fieldName)) {
         unused.add(rel);
       }
     }

@@ -7,11 +7,9 @@ import '../generator/flutter_project_validator.dart';
 
 /// Command that initializes and configures project flavors.
 class FlavorCommand extends Command<int> {
-  FlavorCommand({
-    Logger? logger,
-    FlavorConfigurator? configurator,
-  }) : _logger = logger ?? Logger(),
-       _configurator = configurator ?? const FlavorConfigurator() {
+  FlavorCommand({Logger? logger, FlavorConfigurator? configurator})
+    : _logger = logger ?? Logger(),
+      _configurator = configurator ?? const FlavorConfigurator() {
     argParser
       ..addOption(
         'path',
@@ -42,25 +40,32 @@ class FlavorCommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'flavor')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'flavor',
+    )) {
       return ExitCode.usage.code;
     }
 
-    final rawFlavors = (argResults?['flavors'] as List<String>?) ?? ['dev', 'staging', 'prod'];
-    final flavors = rawFlavors.map((f) => f.trim().toLowerCase()).where((f) => f.isNotEmpty).toList();
+    final rawFlavors =
+        (argResults?['flavors'] as List<String>?) ?? ['dev', 'staging', 'prod'];
+    final flavors = rawFlavors
+        .map((f) => f.trim().toLowerCase())
+        .where((f) => f.isNotEmpty)
+        .toList();
 
     if (flavors.isEmpty) {
       _logger.err('At least one flavor name must be provided.');
       return ExitCode.usage.code;
     }
 
-    final progress = _logger.progress('Configuring flavors (${flavors.join(', ')})...');
+    final progress = _logger.progress(
+      'Configuring flavors (${flavors.join(', ')})...',
+    );
 
     try {
-      _configurator.setupFlavors(
-        targetDir: projectDir.path,
-        flavors: flavors,
-      );
+      _configurator.setupFlavors(targetDir: projectDir.path, flavors: flavors);
 
       progress.complete('Flavors configured successfully!');
       _logger.info('');
@@ -70,10 +75,14 @@ class FlavorCommand extends Command<int> {
       for (final f in flavors) {
         _logger.info('  • lib/main_$f.dart');
       }
-      _logger.info('🚀 VS Code launch configurations saved to .vscode/launch.json');
+      _logger.info(
+        '🚀 VS Code launch configurations saved to .vscode/launch.json',
+      );
       _logger.info('');
       _logger.info('To run a specific flavor:');
-      _logger.info('  flutter run --flavor ${flavors.first} -t lib/main_${flavors.first}.dart');
+      _logger.info(
+        '  flutter run --flavor ${flavors.first} -t lib/main_${flavors.first}.dart',
+      );
 
       return ExitCode.success.code;
     } catch (e) {

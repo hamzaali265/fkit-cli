@@ -34,11 +34,17 @@ class AssetsGenSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'assets gen')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'assets gen',
+    )) {
       return ExitCode.usage.code;
     }
 
-    final progress = _logger.progress('Scanning assets and generating AppAssets...');
+    final progress = _logger.progress(
+      'Scanning assets and generating AppAssets...',
+    );
     try {
       final generatedPath = _manager.generateAssetsFile(projectDir.path);
       progress.complete('Generated $generatedPath');
@@ -66,7 +72,8 @@ class AssetsCleanSubcommand extends Command<int> {
       ..addFlag(
         'delete',
         abbr: 'd',
-        help: 'Automatically delete unused asset files instead of just listing them.',
+        help:
+            'Automatically delete unused asset files instead of just listing them.',
         defaultsTo: false,
       );
   }
@@ -86,7 +93,11 @@ class AssetsCleanSubcommand extends Command<int> {
     final projectPath = argResults?['path'] as String? ?? '.';
     final projectDir = Directory(projectPath);
 
-    if (!FlutterProjectValidator.requireFlutterProject(projectDir, _logger, commandName: 'assets clean')) {
+    if (!FlutterProjectValidator.requireFlutterProject(
+      projectDir,
+      _logger,
+      commandName: 'assets clean',
+    )) {
       return ExitCode.usage.code;
     }
 
