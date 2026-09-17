@@ -5,6 +5,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'commands/create_command.dart';
 import 'commands/feature_command.dart';
 import 'commands/list_command.dart';
+import 'commands/make_command.dart';
 import 'prompts/home_screen.dart';
 
 const String packageName = 'fkit';
@@ -26,6 +27,7 @@ class FkitCommandRunner extends CommandRunner<int> {
 
     addCommand(CreateCommand(logger: _logger));
     addCommand(FeatureCommand(logger: _logger));
+    addCommand(MakeCommand(logger: _logger));
     addCommand(ListCommand(logger: _logger));
   }
 
