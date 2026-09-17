@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 
+import 'commands/assets_command.dart';
 import 'commands/create_command.dart';
 import 'commands/feature_command.dart';
 import 'commands/flavor_command.dart';
@@ -26,6 +27,7 @@ class FkitCommandRunner extends CommandRunner<int> {
       help: 'Print the current version.',
     );
 
+    addCommand(AssetsCommand(logger: _logger));
     addCommand(CreateCommand(logger: _logger));
     addCommand(FeatureCommand(logger: _logger));
     addCommand(FlavorCommand(logger: _logger));

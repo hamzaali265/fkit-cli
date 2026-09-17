@@ -33,7 +33,7 @@ android {
 ''');
 
       // Mock iOS Flutter directory
-      Directory(p.join(tempDir.path, 'ios', 'Flutter'))..createSync(recursive: true);
+      Directory(p.join(tempDir.path, 'ios', 'Flutter')).createSync(recursive: true);
 
       // Mock lib directory
       final libDir = Directory(p.join(tempDir.path, 'lib'))..createSync(recursive: true);
