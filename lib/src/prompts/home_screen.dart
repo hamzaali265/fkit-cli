@@ -56,15 +56,34 @@ class HomeScreen {
       description: 'Scaffold a new Flutter app',
     ),
     HomeAction(
+      id: 'feature',
+      title: 'Add feature module',
+      description: 'Scaffold a feature matching your architecture',
+    ),
+    HomeAction(
+      id: 'make',
+      title: 'Make component',
+      description: 'Generate screen, controller, model, or service',
+    ),
+    HomeAction(
+      id: 'flavor',
+      title: 'Setup flavors',
+      description: 'Automate Android, iOS, and VS Code run schemes',
+    ),
+    HomeAction(
+      id: 'assets',
+      title: 'Manage assets',
+      description: 'Generate AppAssets or clean unused asset files',
+    ),
+    HomeAction(
+      id: 'doctor',
+      title: 'Run doctor',
+      description: 'Check Flutter SDK, tools, and project health',
+    ),
+    HomeAction(
       id: 'list',
       title: 'List options',
       description: 'Browse stacks and packages',
-    ),
-    HomeAction(
-      id: 'coming_soon',
-      title: 'More features coming soon…',
-      description: 'Not available yet',
-      enabled: false,
     ),
     HomeAction(id: 'quit', title: 'Quit', description: 'Exit FKIT CLI'),
   ];
@@ -84,15 +103,18 @@ class HomeScreen {
       switch (selected.id) {
         case 'create':
           return _runCommand(['create', '--no-hero']);
+        case 'feature':
+          return _runCommand(['feature']);
+        case 'make':
+          return _runCommand(['make']);
+        case 'flavor':
+          return _runCommand(['flavor']);
+        case 'assets':
+          return _runCommand(['assets']);
+        case 'doctor':
+          return _runCommand(['doctor']);
         case 'list':
           return _runCommand(['list', '--no-hero']);
-        case 'coming_soon':
-          _logger.info('');
-          _logger.info(
-            '  ${CliTheme.muted('More features are on the way. Stay tuned.')}',
-          );
-          _logger.info('');
-          continue;
         case 'quit':
           return ExitCode.success.code;
         default:
