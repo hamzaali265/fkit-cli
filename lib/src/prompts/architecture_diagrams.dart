@@ -89,6 +89,19 @@ abstract final class ArchitectureDiagrams {
           '     ▲                           │',
           '     └───────── rebuild ─────────┘',
         ];
+      case ArchitecturePattern.modular:
+        return const [
+          'lib/',
+          '├── core/            (theme, network, routes)',
+          '├── shared/          (widgets, utils, extensions)',
+          '└── modules/',
+          '    └── <module>/',
+          '        ├── logic/        (controllers / cubits)',
+          '        ├── providers/    (state providers)',
+          '        ├── repositories/ (data sources & repositories)',
+          '        ├── screens/      (views / pages)',
+          '        └── models/       (entities & models)',
+        ];
     }
   }
 }

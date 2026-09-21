@@ -165,5 +165,78 @@ dependencies:
         isTrue,
       );
     });
+
+    test('makes screen, controller, model, and service in Modular Riverpod project', () async {
+      final fkitJson = '''
+{
+  "name": "modular_app",
+  "architecture": "modular",
+  "state_management": "riverpod",
+  "routing": "goRouter",
+  "networking": "dio",
+  "storage": "sharedPreferences",
+  "features": []
+}
+''';
+      File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync(fkitJson);
+
+      final runner = FkitCommandRunner();
+
+      // Screen
+      var exitCode = await runner.run([
+        'make',
+        'screen',
+        'login',
+        '-p',
+        tempDir.path,
+      ]);
+      expect(exitCode, equals(0));
+      expect(
+        File(p.join(tempDir.path, 'lib/modules/login/screens/login_screen.dart')).existsSync(),
+        isTrue,
+      );
+
+      // Controller
+      exitCode = await runner.run([
+        'make',
+        'controller',
+        'login',
+        '-p',
+        tempDir.path,
+      ]);
+      expect(exitCode, equals(0));
+      expect(
+        File(p.join(tempDir.path, 'lib/modules/login/logic/login_notifier.dart')).existsSync(),
+        isTrue,
+      );
+
+      // Model
+      exitCode = await runner.run([
+        'make',
+        'model',
+        'login_request',
+        '-p',
+        tempDir.path,
+      ]);
+      expect(exitCode, equals(0));
+      expect(
+        File(p.join(tempDir.path, 'lib/modules/login_request/models/login_request_model.dart')).existsSync(),
+        isTrue,
+      );
+
+      // Service / Repository
+      exitCode = await runner.run([
+        'make',
+        'service',
+        'auth',
+        '-p',
+        tempDir.path,
+      ]);
+      expect(exitCode, equals(0));
+      expect(
+        File(p.join(tempDir.path, 'lib/modules/auth/repositories/auth_repository.dart')).existsSync(),
+        isTrue,
+      );
+    });
   });
 }

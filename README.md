@@ -53,7 +53,7 @@ $ fkit
 ## ⚡ Highlights
 
 - 🎯 **Interactive Terminal UX** — Arrow-key navigation, step counters, ASCII wordmarks, and built-in interactive directory picker.
-- 🏛️ **4 Battle-Tested Architectures** — Feature-First Clean Architecture, Layer-First Clean Architecture, MVVM, or lightweight MVC.
+- 🏛️ **5 Battle-Tested Architectures** — Feature-First Clean Architecture, Modular, Layer-First Clean Architecture, MVVM, or lightweight MVC.
 - ⚡ **5 State Management Options** — Flutter BLoC, Riverpod, Provider, GetX, or Vanilla Flutter.
 - 🛡️ **Zero-Config Native Permissions** — Automatically patches Android `AndroidManifest.xml`, iOS `Info.plist`, iOS `Podfile`, and macOS `Entitlements`.
 - ⚡ **Rapid Component Generators (`fkit make`)** — Generate screens, controllers, models, and services that automatically conform to your project's architectural pattern.
@@ -234,7 +234,7 @@ fkit create <project_name> [options]
 
 | Flag | Shorthand | Type / Options | Default | Description |
 | :--- | :---: | :--- | :--- | :--- |
-| `--architecture` | `-a` | `feature-first` \| `layer-first` \| `mvvm` \| `simple-mvc` | Interactive | Folder architecture pattern. |
+| `--architecture` | `-a` | `feature-first` \| `modular` \| `layer-first` \| `mvvm` \| `simple-mvc` | Interactive | Folder architecture pattern. |
 | `--state` | `-s` | `bloc` \| `riverpod` \| `provider` \| `getx` \| `none` | Interactive | State management solution. |
 | `--routing` | `-r` | `go_router` \| `auto_route` \| `standard` | Interactive | Declarative routing strategy. |
 | `--networking` | `-n` | `dio` \| `http` \| `none` | Interactive | HTTP networking client. |
@@ -268,7 +268,7 @@ fkit create <project_name> [options]
 ---
 
 ### 3. `fkit make` (Component Generators)
-Quickly scaffold individual components inside an existing Flutter project. The generated files automatically match your project's architecture (`feature-first`, `layer-first`, `mvvm`, or `simple-mvc`).
+Quickly scaffold individual components inside an existing Flutter project. The generated files automatically match your project's architecture (`feature-first`, `modular`, `layer-first`, `mvvm`, or `simple-mvc`).
 
 #### Make Screen / View
 ```bash
@@ -465,13 +465,35 @@ lib/
 └── widgets/                  # Shared components and styles
 ```
 
+### 5. Modular Architecture (`modular`)
+> *Best for: Highly decoupled domain modules grouped by logic, providers, repositories, screens, and models.*
+
+```text
+lib/
+├── core/                     # Common services, theme, network, routes
+├── modules/                  # Self-contained domain modules
+│   ├── auth/
+│   │   ├── logic/            # Controllers / Cubits / Notifiers
+│   │   ├── providers/        # State and DI providers
+│   │   ├── repositories/     # Data sources & repository implementations
+│   │   ├── screens/          # UI screens
+│   │   └── models/           # Data models & entities
+│   └── profile/
+│       ├── logic/
+│       ├── providers/
+│       ├── repositories/
+│       ├── screens/
+│       └── models/
+└── shared/                   # Reusable widgets, utils, extensions
+```
+
 ---
 
 ## 🧩 Tech Stack & Features Matrix
 
 | Category | Options & Packages | Description |
 | :--- | :--- | :--- |
-| **Architecture** | `feature-first`, `layer-first`, `mvvm`, `simple-mvc` | Clean folder structures tailored for scale |
+| **Architecture** | `feature-first`, `modular`, `layer-first`, `mvvm`, `simple-mvc` | Clean folder structures tailored for scale |
 | **State Management** | `flutter_bloc`, `flutter_riverpod`, `provider`, `get`, `none` | Pre-wired with starter state, events, or providers |
 | **Routing** | `go_router`, `auto_route`, `standard` | Declarative routing with typed route configs |
 | **Networking** | `dio`, `http`, `none` | Configured with base options, JSON parsing, error handlers |

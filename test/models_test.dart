@@ -310,5 +310,44 @@ void main() {
         expect(reconstructed.hasCachedNetworkImage, isTrue);
       },
     );
+
+    test('ArchitecturePattern.fromKey parses modular aliases', () {
+      expect(
+        ArchitecturePattern.fromKey('modular'),
+        equals(ArchitecturePattern.modular),
+      );
+      expect(
+        ArchitecturePattern.fromKey('module'),
+        equals(ArchitecturePattern.modular),
+      );
+      expect(
+        ArchitecturePattern.fromKey('modules'),
+        equals(ArchitecturePattern.modular),
+      );
+    });
+
+    test('round-trips modular architecture in ProjectConfig toJson/fromJson', () {
+      final config = ProjectConfig(
+        projectName: 'modular_app',
+        orgName: 'com.test.modular',
+        targetDirectory: '/tmp/modular_app',
+        architecture: ArchitecturePattern.modular,
+        stateManagement: StateManagement.riverpod,
+        routing: Routing.goRouter,
+        networking: Networking.dio,
+        storage: Storage.sharedPreferences,
+        features: const {},
+        utilities: const {},
+      );
+
+      final json = config.toJson();
+      expect(json['architecture'], equals('modular'));
+
+      final reconstructed = ProjectConfig.fromJson(
+        json,
+        targetDirectory: '/tmp/modular_app',
+      );
+      expect(reconstructed.architecture, equals(ArchitecturePattern.modular));
+    });
   });
 }

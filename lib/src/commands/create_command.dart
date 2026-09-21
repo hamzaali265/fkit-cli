@@ -38,7 +38,13 @@ class CreateCommand extends Command<int> {
         'architecture',
         abbr: 'a',
         help: 'Folder structure and architectural pattern.',
-        allowed: ['feature-first', 'layer-first', 'mvvm', 'simple-mvc'],
+        allowed: [
+          'feature-first',
+          'layer-first',
+          'mvvm',
+          'simple-mvc',
+          'modular',
+        ],
       )
       ..addOption(
         'state',
