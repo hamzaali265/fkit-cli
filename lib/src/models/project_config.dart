@@ -15,6 +15,10 @@ enum ArchitecturePattern {
   simpleMvc(
     'MVC',
     'Flat and lightweight structure (lib/screens, lib/models, lib/services, lib/widgets)',
+  ),
+  modular(
+    'Modular',
+    'Module-driven architecture grouped by domain modules (lib/modules/<name>/{logic, providers, repositories, screens, models})',
   );
 
   const ArchitecturePattern(this.label, this.description);
@@ -37,6 +41,10 @@ enum ArchitecturePattern {
       case 'simple':
       case 'mvc':
         return ArchitecturePattern.simpleMvc;
+      case 'modular':
+      case 'module':
+      case 'modules':
+        return ArchitecturePattern.modular;
       default:
         throw ArgumentError('Unknown architecture: $key');
     }
