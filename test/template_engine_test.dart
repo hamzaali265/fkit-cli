@@ -304,71 +304,89 @@ void main() {
       expect(mainDart, contains("import 'routes/app_router.dart';"));
     });
 
-    test('generates Modular architecture structure properly with modules/counter/', () {
-      final config = ProjectConfig(
-        projectName: 'modular_app',
-        orgName: 'com.example',
-        targetDirectory: '/tmp/modular_app',
-        architecture: ArchitecturePattern.modular,
-        stateManagement: StateManagement.riverpod,
-        routing: Routing.goRouter,
-        networking: Networking.dio,
-        storage: Storage.sharedPreferences,
-        features: {ProjectFeature.assetsStructure},
-        utilities: {
-          UtilityPackage.flutterSvg,
-          UtilityPackage.cachedNetworkImage,
-        },
-      );
+    test(
+      'generates Modular architecture structure properly with modules/counter/',
+      () {
+        final config = ProjectConfig(
+          projectName: 'modular_app',
+          orgName: 'com.example',
+          targetDirectory: '/tmp/modular_app',
+          architecture: ArchitecturePattern.modular,
+          stateManagement: StateManagement.riverpod,
+          routing: Routing.goRouter,
+          networking: Networking.dio,
+          storage: Storage.sharedPreferences,
+          features: {ProjectFeature.assetsStructure},
+          utilities: {
+            UtilityPackage.flutterSvg,
+            UtilityPackage.cachedNetworkImage,
+          },
+        );
 
-      final files = engine.generateFiles(config);
+        final files = engine.generateFiles(config);
 
-      expect(files.containsKey('lib/modules/counter/models/counter_model.dart'), isTrue);
-      expect(
-        files.containsKey('lib/modules/counter/repositories/counter_repository.dart'),
-        isTrue,
-      );
-      expect(
-        files.containsKey('lib/modules/counter/repositories/counter_repository_impl.dart'),
-        isTrue,
-      );
-      expect(
-        files['lib/modules/counter/repositories/counter_repository.dart'],
-        contains('abstract class CounterRepository'),
-      );
-      expect(
-        files['lib/modules/counter/repositories/counter_repository_impl.dart'],
-        contains('class CounterRepositoryImpl implements CounterRepository'),
-      );
-      expect(
-        files.containsKey('lib/modules/counter/logic/counter_notifier.dart'),
-        isTrue,
-      );
-      expect(
-        files.containsKey('lib/modules/counter/providers/counter_notifier_provider.dart'),
-        isTrue,
-      );
-      expect(
-        files.containsKey('lib/modules/counter/screens/counter_screen.dart'),
-        isTrue,
-      );
-      expect(files.containsKey('lib/core/routes/app_router.dart'), isTrue);
-      expect(files.containsKey('lib/core/theme/app_theme.dart'), isTrue);
-      expect(files.containsKey('lib/core/network/api_client.dart'), isTrue);
-      expect(files.containsKey('lib/core/storage/storage_service.dart'), isTrue);
+        expect(
+          files.containsKey('lib/modules/counter/models/counter_model.dart'),
+          isTrue,
+        );
+        expect(
+          files.containsKey(
+            'lib/modules/counter/repositories/counter_repository.dart',
+          ),
+          isTrue,
+        );
+        expect(
+          files.containsKey(
+            'lib/modules/counter/repositories/counter_repository_impl.dart',
+          ),
+          isTrue,
+        );
+        expect(
+          files['lib/modules/counter/repositories/counter_repository.dart'],
+          contains('abstract class CounterRepository'),
+        );
+        expect(
+          files['lib/modules/counter/repositories/counter_repository_impl.dart'],
+          contains('class CounterRepositoryImpl implements CounterRepository'),
+        );
+        expect(
+          files.containsKey('lib/modules/counter/logic/counter_notifier.dart'),
+          isTrue,
+        );
+        expect(
+          files.containsKey(
+            'lib/modules/counter/providers/counter_notifier_provider.dart',
+          ),
+          isTrue,
+        );
+        expect(
+          files.containsKey('lib/modules/counter/screens/counter_screen.dart'),
+          isTrue,
+        );
+        expect(files.containsKey('lib/core/routes/app_router.dart'), isTrue);
+        expect(files.containsKey('lib/core/theme/app_theme.dart'), isTrue);
+        expect(files.containsKey('lib/core/network/api_client.dart'), isTrue);
+        expect(
+          files.containsKey('lib/core/storage/storage_service.dart'),
+          isTrue,
+        );
 
-      final screen = files['lib/modules/counter/screens/counter_screen.dart']!;
-      expect(screen, contains('CounterScreen'));
+        final screen =
+            files['lib/modules/counter/screens/counter_screen.dart']!;
+        expect(screen, contains('CounterScreen'));
 
-      final router = files['lib/core/routes/app_router.dart']!;
-      expect(
-        router,
-        contains("import '../../modules/counter/screens/counter_screen.dart';"),
-      );
+        final router = files['lib/core/routes/app_router.dart']!;
+        expect(
+          router,
+          contains(
+            "import '../../modules/counter/screens/counter_screen.dart';",
+          ),
+        );
 
-      final mainDart = files['lib/main.dart']!;
-      expect(mainDart, contains("import 'core/routes/app_router.dart';"));
-    });
+        final mainDart = files['lib/main.dart']!;
+        expect(mainDart, contains("import 'core/routes/app_router.dart';"));
+      },
+    );
 
     test('generates AppRouter hub for standard, go_router, and auto_route', () {
       for (final routing in Routing.values) {
