@@ -41,8 +41,9 @@ class TemplateEngine {
         config.architecture == ArchitecturePattern.featureFirst;
     final isLayerFirst = config.architecture == ArchitecturePattern.layerFirst;
     final isMvvm = config.architecture == ArchitecturePattern.mvvm;
+    final isModular = config.architecture == ArchitecturePattern.modular;
 
-    final usesCoreDir = isFeatureFirst || isLayerFirst;
+    final usesCoreDir = isFeatureFirst || isLayerFirst || isModular;
     final corePrefix = usesCoreDir ? 'lib/core/' : 'lib/';
 
     files['${corePrefix}theme/app_colors.dart'] = renderAppColors();
@@ -291,6 +292,131 @@ typedef ApiClient = ApiService;
       routerRelPath = 'lib/routes/app_router.dart';
       screenImportPrefix = "import '../../viewmodels/counter_viewmodel.dart';";
       routerScreenImport = "import '../views/counter/counter_view.dart';";
+    } else if (isModular) {
+      // Modular: modules/<name>/{models, repositories, logic, providers, screens}
+      final moduleRoot = 'lib/modules/counter';
+      final storageImportForRepo = hasStorage
+          ? "import '../../../core/storage/storage_service.dart';"
+          : '';
+
+      files['$moduleRoot/models/counter_model.dart'] = '''
+/// Data model for Counter.
+class CounterModel {
+  const CounterModel({required this.value});
+
+  final int value;
+
+  factory CounterModel.fromJson(Map<String, dynamic> json) {
+    return CounterModel(
+      value: (json['value'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'value': value,
+    };
+  }
+}
+''';
+
+      files['$moduleRoot/repositories/counter_repository.dart'] = '''
+${storageImportForRepo.isNotEmpty ? '$storageImportForRepo\n' : ''}import '../models/counter_model.dart';
+
+/// Repository interface for Counter module.
+abstract class CounterRepository {
+  Future<CounterModel> getCounter();
+  Future<void> saveCounter(CounterModel model);
+}
+
+/// Repository implementation for Counter module.
+class CounterRepositoryImpl implements CounterRepository {
+  const CounterRepositoryImpl();
+  static const String _storageKey = 'counter_value';
+
+  @override
+  Future<CounterModel> getCounter() async {
+${hasStorage ? '    final value = await StorageService.getInt(_storageKey) ?? 0;\n    return CounterModel(value: value);' : '    return const CounterModel(value: 0);'}
+  }
+
+  @override
+  Future<void> saveCounter(CounterModel model) async {
+${hasStorage ? '    await StorageService.setInt(_storageKey, model.value);' : '    // In-memory or fallback persistence'}
+  }
+}
+''';
+
+      // Logic & Providers
+      if (config.stateManagement == StateManagement.bloc) {
+        files['$moduleRoot/logic/counter_controller.dart'] =
+            renderStateController(config);
+        files['$moduleRoot/providers/counter_provider.dart'] = '''
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../logic/counter_controller.dart';
+
+Widget buildCounterProvider({required Widget child}) {
+  return BlocProvider(
+    create: (_) => CounterCubit(),
+    child: child,
+  );
+}
+''';
+      } else if (config.stateManagement == StateManagement.riverpod) {
+        files['$moduleRoot/logic/counter_controller.dart'] = '''
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Riverpod StateNotifier managing the counter value.
+class CounterNotifier extends StateNotifier<int> {
+  CounterNotifier() : super(0);
+
+  void increment() => state++;
+  void decrement() => state--;
+  void reset() => state = 0;
+}
+''';
+        files['$moduleRoot/providers/counter_provider.dart'] = '''
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../logic/counter_controller.dart';
+
+export '../logic/counter_controller.dart';
+
+/// Global provider for the counter state.
+final counterProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+  return CounterNotifier();
+});
+''';
+      } else if (config.stateManagement == StateManagement.provider) {
+        files['$moduleRoot/logic/counter_controller.dart'] =
+            renderStateController(config);
+        files['$moduleRoot/providers/counter_provider.dart'] = '''
+import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
+import '../logic/counter_controller.dart';
+
+export '../logic/counter_controller.dart';
+
+SingleChildWidget createCounterProvider() {
+  return ChangeNotifierProvider(create: (_) => CounterModel());
+}
+''';
+      } else {
+        files['$moduleRoot/logic/counter_controller.dart'] =
+            renderStateController(config);
+        files['$moduleRoot/providers/counter_provider.dart'] = '''
+import '../logic/counter_controller.dart';
+
+export '../logic/counter_controller.dart';
+''';
+      }
+
+      controllerRelPath = '';
+      screenRelPath = '$moduleRoot/screens/counter_screen.dart';
+      routerRelPath = 'lib/core/routes/app_router.dart';
+      screenImportPrefix =
+          "import '../logic/counter_controller.dart';\nimport '../providers/counter_provider.dart';";
+      routerScreenImport =
+          "import '../../modules/counter/screens/counter_screen.dart';";
     } else {
       // Simple MVC
       files['lib/models/counter_model.dart'] = renderCounterEntity();
@@ -302,7 +428,8 @@ typedef ApiClient = ApiService;
     }
 
     // State Controller file
-    if (config.stateManagement != StateManagement.none) {
+    if (controllerRelPath.isNotEmpty &&
+        config.stateManagement != StateManagement.none) {
       files[controllerRelPath] = renderStateController(config);
     }
 
@@ -328,7 +455,7 @@ typedef ApiClient = ApiService;
               : "import 'services/injection_container.dart';")
         : '';
 
-    final routerImport = isFeatureFirst
+    final routerImport = (isFeatureFirst || isModular)
         ? "import 'core/routes/app_router.dart';"
         : (isLayerFirst
               ? "import 'presentation/routes/app_router.dart';"
@@ -336,11 +463,13 @@ typedef ApiClient = ApiService;
 
     final screenImport = isFeatureFirst
         ? "import 'features/counter/presentation/screens/counter_screen.dart';"
-        : (isLayerFirst
-              ? "import 'presentation/pages/counter_page.dart';"
-              : (isMvvm
-                    ? "import 'views/counter/counter_view.dart';"
-                    : "import 'screens/counter_screen.dart';"));
+        : (isModular
+              ? "import 'modules/counter/screens/counter_screen.dart';"
+              : (isLayerFirst
+                    ? "import 'presentation/pages/counter_page.dart';"
+                    : (isMvvm
+                          ? "import 'views/counter/counter_view.dart';"
+                          : "import 'screens/counter_screen.dart';")));
 
     files['lib/main.dart'] = renderMainDart(
       config,
