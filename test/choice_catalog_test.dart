@@ -5,12 +5,19 @@ void main() {
   group('ChoiceCatalog', () {
     test('architecture options include short hints and details', () {
       final options = ChoiceCatalog.architecture();
-      expect(options, hasLength(4));
+      expect(options, hasLength(5));
       expect(options.first.label, equals('Feature-first'));
       expect(options.first.shortDescription, equals('by feature'));
       expect(options.first.detail, contains('features'));
       expect(options.first.diagram, isNotEmpty);
       expect(options.first.diagram.first, contains('lib/'));
+
+      final modularOption =
+          options.firstWhere((o) => o.value == ArchitecturePattern.modular);
+      expect(modularOption.label, equals('Modular'));
+      expect(modularOption.shortDescription, equals('modules · logic · screens'));
+      expect(modularOption.diagram, isNotEmpty);
+      expect(modularOption.diagram.any((line) => line.contains('modules/')), isTrue);
     });
 
     test('state options stay compact', () {

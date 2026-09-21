@@ -15,6 +15,7 @@ abstract final class ChoiceCatalog {
           ArchitecturePattern.layerFirst => 'data · domain · ui',
           ArchitecturePattern.mvvm => 'views · viewmodels',
           ArchitecturePattern.simpleMvc => 'screens · services',
+          ArchitecturePattern.modular => 'modules · logic · screens',
         },
         detail: item.description,
         diagram: ArchitectureDiagrams.forPattern(item),
