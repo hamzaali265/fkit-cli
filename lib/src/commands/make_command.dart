@@ -192,7 +192,7 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_notifier.dart'
           : config.architecture == ArchitecturePattern.modular
-          ? 'lib/modules/$snake/logic/${snake}_controller.dart'
+          ? 'lib/modules/$snake/logic/${snake}_notifier.dart'
           : config.architecture == ArchitecturePattern.layerFirst
           ? 'lib/presentation/$snake/providers/${snake}_provider.dart'
           : 'lib/features/$snake/presentation/providers/${snake}_provider.dart';

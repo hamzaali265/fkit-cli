@@ -329,11 +329,11 @@ void main() {
         isTrue,
       );
       expect(
-        files.containsKey('lib/modules/counter/logic/counter_controller.dart'),
+        files.containsKey('lib/modules/counter/logic/counter_notifier.dart'),
         isTrue,
       );
       expect(
-        files.containsKey('lib/modules/counter/providers/counter_provider.dart'),
+        files.containsKey('lib/modules/counter/providers/counter_notifier_provider.dart'),
         isTrue,
       );
       expect(

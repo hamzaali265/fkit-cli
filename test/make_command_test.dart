@@ -206,7 +206,7 @@ dependencies:
       ]);
       expect(exitCode, equals(0));
       expect(
-        File(p.join(tempDir.path, 'lib/modules/login/logic/login_controller.dart')).existsSync(),
+        File(p.join(tempDir.path, 'lib/modules/login/logic/login_notifier.dart')).existsSync(),
         isTrue,
       );
 

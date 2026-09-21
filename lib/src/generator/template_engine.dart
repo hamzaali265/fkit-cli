@@ -348,12 +348,12 @@ ${hasStorage ? '    await StorageService.setInt(_storageKey, model.value);' : ' 
 
       // Logic & Providers
       if (config.stateManagement == StateManagement.bloc) {
-        files['$moduleRoot/logic/counter_controller.dart'] =
+        files['$moduleRoot/logic/counter_cubit.dart'] =
             renderStateController(config);
-        files['$moduleRoot/providers/counter_provider.dart'] = '''
+        files['$moduleRoot/providers/counter_bloc_provider.dart'] = '''
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../logic/counter_controller.dart';
+import '../logic/counter_cubit.dart';
 
 Widget buildCounterProvider({required Widget child}) {
   return BlocProvider(
@@ -362,8 +362,10 @@ Widget buildCounterProvider({required Widget child}) {
   );
 }
 ''';
+        screenImportPrefix =
+            "import '../logic/counter_cubit.dart';\nimport '../providers/counter_bloc_provider.dart';";
       } else if (config.stateManagement == StateManagement.riverpod) {
-        files['$moduleRoot/logic/counter_controller.dart'] = '''
+        files['$moduleRoot/logic/counter_notifier.dart'] = '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Riverpod StateNotifier managing the counter value.
@@ -375,31 +377,56 @@ class CounterNotifier extends StateNotifier<int> {
   void reset() => state = 0;
 }
 ''';
-        files['$moduleRoot/providers/counter_provider.dart'] = '''
+        files['$moduleRoot/providers/counter_notifier_provider.dart'] = '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logic/counter_controller.dart';
+import '../logic/counter_notifier.dart';
 
-export '../logic/counter_controller.dart';
+export '../logic/counter_notifier.dart';
 
 /// Global provider for the counter state.
-final counterProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
+final counterNotifierProvider = StateNotifierProvider<CounterNotifier, int>((ref) {
   return CounterNotifier();
 });
+
+/// Alias provider for counter access.
+final counterProvider = counterNotifierProvider;
 ''';
+        screenImportPrefix =
+            "import '../logic/counter_notifier.dart';\nimport '../providers/counter_notifier_provider.dart';";
       } else if (config.stateManagement == StateManagement.provider) {
-        files['$moduleRoot/logic/counter_controller.dart'] =
+        files['$moduleRoot/logic/counter_notifier.dart'] =
             renderStateController(config);
         files['$moduleRoot/providers/counter_provider.dart'] = '''
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import '../logic/counter_controller.dart';
+import '../logic/counter_notifier.dart';
 
-export '../logic/counter_controller.dart';
+export '../logic/counter_notifier.dart';
 
 SingleChildWidget createCounterProvider() {
   return ChangeNotifierProvider(create: (_) => CounterModel());
 }
 ''';
+        screenImportPrefix =
+            "import '../logic/counter_notifier.dart';\nimport '../providers/counter_provider.dart';";
+      } else if (config.stateManagement == StateManagement.getx) {
+        files['$moduleRoot/logic/counter_controller.dart'] =
+            renderStateController(config);
+        files['$moduleRoot/providers/counter_binding.dart'] = '''
+import 'package:get/get.dart';
+import '../logic/counter_controller.dart';
+
+export '../logic/counter_controller.dart';
+
+class CounterBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<CounterController>(() => CounterController());
+  }
+}
+''';
+        screenImportPrefix =
+            "import '../logic/counter_controller.dart';\nimport '../providers/counter_binding.dart';";
       } else {
         files['$moduleRoot/logic/counter_controller.dart'] =
             renderStateController(config);
@@ -408,13 +435,12 @@ import '../logic/counter_controller.dart';
 
 export '../logic/counter_controller.dart';
 ''';
+        screenImportPrefix = "import '../logic/counter_controller.dart';";
       }
 
       controllerRelPath = '';
       screenRelPath = '$moduleRoot/screens/counter_screen.dart';
       routerRelPath = 'lib/core/routes/app_router.dart';
-      screenImportPrefix =
-          "import '../logic/counter_controller.dart';\nimport '../providers/counter_provider.dart';";
       routerScreenImport =
           "import '../../modules/counter/screens/counter_screen.dart';";
     } else {

@@ -594,7 +594,7 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
   }
 }
 ''';
-      files['$basePath/providers/${snake}_provider.dart'] = '''
+      files['$basePath/providers/${snake}_bloc_provider.dart'] = '''
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../logic/${snake}_cubit.dart';
@@ -608,7 +608,7 @@ Widget build${pascal}Provider({required Widget child}) {
 }
 ''';
     } else if (config.stateManagement == StateManagement.riverpod) {
-      files['$basePath/logic/${snake}_controller.dart'] = '''
+      files['$basePath/logic/${snake}_notifier.dart'] = '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/${snake}_model.dart';
 import '../repositories/${snake}_repository.dart';
@@ -620,8 +620,8 @@ class ${pascal}State {
   final bool isLoading;
 }
 
-class ${pascal}Controller extends StateNotifier<${pascal}State> {
-  ${pascal}Controller({this.repository = const ${pascal}RepositoryImpl()})
+class ${pascal}Notifier extends StateNotifier<${pascal}State> {
+  ${pascal}Notifier({this.repository = const ${pascal}RepositoryImpl()})
       : super(const ${pascal}State());
 
   final ${pascal}Repository repository;
@@ -632,14 +632,18 @@ class ${pascal}Controller extends StateNotifier<${pascal}State> {
   }
 }
 ''';
-      files['$basePath/providers/${snake}_provider.dart'] = '''
+      files['$basePath/providers/${snake}_notifier_provider.dart'] = '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../logic/${snake}_controller.dart';
+import '../logic/${snake}_notifier.dart';
 
-final ${camel}ControllerProvider =
-    StateNotifierProvider<${pascal}Controller, ${pascal}State>((ref) {
-  return ${pascal}Controller();
+export '../logic/${snake}_notifier.dart';
+
+final ${camel}NotifierProvider =
+    StateNotifierProvider<${pascal}Notifier, ${pascal}State>((ref) {
+  return ${pascal}Notifier();
 });
+
+final ${camel}Provider = ${camel}NotifierProvider;
 ''';
     } else if (config.stateManagement == StateManagement.provider) {
       files['$basePath/logic/${snake}_notifier.dart'] = '''
@@ -671,12 +675,43 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import '../logic/${snake}_notifier.dart';
 
+export '../logic/${snake}_notifier.dart';
+
 SingleChildWidget create${pascal}Provider() {
   return ChangeNotifierProvider(create: (_) => ${pascal}Notifier());
 }
 ''';
+    } else if (config.stateManagement == StateManagement.getx) {
+      files['$basePath/logic/${snake}_controller.dart'] = '''
+import 'package:get/get.dart';
+import '../models/${snake}_model.dart';
+import '../repositories/${snake}_repository.dart';
+
+class ${pascal}Controller extends GetxController {
+  ${pascal}Controller({this.repository = const ${pascal}RepositoryImpl()});
+
+  final ${pascal}Repository repository;
+
+  Future<${pascal}Model> load(String id) {
+    return repository.get$pascal(id);
+  }
+}
+''';
+      files['$basePath/providers/${snake}_binding.dart'] = '''
+import 'package:get/get.dart';
+import '../logic/${snake}_controller.dart';
+
+export '../logic/${snake}_controller.dart';
+
+class ${pascal}Binding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<${pascal}Controller>(() => ${pascal}Controller());
+  }
+}
+''';
     } else {
-      // GetX / None
+      // None
       files['$basePath/logic/${snake}_controller.dart'] = '''
 import '../models/${snake}_model.dart';
 import '../repositories/${snake}_repository.dart';
@@ -693,6 +728,8 @@ class ${pascal}Controller {
 ''';
       files['$basePath/providers/${snake}_provider.dart'] = '''
 import '../logic/${snake}_controller.dart';
+
+export '../logic/${snake}_controller.dart';
 
 ${pascal}Controller create${pascal}Controller() => ${pascal}Controller();
 ''';

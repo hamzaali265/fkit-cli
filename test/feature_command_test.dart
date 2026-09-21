@@ -162,11 +162,11 @@ void main() {
         isTrue,
       );
       expect(
-        files.containsKey('lib/modules/auth/logic/auth_controller.dart'),
+        files.containsKey('lib/modules/auth/logic/auth_notifier.dart'),
         isTrue,
       );
       expect(
-        files.containsKey('lib/modules/auth/providers/auth_provider.dart'),
+        files.containsKey('lib/modules/auth/providers/auth_notifier_provider.dart'),
         isTrue,
       );
       expect(
@@ -177,8 +177,8 @@ void main() {
       final model = files['lib/modules/auth/models/auth_model.dart']!;
       expect(model, contains('class AuthModel'));
 
-      final controller = files['lib/modules/auth/logic/auth_controller.dart']!;
-      expect(controller, contains('class AuthController extends StateNotifier'));
+      final controller = files['lib/modules/auth/logic/auth_notifier.dart']!;
+      expect(controller, contains('class AuthNotifier extends StateNotifier'));
 
       final screen = files['lib/modules/auth/screens/auth_screen.dart']!;
       expect(screen, contains('class AuthScreen'));
