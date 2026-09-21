@@ -321,13 +321,18 @@ class CounterModel {
 ''';
 
       files['$moduleRoot/repositories/counter_repository.dart'] = '''
-${storageImportForRepo.isNotEmpty ? '$storageImportForRepo\n' : ''}import '../models/counter_model.dart';
+import '../models/counter_model.dart';
 
 /// Repository interface for Counter module.
 abstract class CounterRepository {
   Future<CounterModel> getCounter();
   Future<void> saveCounter(CounterModel model);
 }
+''';
+
+      files['$moduleRoot/repositories/counter_repository_impl.dart'] = '''
+${storageImportForRepo.isNotEmpty ? '$storageImportForRepo\n' : ''}import '../models/counter_model.dart';
+import 'counter_repository.dart';
 
 /// Repository implementation for Counter module.
 class CounterRepositoryImpl implements CounterRepository {

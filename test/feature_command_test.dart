@@ -162,6 +162,18 @@ void main() {
         isTrue,
       );
       expect(
+        files.containsKey('lib/modules/auth/repositories/auth_repository_impl.dart'),
+        isTrue,
+      );
+      expect(
+        files['lib/modules/auth/repositories/auth_repository.dart'],
+        contains('abstract class AuthRepository'),
+      );
+      expect(
+        files['lib/modules/auth/repositories/auth_repository_impl.dart'],
+        contains('class AuthRepositoryImpl implements AuthRepository'),
+      );
+      expect(
         files.containsKey('lib/modules/auth/logic/auth_notifier.dart'),
         isTrue,
       );
@@ -286,6 +298,24 @@ dependencies:
             p.join(
               tempDir.path,
               'lib/modules/profile/models/profile_model.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/modules/profile/repositories/profile_repository.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/modules/profile/repositories/profile_repository_impl.dart',
             ),
           ).existsSync(),
           isTrue,

@@ -544,6 +544,11 @@ import '../models/${snake}_model.dart';
 abstract class ${pascal}Repository {
   Future<${pascal}Model> get$pascal(String id);
 }
+''';
+
+    files['$basePath/repositories/${snake}_repository_impl.dart'] = '''
+import '../models/${snake}_model.dart';
+import '${snake}_repository.dart';
 
 /// Repository implementation for $pascal module.
 class ${pascal}RepositoryImpl implements ${pascal}Repository {

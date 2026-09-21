@@ -329,6 +329,18 @@ void main() {
         isTrue,
       );
       expect(
+        files.containsKey('lib/modules/counter/repositories/counter_repository_impl.dart'),
+        isTrue,
+      );
+      expect(
+        files['lib/modules/counter/repositories/counter_repository.dart'],
+        contains('abstract class CounterRepository'),
+      );
+      expect(
+        files['lib/modules/counter/repositories/counter_repository_impl.dart'],
+        contains('class CounterRepositoryImpl implements CounterRepository'),
+      );
+      expect(
         files.containsKey('lib/modules/counter/logic/counter_notifier.dart'),
         isTrue,
       );
