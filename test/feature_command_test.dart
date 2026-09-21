@@ -137,6 +137,52 @@ void main() {
       final vm = files['lib/viewmodels/orders_viewmodel.dart']!;
       expect(vm, contains('class OrdersViewModel extends ChangeNotifier'));
     });
+
+    test('generates Modular Riverpod feature correctly with modules/<name>/', () {
+      final config = ProjectConfig(
+        projectName: 'demo_app',
+        orgName: 'com.example',
+        targetDirectory: '/tmp/demo',
+        architecture: ArchitecturePattern.modular,
+        stateManagement: StateManagement.riverpod,
+        routing: Routing.goRouter,
+        networking: Networking.dio,
+        storage: Storage.sharedPreferences,
+        features: const {},
+      );
+
+      final files = generator.generateFeature(
+        featureName: 'auth',
+        config: config,
+      );
+
+      expect(files.containsKey('lib/modules/auth/models/auth_model.dart'), isTrue);
+      expect(
+        files.containsKey('lib/modules/auth/repositories/auth_repository.dart'),
+        isTrue,
+      );
+      expect(
+        files.containsKey('lib/modules/auth/logic/auth_controller.dart'),
+        isTrue,
+      );
+      expect(
+        files.containsKey('lib/modules/auth/providers/auth_provider.dart'),
+        isTrue,
+      );
+      expect(
+        files.containsKey('lib/modules/auth/screens/auth_screen.dart'),
+        isTrue,
+      );
+
+      final model = files['lib/modules/auth/models/auth_model.dart']!;
+      expect(model, contains('class AuthModel'));
+
+      final controller = files['lib/modules/auth/logic/auth_controller.dart']!;
+      expect(controller, contains('class AuthController extends StateNotifier'));
+
+      final screen = files['lib/modules/auth/screens/auth_screen.dart']!;
+      expect(screen, contains('class AuthScreen'));
+    });
   });
 
   group('FeatureCommand E2E', () {
@@ -197,6 +243,58 @@ dependencies:
             p.join(
               tempDir.path,
               'lib/features/billing/presentation/bloc/billing_cubit.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'reads .fkit.json with modular architecture and scaffolds feature in lib/modules/',
+      () async {
+        final fkitJson = '''
+{
+  "name": "modular_mock_app",
+  "architecture": "modular",
+  "state_management": "riverpod",
+  "routing": "goRouter",
+  "networking": "dio",
+  "storage": "sharedPreferences",
+  "features": []
+}
+''';
+        File(p.join(tempDir.path, 'pubspec.yaml')).writeAsStringSync('''
+name: modular_mock_app
+dependencies:
+  flutter:
+    sdk: flutter
+''');
+        File(p.join(tempDir.path, '.fkit.json')).writeAsStringSync(fkitJson);
+
+        final runner = FkitCommandRunner();
+        final exitCode = await runner.run([
+          'feature',
+          'profile',
+          '-p',
+          tempDir.path,
+        ]);
+
+        expect(exitCode, equals(0));
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/modules/profile/models/profile_model.dart',
+            ),
+          ).existsSync(),
+          isTrue,
+        );
+        expect(
+          File(
+            p.join(
+              tempDir.path,
+              'lib/modules/profile/screens/profile_screen.dart',
             ),
           ).existsSync(),
           isTrue,
