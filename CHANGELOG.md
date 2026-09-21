@@ -5,6 +5,24 @@ All notable changes to **FKIT CLI** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-09-21
+
+### 🌟 Added
+- **Modular Architecture Pattern**:
+  - Full modular project scaffolding under `lib/modules/<name>/` (`models/`, `repositories/`, `logic/`, `providers/`, `screens/`).
+  - Dedicated repository files for abstract interfaces (`<name>_repository.dart`) and concrete implementations (`<name>_repository_impl.dart`).
+  - State-management-tailored naming conventions:
+    - **Riverpod**: `logic/<name>_notifier.dart` (`StateNotifier`) & `providers/<name>_notifier_provider.dart` (`StateNotifierProvider`).
+    - **BLoC**: `logic/<name>_cubit.dart` (`Cubit`) & `providers/<name>_bloc_provider.dart` (`BlocProvider`).
+    - **Provider**: `logic/<name>_notifier.dart` (`ChangeNotifier`) & `providers/<name>_provider.dart`.
+    - **GetX**: `logic/<name>_controller.dart` (`GetxController`) & `providers/<name>_binding.dart` (`Bindings`).
+  - Seamless integration across CLI commands:
+    - `fkit create` wizard & `--architecture modular` flag.
+    - `fkit feature <name>`: Automatically generates complete modular slices.
+    - `fkit make`: Maps components (`screen`, `controller`, `model`, `service`) into appropriate module subdirectories.
+
+---
+
 ## [1.2.1] - 2026-09-17
 
 ### 📖 Documentation & Polish
