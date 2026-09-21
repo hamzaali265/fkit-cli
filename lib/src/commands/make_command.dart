@@ -59,6 +59,8 @@ class MakeScreenSubcommand extends Command<int> {
       relativePath = 'lib/views/${snake}_view.dart';
     } else if (config.architecture == ArchitecturePattern.simpleMvc) {
       relativePath = 'lib/screens/${snake}_screen.dart';
+    } else if (config.architecture == ArchitecturePattern.modular) {
+      relativePath = 'lib/modules/$snake/screens/${snake}_screen.dart';
     } else if (config.architecture == ArchitecturePattern.layerFirst) {
       relativePath = 'lib/presentation/$snake/views/${snake}_view.dart';
     } else {
@@ -151,6 +153,8 @@ class MakeControllerSubcommand extends Command<int> {
     if (config.stateManagement == StateManagement.bloc) {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_cubit.dart'
+          : config.architecture == ArchitecturePattern.modular
+          ? 'lib/modules/$snake/logic/${snake}_cubit.dart'
           : config.architecture == ArchitecturePattern.layerFirst
           ? 'lib/presentation/$snake/bloc/${snake}_cubit.dart'
           : 'lib/features/$snake/presentation/bloc/${snake}_cubit.dart';
@@ -187,6 +191,8 @@ class ${pascal}Cubit extends Cubit<${pascal}State> {
     } else if (config.stateManagement == StateManagement.riverpod) {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_notifier.dart'
+          : config.architecture == ArchitecturePattern.modular
+          ? 'lib/modules/$snake/logic/${snake}_controller.dart'
           : config.architecture == ArchitecturePattern.layerFirst
           ? 'lib/presentation/$snake/providers/${snake}_provider.dart'
           : 'lib/features/$snake/presentation/providers/${snake}_provider.dart';
@@ -216,6 +222,8 @@ final ${camel}Provider = StateNotifierProvider<${pascal}Notifier, ${pascal}State
     } else {
       relativePath = config.architecture == ArchitecturePattern.mvvm
           ? 'lib/viewmodels/${snake}_viewmodel.dart'
+          : config.architecture == ArchitecturePattern.modular
+          ? 'lib/modules/$snake/logic/${snake}_controller.dart'
           : 'lib/features/$snake/presentation/controllers/${snake}_controller.dart';
 
       code =
@@ -295,6 +303,8 @@ class MakeModelSubcommand extends Command<int> {
     String relativePath;
     if (config.architecture == ArchitecturePattern.featureFirst) {
       relativePath = 'lib/features/$snake/data/models/${snake}_model.dart';
+    } else if (config.architecture == ArchitecturePattern.modular) {
+      relativePath = 'lib/modules/$snake/models/${snake}_model.dart';
     } else if (config.architecture == ArchitecturePattern.layerFirst) {
       relativePath = 'lib/data/models/${snake}_model.dart';
     } else {
@@ -388,6 +398,8 @@ class MakeServiceSubcommand extends Command<int> {
     if (config.architecture == ArchitecturePattern.featureFirst) {
       relativePath =
           'lib/features/$snake/data/datasources/${snake}_remote_data_source.dart';
+    } else if (config.architecture == ArchitecturePattern.modular) {
+      relativePath = 'lib/modules/$snake/repositories/${snake}_repository.dart';
     } else if (config.architecture == ArchitecturePattern.layerFirst) {
       relativePath = 'lib/data/datasources/${snake}_remote_data_source.dart';
     } else {
